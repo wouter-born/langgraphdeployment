@@ -6,8 +6,8 @@ from typing_extensions import TypedDict
 from langchain_community.document_loaders import WikipediaLoader
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, get_buffer_string
-from langchain_openai import ChatOpenAI
 
+from langchain_groq import ChatGroq
 from langgraph.constants import Send
 from langgraph.graph import END, MessagesState, START, StateGraph
 
