@@ -5,3 +5,5 @@ langchain-groq
 langchain-openai
 tavily-python
 wikipedia
+typing_extensions
+pydantic

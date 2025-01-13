@@ -2,7 +2,8 @@
   "dockerfile_lines": [],
   "graphs": {
     "chatbot": "./chatbot.py:graph",
-    "research": "./research_assistant.py:graph"
+    "research": "./research_assistant.py:graph",
+    "CFOLytics_reportgenerator": "./CFOLytics_reportgenerator.py:graph"
   },
   "env": "./.env",
   "python_version": "3.11",
