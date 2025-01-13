@@ -1,34 +1,32 @@
 """
-report_generation_workflow.py
+CFOLytics_reportgenerator.py
 
-Example LangGraph workflow for building a dynamic report-generation flow.
+LangGraph workflow for generating a financial report layout + component configs + lists,
+without using 'add_collector'.
 
 Requires:
 - langgraph
 - langchain-core
 - langchain-community
 - langchain-openai
-- typing_extensions
-- pydantic
 """
 
-import operator
 import os
+import json
+import operator
+from typing import List, Optional
 from typing_extensions import TypedDict
-from typing import List, Optional, Annotated
 from pydantic import BaseModel, Field
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, get_buffer_string
-from langchain_openai import ChatOpenAI
 
-from langgraph.constants import Send
-from langgraph.graph import START, END, MessagesState, StateGraph
+# LangGraph / LangChain imports
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_openai import ChatOpenAI
+from langgraph.constants import START, END
+from langgraph.graph import StateGraph, MessagesState
 
 # -----------------------------------------------------------------------------
 # LLM Setup
 # -----------------------------------------------------------------------------
-
-# Example usage with GPT-4 or GPT-3.5, etc.
-# You can adjust the model name as needed (e.g., "gpt-3.5-turbo")
 llm = ChatOpenAI(model="gpt-4o", temperature=0)
 
 # -----------------------------------------------------------------------------
@@ -36,12 +34,9 @@ llm = ChatOpenAI(model="gpt-4o", temperature=0)
 # -----------------------------------------------------------------------------
 def load_xml_instructions(filename: str) -> str:
     """
-    Loads the content from an XML file in the same folder as this script.
-    You can store all your LLM instructions in XML format.
+    Load the content from an XML file that resides in the same folder as this script.
+    Adjust if you store your XML differently.
     """
-    # This method just reads from an XML file on disk.
-    # In real usage, you might parse or do more advanced logic.
-    # For now, we do a simple read:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, "XML_instructions", filename)
     with open(file_path, "r", encoding="utf-8") as f:
@@ -49,464 +44,281 @@ def load_xml_instructions(filename: str) -> str:
     return content
 
 # -----------------------------------------------------------------------------
-# STATE DEFINITIONS
+# STATE DEFINITION
 # -----------------------------------------------------------------------------
-
-class LayoutComponent(BaseModel):
-    """Placeholder Pydantic model for a single component's partial JSON."""
-    id: str
-    type: str
-    AIGenerationDescription: Optional[str] = Field(
-        default=None,
-        description="Full instructions that the LLM used to generate this component"
-    )
-    config: dict = Field(default_factory=dict)
-
-class LayoutJSON(BaseModel):
-    """
-    Example structure that holds the layout portion of the final JSON.
-    This is only a partial structure – you can expand it as needed.
-    """
-    AIGenerationDescription: str = Field(description="User's entire prompt")
-    reportTitle: str
-    layout: dict
-
 class FinalReportState(TypedDict):
     """
-    The final state that we track in the workflow.
+    Holds data throughout our report-generation process.
     """
-    # The user’s prompt or instructions
-    user_prompt: str
-    # Whether instructions are clear or not
-    instructions_clear: bool
-    # The layout JSON we generate
-    layout_json: dict
-    # The final JSON after content generation
-    final_json: dict
+    user_prompt: str                # The user's initial instructions
+    instructions_clear: bool        # Whether instructions are considered clear
+    layout_json: dict               # Generated layout JSON
+    final_json: dict                # The final JSON with component configs + list data
+
+class ReportGraphState(MessagesState, FinalReportState):
+    """
+    If you need to store messages plus our custom fields.
+    """
+    pass
 
 # -----------------------------------------------------------------------------
-# 1) Verify Instructions Node
+# 1) VERIFY INSTRUCTIONS
 # -----------------------------------------------------------------------------
-
-def verify_instructions(state: FinalReportState):
+def verify_instructions(state: ReportGraphState):
     """
     Node to check if the user instructions are clear or if we need clarification.
-    Uses an LLM with instructions from 'verify_instructions.xml'.
+    Uses instructions from 'verify_instructions.xml'.
     """
     user_prompt = state["user_prompt"]
 
-    # Load the system instructions from an external XML file
     system_instructions = load_xml_instructions("verify_instructions.xml")
-    
-    # We'll pass the user_prompt to the LLM to see if it's ambiguous
-    # This example is simplistic: we ask the LLM, "Are the instructions clear or not?"
-    # The LLM then can respond with "clear" or "not clear", or we can parse a structured output.
-    
     system_msg = SystemMessage(content=system_instructions)
     user_msg = HumanMessage(content=user_prompt)
-    result = llm.invoke([system_msg, user_msg])
 
-    # We expect the LLM to output something we can parse, e.g. the word "clear" or "not_clear"
-    # Example approach (very simplistic):
+    result = llm.invoke([system_msg, user_msg])
     text = result.content.lower()
+
+    # Basic logic to see if LLM says "not clear" or "unclear"
     if "not clear" in text or "unclear" in text:
         return {"instructions_clear": False}
-    # Otherwise assume it's clear
     return {"instructions_clear": True}
 
 # -----------------------------------------------------------------------------
-# 2) Ask Clarification Node
+# 2) ASK CLARIFICATION
 # -----------------------------------------------------------------------------
-
-def ask_clarification(state: FinalReportState):
+def ask_clarification(state: ReportGraphState):
     """
     Node that asks the user for clarifications if instructions are not clear.
-    Uses instructions from 'clarification_prompt.xml' to craft a question.
+    Uses instructions from 'clarification_prompt.xml'.
     """
-    # The system tries to form a clarifying question to the user
-    system_instructions = load_xml_instructions("clarification_prompt.xml")
-
-    # We'll store a textual prompt in the state so the user can respond.
-    return {
-        # In LangGraph Studio, you can intercept this output or show it to the user:
-        "clarification_request": system_instructions
-    }
+    clarification_prompt = load_xml_instructions("clarification_prompt.xml")
+    # Typically you'd display or return this prompt so the user can respond.
+    # For demonstration, we'll just store it in the state.
+    return {"clarification_request": clarification_prompt}
 
 # -----------------------------------------------------------------------------
-# 3) Generate Layout Node
+# 3) GENERATE LAYOUT JSON
 # -----------------------------------------------------------------------------
-
-def generate_layout_json(state: FinalReportState):
+def generate_layout_json(state: ReportGraphState):
     """
-    Node that generates a partial layout JSON structure using the user's prompt.
-    Uses instructions from 'render_layout.xml'.
+    Generates the layout JSON using the user's prompt, guided by 'render_layout.xml'.
     """
     user_prompt = state["user_prompt"]
     system_instructions = load_xml_instructions("render_layout.xml")
-    
+
     system_msg = SystemMessage(content=system_instructions)
-    human_msg = HumanMessage(content=user_prompt)
-    
-    # You may want to parse structured output. For simplicity, we’ll assume
-    # you want a raw JSON string or a dictionary from the model.
-    # Suppose we direct the LLM to return valid JSON in its content:
-    
-    # We'll do a direct LLM call. We might parse as JSON afterwards.
-    result = llm.invoke([system_msg, human_msg])
-    
-    # Parse LLM output as JSON
-    import json
+    user_msg = HumanMessage(content=user_prompt)
+
+    result = llm.invoke([system_msg, user_msg])
     try:
         layout_dict = json.loads(result.content)
     except json.JSONDecodeError:
-        # If the LLM didn't return valid JSON, fallback or raise error.
+        # If LLM output isn't valid JSON, store it in an error structure.
         layout_dict = {
-            "error": "LLM output was not valid JSON",
-            "raw_output": result.content
+            "error": "Could not parse LLM output as JSON",
+            "raw_llm_output": result.content
         }
-    
+
     return {"layout_json": layout_dict}
 
 # -----------------------------------------------------------------------------
-# 4) User Confirms Layout Node
+# 4) USER CONFIRM LAYOUT
 # -----------------------------------------------------------------------------
-
-def user_confirm_layout(state: FinalReportState):
+def user_confirm_layout(state: ReportGraphState):
     """
-    In a real system, we'd let the user see the layout JSON and confirm or reject.
-    Here, we do a no-op. You can intercept or check if they said 'yes' in LangGraph Studio.
+    Let the user confirm or reject the layout in a real UI.
+    For the example, we'll assume user always approves the layout.
     """
-    # For demonstration, we assume the user always says "OK".
     layout_ok = True
     return {"layout_ok": layout_ok}
 
 # -----------------------------------------------------------------------------
-# 5) Identify and Generate Component Content Node (Parallel Steps)
+# 5) GENERATE COMPONENT CONTENT (SEQUENTIAL APPROACH)
 # -----------------------------------------------------------------------------
-
-def identify_components(state: FinalReportState):
+def generate_components_config(state: ReportGraphState):
     """
-    Identify all components in the layout that need content generation.
-    Return them so we can spawn parallel tasks with Send().
+    Iterates over all components in the layout and uses an LLM to generate configs.
+    Uses instructions from 'component_content_gen.xml'.
+    
+    This version does it SEQUENTIALLY (no parallel tasks) to avoid the need for add_collector.
     """
     layout_json = state.get("layout_json", {})
-    if not layout_json:
-        return {"components_to_generate": []}
-    
-    # Example: scan through layout JSON for "components" arrays.
-    # This naive approach walks the 'layout' dictionary deeply.
-    components_found = []
-    
-    def walk_layout(obj):
+    if "error" in layout_json:
+        # If we have an error from earlier, just return
+        return {}
+
+    # 1) Find all components
+    components = []
+
+    def find_components(obj):
         if isinstance(obj, dict):
             # If 'components' in this dict
             if "components" in obj and isinstance(obj["components"], list):
                 for c in obj["components"]:
-                    comp_id = c.get("id")
-                    comp_type = c.get("type")
-                    desc = c.get("AI Generation Description")
-                    # Save minimal info for generation
-                    components_found.append({
-                        "id": comp_id,
-                        "type": comp_type,
-                        "desc": desc
-                    })
-            # Recurse
+                    components.append(c)
+            # Recurse deeper
             for v in obj.values():
-                walk_layout(v)
+                find_components(v)
         elif isinstance(obj, list):
             for v in obj:
-                walk_layout(v)
+                find_components(v)
 
-    walk_layout(layout_json)
-    return {"components_to_generate": components_found}
+    find_components(layout_json)
 
+    # 2) For each component, call LLM
+    component_instructions = load_xml_instructions("component_content_gen.xml")
 
-def generate_component_content(state: dict):
-    """
-    A node that runs *per component* to produce the actual config (charts, table, etc.).
-    Uses instructions from 'component_content_gen.xml'.
-    
-    This function is designed for the Send() approach.
-    """
-    component_id = state["component_id"]
-    component_desc = state.get("component_desc", "")
-    system_instructions = load_xml_instructions("component_content_gen.xml")
+    def update_config(obj, comp_id, new_config):
+        if isinstance(obj, dict):
+            if obj.get("id") == comp_id:
+                obj["config"] = new_config
+            for v in obj.values():
+                update_config(v, comp_id, new_config)
+        elif isinstance(obj, list):
+            for v in obj:
+                update_config(v, comp_id, new_config)
 
-    # We’ll feed the description to the LLM to get a config dictionary
-    system_msg = SystemMessage(content=system_instructions)
-    user_msg = HumanMessage(content=component_desc)
+    for c in components:
+        comp_id = c.get("id")
+        desc = c.get("AI Generation Description", "")
+        system_msg = SystemMessage(content=component_instructions)
+        user_msg = HumanMessage(content=desc)
+        result = llm.invoke([system_msg, user_msg])
 
-    result = llm.invoke([system_msg, user_msg])
+        try:
+            config_dict = json.loads(result.content)
+        except json.JSONDecodeError:
+            config_dict = {"error": "Invalid JSON from LLM", "raw": result.content}
 
-    import json
-    try:
-        config_dict = json.loads(result.content)
-    except json.JSONDecodeError:
-        config_dict = {
-            "error": "Failed to parse component config",
-            "raw": result.content
-        }
+        # 3) Insert config back into layout
+        update_config(layout_json, comp_id, config_dict)
 
-    return {
-        "component_id": component_id,
-        "config": config_dict
-    }
-
-# -----------------------------------------------------------------------------
-# 6) Identify and Unify Lists Node
-# -----------------------------------------------------------------------------
-
-def identify_and_unify_lists(state: FinalReportState):
-    """
-    Scan the updated layout JSON for all lists, unify them if they are duplicates.
-    Uses instructions from 'list_unification.xml' if you want to use LLM logic.
-    Otherwise, do an algorithmic unify. This example is a placeholder.
-    """
-    # Example: we do a naive unify by name alone
-    layout_json = state["layout_json"]
-
-    # Insert your logic here to unify lists, e.g. "12periods" vs. "12Months"
-    # For demonstration, we do nothing special.
-    
-    # Optionally call an LLM to interpret whether lists are duplicates
-    # system_instructions = load_xml_instructions("list_unification.xml")
-    # ...
     return {"layout_json": layout_json}
 
 # -----------------------------------------------------------------------------
-# 7) Create List Contents (Parallel Steps)
+# 6) IDENTIFY AND UNIFY LISTS (OPTIONAL)
 # -----------------------------------------------------------------------------
-
-def identify_unique_lists(state: FinalReportState):
+def identify_and_unify_lists(state: ReportGraphState):
     """
-    After unifying, gather each unique list that needs actual dimension members.
-    Then we’ll do parallel tasks to fill them in.
+    Example placeholder to unify identical lists. 
+    Could load instructions from 'list_unification.xml' if you want LLM-based logic.
+    For now, we'll do nothing fancy.
     """
     layout_json = state["layout_json"]
-    all_lists = []
+    # Add your logic to unify lists with same meaning here if needed
+    return {"layout_json": layout_json}
 
-    def walk_config(obj):
+# -----------------------------------------------------------------------------
+# 7) CREATE LIST CONTENTS (SEQUENTIAL APPROACH)
+# -----------------------------------------------------------------------------
+def create_lists_contents(state: ReportGraphState):
+    """
+    Finds all lists in the updated layout JSON and populates them. 
+    Uses instructions from 'list_creation.xml' (optional).
+    """
+    layout_json = state["layout_json"]
+
+    # Gather references
+    lists_found = []
+
+    def walk_for_lists(obj):
         if isinstance(obj, dict):
+            # If 'lists' in this dict
             if "lists" in obj and isinstance(obj["lists"], list):
-                for l in obj["lists"]:
-                    # We store the listReference and the entire sub-dict
-                    all_lists.append(l)
+                for l_ in obj["lists"]:
+                    lists_found.append(l_)
             for v in obj.values():
-                walk_config(v)
+                walk_for_lists(v)
         elif isinstance(obj, list):
             for v in obj:
-                walk_config(v)
+                walk_for_lists(v)
 
-    walk_config(layout_json)
-    
-    # Deduplicate by some logic
-    # For simplicity, let's just keep them as is
-    unique_lists = all_lists
-    
-    return {"lists_to_create": unique_lists}
+    walk_for_lists(layout_json)
 
-def create_list_contents(state: dict):
-    """
-    Creates or retrieves dimension members for a given list.
-    Uses instructions from 'list_creation.xml' if you need LLM help.
-    Otherwise, you might call your backend (OneStream, etc.) directly.
-    This is also designed for the Send() approach.
-    """
-    list_ref = state["listReference"]
-    # Example: we do a simple stub
-    # In real usage, you'd query dimension hierarchies, etc.
-    # Possibly an LLM node if there's ambiguous user instructions.
+    # Suppose we do a direct approach to fill each list with members
+    # If you need the LLM to interpret dimension queries, do so. Here, we'll just fill dummy data.
+    for l_ in lists_found:
+        ref = l_.get("listReference", "")
+        # system_instructions = load_xml_instructions("list_creation.xml")
+        # user_msg = HumanMessage(content=f"Populate list {ref} ...")
+        # Possibly do an LLM call or direct dimension query
+        # For demonstration, fill with placeholders:
+        l_["list"] = ["Jan", "Feb", "Mar"]
+        l_["AI Generation Description"] = "Populated with 3 months as example"
 
-    # system_instructions = load_xml_instructions("list_creation.xml")
-    # ...
-    # For demonstration, we’ll just return a static example
-    return {
-        "listReference": list_ref,
-        "members": ["Jan", "Feb", "Mar"]  # Hard-coded example
-    }
+    return {"layout_json": layout_json}
 
 # -----------------------------------------------------------------------------
-# 8) Final Assembly Node
+# 8) FINALIZE THE REPORT JSON
 # -----------------------------------------------------------------------------
-
-def finalize_report_json(state: FinalReportState):
+def finalize_report_json(state: ReportGraphState):
     """
-    Merges all partial outputs (component configs, list contents) back into the layout_json.
-    Returns the final JSON.
+    Merge or finalize data. The 'layout_json' can be considered the final JSON.
     """
-    final_layout = state["layout_json"]
-    return {"final_json": final_layout}
+    layout_json = state["layout_json"]
+    # Copy it into final_json
+    return {"final_json": layout_json}
 
 # -----------------------------------------------------------------------------
 # BUILD THE GRAPH
 # -----------------------------------------------------------------------------
-
-class ReportGraphState(MessagesState, FinalReportState):
-    """
-    Combine the typed dict with MessagesState if you plan to hold conversation logs, etc.
-    Or keep it simple if you do not need to store message history.
-    """
-    pass
-
 builder = StateGraph(ReportGraphState)
 
 # 1) Start => verify_instructions
 builder.add_node("verify_instructions", verify_instructions)
 builder.add_edge(START, "verify_instructions")
 
-# 2) If instructions not clear => ask_clarification => after user clarifies => re-check
+# Decide whether to proceed or ask clarifications
 def instructions_decider(state: ReportGraphState):
     if state["instructions_clear"]:
-        return "generate_layout"
+        return "generate_layout_json"
     else:
         return "ask_clarification"
 
-builder.add_conditional_edges("verify_instructions", instructions_decider,
-                              ["generate_layout", "ask_clarification"])
+builder.add_conditional_edges(
+    "verify_instructions",
+    instructions_decider,
+    ["generate_layout_json", "ask_clarification"]
+)
 
+# 2) ask_clarification => verify again (user presumably updates instructions)
 builder.add_node("ask_clarification", ask_clarification)
-
-# After clarifying, you might want the user to input a new prompt or update the same. 
-# Then jump back to verify_instructions.
 builder.add_edge("ask_clarification", "verify_instructions")
 
-# 3) generate_layout
-builder.add_node("generate_layout", generate_layout_json)
+# 3) generate_layout_json => user_confirm_layout
+builder.add_node("generate_layout_json", generate_layout_json)
+builder.add_edge("generate_layout_json", "user_confirm_layout")
 
-# 4) user_confirm_layout
+# 4) user_confirm_layout => if OK => generate_components_config, else => generate_layout_json
 builder.add_node("user_confirm_layout", user_confirm_layout)
-builder.add_edge("generate_layout", "user_confirm_layout")
 
-# If user says layout_ok => proceed, else => generate_layout again
 def layout_confirmation_router(state: ReportGraphState):
-    if "layout_ok" in state and state["layout_ok"]:
-        return "identify_components"
+    if state.get("layout_ok"):
+        return "generate_components_config"
     else:
-        return "generate_layout"
+        return "generate_layout_json"
 
-builder.add_conditional_edges("user_confirm_layout", layout_confirmation_router,
-                              ["identify_components", "generate_layout"])
+builder.add_conditional_edges(
+    "user_confirm_layout",
+    layout_confirmation_router,
+    ["generate_components_config", "generate_layout_json"]
+)
 
-# 5) identify_components => parallel "generate_component_content" calls
-builder.add_node("identify_components", identify_components)
+# 5) generate_components_config => unify_lists
+builder.add_node("generate_components_config", generate_components_config)
+builder.add_edge("generate_components_config", "identify_and_unify_lists")
 
-def parallel_components(state: ReportGraphState):
-    comps = state.get("components_to_generate", [])
-    if not comps:
-        return "identify_and_unify_lists"  # If none, skip
-    tasks = []
-    for c in comps:
-        tasks.append(
-            Send(
-                "generate_component_content",
-                {
-                    "component_id": c["id"],
-                    "component_desc": c.get("desc", "")
-                }
-            )
-        )
-    return tasks
-
-builder.add_node("generate_component_content", generate_component_content)
-builder.add_conditional_edges("identify_components", parallel_components, ["identify_and_unify_lists"])
-
-# We'll assume all parallel tasks come back into a single place to update the layout JSON
-# You might store each returned "config" in the global layout. This example is simplified.
-
-def collect_component_configs(state: ReportGraphState, results: List[dict]):
-    """
-    This is invoked automatically once all parallel 'generate_component_content' tasks finish.
-    We then inject the returned config into the layout JSON in the correct place.
-    """
-    layout_json = state["layout_json"]
-
-    # A naive approach: search by ID and fill "config"
-    def assign_config(obj, comp_id, config_data):
-        if isinstance(obj, dict):
-            if "id" in obj and obj["id"] == comp_id:
-                obj["config"] = config_data
-            else:
-                for v in obj.values():
-                    assign_config(v, comp_id, config_data)
-        elif isinstance(obj, list):
-            for v in obj:
-                assign_config(v, comp_id, config_data)
-
-    # Iterate over parallel results
-    for r in results:
-        comp_id = r["component_id"]
-        config_data = r["config"]
-        assign_config(layout_json, comp_id, config_data)
-
-    return {"layout_json": layout_json}
-
-builder.add_collector("generate_component_content", collect_component_configs,
-                      next_step="identify_and_unify_lists")
-
-# 6) unify lists
+# 6) unify_lists => create_lists
 builder.add_node("identify_and_unify_lists", identify_and_unify_lists)
+builder.add_edge("identify_and_unify_lists", "create_lists_contents")
 
-builder.add_edge("identify_and_unify_lists", "identify_unique_lists")
+# 7) create_lists => finalize
+builder.add_node("create_lists_contents", create_lists_contents)
+builder.add_edge("create_lists_contents", "finalize_report_json")
 
-# 7) create lists in parallel
-builder.add_node("identify_unique_lists", identify_unique_lists)
-
-def parallel_list_creation(state: ReportGraphState):
-    lists_ = state.get("lists_to_create", [])
-    if not lists_:
-        return "finalize_report_json"
-    tasks = []
-    for l_ in lists_:
-        tasks.append(
-            Send(
-                "create_list_contents",
-                {
-                    "listReference": l_.get("listReference"),
-                }
-            )
-        )
-    return tasks
-
-builder.add_node("create_list_contents", create_list_contents)
-builder.add_conditional_edges("identify_unique_lists", parallel_list_creation,
-                              ["finalize_report_json"])
-
-# Suppose we then unify references in the final JSON again.
-def collect_list_contents(state: ReportGraphState, results: List[dict]):
-    """
-    Once all parallel 'create_list_contents' tasks finish, update the layout JSON
-    with the actual dimension members or other data.
-    """
-    layout_json = state["layout_json"]
-
-    # We have to find each list by "listReference" and store the members
-    def walk_and_assign(obj, list_ref, members):
-        if isinstance(obj, dict):
-            if "lists" in obj and isinstance(obj["lists"], list):
-                for l_ in obj["lists"]:
-                    if l_["listReference"] == list_ref:
-                        l_["list"] = members
-            for v in obj.values():
-                walk_and_assign(v, list_ref, members)
-        elif isinstance(obj, list):
-            for v in obj:
-                walk_and_assign(v, list_ref, members)
-
-    for r in results:
-        ref = r["listReference"]
-        members = r["members"]
-        walk_and_assign(layout_json, ref, members)
-
-    return {"layout_json": layout_json}
-
-builder.add_collector("create_list_contents", collect_list_contents,
-                      next_step="finalize_report_json")
-
-# 8) finalize
+# 8) finalize => END
 builder.add_node("finalize_report_json", finalize_report_json)
 builder.add_edge("finalize_report_json", END)
 
-# Finally, compile the graph
+# Compile the state graph
 graph = builder.compile()
-
