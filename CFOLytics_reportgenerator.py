@@ -1,13 +1,10 @@
 """
-CFOLytics_reportgenerator.py
+CFOLytics_reportgenerator_structured.py
 
 LangGraph workflow that:
-1) Takes an initial user prompt.
-2) Checks clarity via LLM.
-3) If unclear, the LLM asks a clarifying question, and we wait for the user to supply a clarification answer.
-4) Merges the user’s original prompt, the LLM’s question, and the user’s answer into one conversation stack.
-5) Re-checks instructions with the updated conversation.
-6) If now clear, proceeds to generate a layout JSON, then build component configs, unify lists, etc.
+1) Takes an initial user prompt + clarifications.
+2) Uses a JSON schema with 'with_structured_output' to strictly format
+   the layout JSON in the 'generate_layout_json' step.
 
 Requires:
 - langgraph
@@ -27,186 +24,260 @@ from langchain_openai import ChatOpenAI
 from langgraph.constants import START, END
 from langgraph.graph import StateGraph, MessagesState
 
-# ---------------------------------------------------------------------------
-# 1) LLM Setup
-# ---------------------------------------------------------------------------
-from langchain_groq import ChatGroq
-llm = ChatGroq(temperature=0, model_name="llama-3.3-70b-versatile", api_key="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")
+# ----------------------------------------------------------------------------
+# 1) Environment Variables (example placeholders)
+#    Ensure these are set in your environment or .env file as you see fit:
+# ----------------------------------------------------------------------------
+# os.environ["OPENAI_API_KEY"] = "sk-proj-..."
+# os.environ["TAVILY_API_KEY"] = "tvly-..."
+# os.environ["LANGCHAIN_TRACING_V2"] = "true"
+# os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
+# os.environ["LANGCHAIN_API_KEY"] = "lsv2_pt_..."
+# os.environ["LANGCHAIN_PROJECT"] = "TestAgent"
 
-# ---------------------------------------------------------------------------
-# 2) XML Loader (optional if you keep your prompts in .xml)
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# 2) LLM Setup
+# ----------------------------------------------------------------------------
+llm = ChatOpenAI(model="gpt-4o", temperature=0)
+
+# ----------------------------------------------------------------------------
+# 3) JSON Schema for Structured Output
+# ----------------------------------------------------------------------------
+# This dictionary mirrors the JSON schema you provided:
+REPORT_SCHEMA = {
+    "name": "financial_report_config",
+    "strict": False,
+    "schema": {
+        "type": "object",
+        "properties": {
+            "reportTitle": {"type": "string"},
+            "numberFormat": {
+                "type": "object",
+                "properties": {
+                    "currency": {"type": "string"},
+                    "scale": {"type": "string"},
+                    "decimals": {"type": "integer"}
+                },
+                "required": ["currency", "scale", "decimals"],
+                "additionalProperties": False
+            },
+            "layout": {
+                "type": "object",
+                "properties": {
+                    "gridColumns": {
+                        "type": "object",
+                        "properties": {
+                            "sm": {"type": "string"},
+                            "md": {"type": "string"},
+                            "lg": {"type": "string"}
+                        },
+                        "required": ["sm", "md", "lg"],
+                        "additionalProperties": False
+                    },
+                    "rows": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "columns": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "colSpan": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "sm": {"type": "string"},
+                                                    "md": {"type": "string"},
+                                                    "lg": {"type": "string"}
+                                                },
+                                                "required": ["sm", "md", "lg"],
+                                                "additionalProperties": False
+                                            },
+                                            "components": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {"type": "string"},
+                                                        "type": {"type": "string"},
+                                                        "title": {"type": "string"},
+                                                        "noborder": {"type": "boolean"},
+                                                        "height": {"type": "integer"},
+                                                        "numberFormat": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "scale": {"type": "string"},
+                                                                "decimals": {"type": "integer"}
+                                                            },
+                                                            "required": ["scale", "decimals"],
+                                                            "additionalProperties": False
+                                                        }
+                                                    },
+                                                    "required": ["id", "type"],
+                                                    "additionalProperties": False
+                                                }
+                                            }
+                                        },
+                                        "required": ["colSpan", "components"],
+                                        "additionalProperties": False
+                                    }
+                                }
+                            },
+                            "required": ["columns"],
+                            "additionalProperties": False
+                        }
+                    }
+                },
+                "required": ["gridColumns", "rows"],
+                "additionalProperties": False
+            }
+        },
+        "required": ["reportTitle", "numberFormat", "layout"],
+        "additionalProperties": False
+    }
+}
+
+# ----------------------------------------------------------------------------
+# 4) XML Loader (optional)
+# ----------------------------------------------------------------------------
 def load_xml_instructions(filename: str) -> str:
     """
     Load system instructions from an XML file, if you keep them separate.
-    Adjust to your actual file structure. If you don't use XML files, you
-    can replace this with a simple string variable in your code.
+    Adjust to your actual file structure.
     """
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, "XML_instructions", filename)
     with open(file_path, "r", encoding="utf-8") as f:
         return f.read()
 
-# ---------------------------------------------------------------------------
-# 3) State Definition
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# 5) State Definition
+# ----------------------------------------------------------------------------
 class FinalReportState(TypedDict):
     """
     Holds data throughout our report-generation process.
     """
-    instructions_clear: bool          # Whether instructions are considered clear
-    layout_json: dict                 # Generated layout JSON
-    final_json: dict                  # The final JSON with component configs + list data
+    instructions_clear: bool
+    layout_json: dict
+    final_json: dict
 
 class ReportGraphState(MessagesState, FinalReportState):
     """
-    Merges the 'MessagesState' (which holds a conversation) with our custom fields.
-    'messages' is a list of AIMessage/HumanMessage/SystemMessage from langchain_core.
+    Merge 'MessagesState' (which holds a conversation) with custom fields.
+    'messages' is a list of AIMessage/HumanMessage/SystemMessage.
     """
     pass
 
-# ---------------------------------------------------------------------------
-# 4) verify_instructions node
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# 6) verify_instructions Node
+# ----------------------------------------------------------------------------
 def verify_instructions(state: ReportGraphState):
     """
-    Check if the conversation so far implies the instructions are clear or need clarification.
-    We'll load instructions from 'verify_instructions.xml', though you can embed directly.
+    Checks if the conversation's instructions are clear.
+    Uses 'verify_instructions.xml' for the system instructions.
     """
     system_instructions = load_xml_instructions("verify_instructions.xml")
-
-    # We pass the entire conversation plus a system message with instructions on checking clarity.
     system_msg = SystemMessage(content=system_instructions)
 
-    # 'state["messages"]' has the user prompt (and possibly any clarifications so far).
-    # We'll just call the LLM with [system_msg] + the existing conversation.
-    # Because 'messages' might already have user + AI messages, we append them in order.
+    # We pass the entire conversation to the LLM
     conversation = [system_msg] + state["messages"]
 
     result = llm.invoke(conversation)
     text = result.content.lower()
 
-    # We'll store the LLM's output as an AIMessage in the conversation, if you like.
-    # But for clarity, let's skip that or store it if you want to see it:
+    # Optionally store the response in the conversation for debugging
     state["messages"].append(AIMessage(content=result.content, name="system-check"))
 
-    # Basic parse: if it contains "not clear" or "unclear", we set instructions_clear=False
     if "not clear" in text or "unclear" in text:
         return {"instructions_clear": False}
     return {"instructions_clear": True}
 
-
-# ---------------------------------------------------------------------------
-# 5) ask_clarification node
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# 7) ask_clarification Node
+# ----------------------------------------------------------------------------
 def ask_clarification(state: ReportGraphState):
     """
-    If instructions are unclear, ask the user a clarifying question. This question
-    is generated by the LLM. Then we store that question in the conversation as an AIMessage.
-    The conversation is updated accordingly.
-
-    Next step: we route to 'await_clarification_answer' node, which interrupts
-    so the user can provide their clarifying answer.
+    If instructions are unclear, we generate a clarifying question.
+    The question is appended as an AIMessage.
+    Next step: 'await_clarification_answer' so user can respond.
     """
-    # We load system instructions from 'clarification_prompt.xml'.
     system_instructions = load_xml_instructions("clarification_prompt.xml")
     system_msg = SystemMessage(content=system_instructions)
-
-    # We'll pass the entire conversation to help the LLM formulate
-    # a question relevant to the existing user prompt.
     conversation = [system_msg] + state["messages"]
-    result = llm.invoke(conversation)
 
-    # We'll store the question as an AIMessage in the conversation
+    result = llm.invoke(conversation)
     clarification_question = AIMessage(content=result.content, name="clarification_question")
     state["messages"].append(clarification_question)
 
-    # Return that question text if you want to display it in the UI, but not required:
     return {"clarification_question": result.content}
 
-
-# ---------------------------------------------------------------------------
-# 6) await_clarification_answer node
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# 8) await_clarification_answer Node
+# ----------------------------------------------------------------------------
 def await_clarification_answer(state: ReportGraphState):
     """
-    This node is a 'human interruption' node. The idea is that we WAIT for the user
-    to answer the question we just asked. The user enters a text answer in LangGraph Studio
-    or your app, which is assigned to e.g. state["clarification_answer"].
-
-    Then we convert that user input into a HumanMessage and append to the conversation.
+    This node interrupts, waiting for the user to supply state["clarification_answer"].
+    That answer is appended as a HumanMessage, then we return to verify_instructions.
     """
-    # If the user hasn't provided an answer yet, we interrupt so they can do so.
-    # In the final usage, you'd set: graph = builder.compile(interrupt_before=["await_clarification_answer"])
-    # so that the user can type in their answer in the UI.
-
-    # We'll check if the user has provided an answer in the state:
+    # If the user hasn't provided a clarification answer, we do nothing -> wait.
     if "clarification_answer" not in state or not state["clarification_answer"]:
-        # No answer yet. The system should stop so the user can input one.
-        # Return an empty dict or a prompt for the UI.
         return {}
     else:
-        # We have a user answer. Let's store it in the conversation as a HumanMessage.
+        # The user has typed their clarification. Append it to messages.
         user_answer = state["clarification_answer"]
         state["messages"].append(HumanMessage(content=user_answer, name="user-clarification"))
-        # Now we have the entire stack: original prompt, LLM question, user answer.
-        # Next, we go back to verify_instructions to see if it's now "clear."
         return {}
 
-
-# ---------------------------------------------------------------------------
-# 7) generate_layout_json node
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# 9) generate_layout_json Node (With Structured Output)
+# ----------------------------------------------------------------------------
 def generate_layout_json(state: ReportGraphState):
     """
-    Uses the entire conversation (original prompt + any clarifications) to generate
-    the layout JSON. We'll read instructions from 'render_layout.xml' and pass in the conversation.
+    Generates the layout JSON. We use 'with_structured_output(json_schema=REPORT_SCHEMA)'
+    so the LLM must adhere to the specified schema. That ensures we get a valid object.
     """
     system_instructions = load_xml_instructions("render_layout.xml")
     system_msg = SystemMessage(content=system_instructions)
-
-    # Pass full conversation:
     conversation = [system_msg] + state["messages"]
-    result = llm.invoke(conversation, json_mode=True)
 
-    try:
-        layout_dict = json.loads(result.content)
-    except json.JSONDecodeError:
-        layout_dict = {
-            "error": "Could not parse LLM output as JSON",
-            "raw_llm_output": result.content
-        }
+    # The 'with_structured_output' ensures the LLM's output is validated.
+    structured_llm = llm.with_structured_output(json_schema=REPORT_SCHEMA)
 
-    return {"layout_json": layout_dict}
+    # Invoke
+    structured_output = structured_llm.invoke(conversation)
+    # 'structured_output' should be a Python dictionary conforming to the schema.
+    # Or it could be a typed object in some cases. We'll assume it's a dict here.
 
+    # We store it in layout_json
+    return {"layout_json": structured_output}
 
-# ---------------------------------------------------------------------------
-# 8) user_confirm_layout node
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# 10) user_confirm_layout Node
+# ----------------------------------------------------------------------------
 def user_confirm_layout(state: ReportGraphState):
     """
-    Normally you'd let the user confirm or reject the layout. Here, we assume OK.
-    If you want an actual user check, you'd do the same approach as with clarifications:
-    - store user response, wait for it, etc.
+    Let the user confirm or reject the layout. For example, we always proceed here.
     """
     return {"layout_ok": True}
 
+def layout_confirmation_router(state: ReportGraphState):
+    return "generate_components_config" if state.get("layout_ok") else "generate_layout_json"
 
-# ---------------------------------------------------------------------------
-# 9) generate_components_config node (sequential)
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# 11) generate_components_config Node
+# ----------------------------------------------------------------------------
 def generate_components_config(state: ReportGraphState):
     """
-    Iterates over all components in the layout JSON and uses an LLM to generate configs,
-    referencing 'component_content_gen.xml'. We pass only the relevant "AI Generation Description"
-    from each component as the user message. The rest of the conversation might or might not
-    be included, depending on how much context you want.
+    Iterates over all 'components' in the layout, calling an LLM prompt (if desired)
+    to fill additional config. We'll skip the structured approach here, though you can
+    do the same if you have a sub-schema for components.
     """
     layout_json = state.get("layout_json", {})
-    if "error" in layout_json:
+    if not isinstance(layout_json, dict):
         return {}
 
-    # Find all components
+    # Find components
     components = []
     def find_components(obj):
         if isinstance(obj, dict):
@@ -221,108 +292,64 @@ def generate_components_config(state: ReportGraphState):
 
     find_components(layout_json)
 
-    comp_instructions = load_xml_instructions("component_content_gen.xml")
-
-    def update_config(obj, comp_id, new_config):
-        if isinstance(obj, dict):
-            if obj.get("id") == comp_id:
-                obj["config"] = new_config
-            else:
-                for v in obj.values():
-                    update_config(v, comp_id, new_config)
-        elif isinstance(obj, list):
-            for v in obj:
-                update_config(v, comp_id, new_config)
-
+    # If you want to refine each component:
+    component_instructions = load_xml_instructions("component_content_gen.xml")
     for comp in components:
         desc = comp.get("AI Generation Description", "")
-        system_msg = SystemMessage(content=comp_instructions)
-        user_msg = HumanMessage(content=desc)
-
-        # Possibly we want the entire conversation in context, 
-        # but let's keep it minimal for this step:
-        result = llm.invoke([system_msg, user_msg], json_mode=True)
-        try:
-            config_dict = json.loads(result.content)
-        except json.JSONDecodeError:
-            config_dict = {"error": "Invalid JSON from LLM", "raw": result.content}
-
-        update_config(layout_json, comp.get("id"), config_dict)
+        if desc:
+            system_msg = SystemMessage(content=component_instructions)
+            user_msg = HumanMessage(content=desc)
+            result = llm.invoke([system_msg, user_msg])
+            try:
+                config_dict = json.loads(result.content)
+                # Insert config into 'comp' or do what you want here
+                comp["autoGeneratedConfig"] = config_dict
+            except json.JSONDecodeError:
+                comp["autoGeneratedConfig"] = {"error": "Invalid JSON from LLM"}
 
     return {"layout_json": layout_json}
 
-
-# ---------------------------------------------------------------------------
-# 10) identify_and_unify_lists node
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# 12) identify_and_unify_lists Node
+# ----------------------------------------------------------------------------
 def identify_and_unify_lists(state: ReportGraphState):
     """
-    Placeholder for list unification logic. 
-    If you want to do LLM-based unification, you can load 'list_unification.xml'.
+    Placeholder for unifying repeated lists. You can do an LLM approach or
+    an algorithmic approach. We'll do nothing.
     """
     layout_json = state["layout_json"]
     return {"layout_json": layout_json}
 
-
-# ---------------------------------------------------------------------------
-# 11) create_lists_contents node
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# 13) create_lists_contents Node
+# ----------------------------------------------------------------------------
 def create_lists_contents(state: ReportGraphState):
     """
-    Finds all lists in the updated layout JSON and populates them.
-    E.g., hooking into dimension queries.  We'll just hardcode some members.
+    Suppose we fill dimension lists from a backend. We'll just hardcode some data.
     """
     layout_json = state["layout_json"]
-    lists_found = []
-
-    def walk_for_lists(obj):
-        if isinstance(obj, dict):
-            if "lists" in obj and isinstance(obj["lists"], list):
-                for l_ in obj["lists"]:
-                    lists_found.append(l_)
-            for v in obj.values():
-                walk_for_lists(v)
-        elif isinstance(obj, list):
-            for v in obj:
-                walk_for_lists(v)
-
-    walk_for_lists(layout_json)
-
-    # Hard-code the members
-    for l_ in lists_found:
-        l_["list"] = ["Jan", "Feb", "Mar"]
-        l_["AI Generation Description"] = "Populated with 3 months as example."
-
+    # If needed, traverse and fill "list": [...]
     return {"layout_json": layout_json}
 
-
-# ---------------------------------------------------------------------------
-# 12) finalize_report_json node
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# 14) finalize_report_json Node
+# ----------------------------------------------------------------------------
 def finalize_report_json(state: ReportGraphState):
-    """
-    Copy layout_json into final_json
-    """
     layout_json = state["layout_json"]
     return {"final_json": layout_json}
 
-
-# ---------------------------------------------------------------------------
-# 13) Build the Graph
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# 15) Build the Graph
+# ----------------------------------------------------------------------------
 builder = StateGraph(ReportGraphState)
 
-# START -> verify_instructions
+# Step 1: START -> verify_instructions
 builder.add_node("verify_instructions", verify_instructions)
 builder.add_edge(START, "verify_instructions")
 
-# If instructions are clear => generate_layout_json
-# If not => ask_clarification
+# Step 2: instructions_decider
 def instructions_decider(state: ReportGraphState):
-    if state["instructions_clear"]:
-        return "generate_layout_json"
-    else:
-        return "ask_clarification"
+    return "generate_layout_json" if state["instructions_clear"] else "ask_clarification"
 
 builder.add_conditional_edges(
     "verify_instructions",
@@ -330,28 +357,19 @@ builder.add_conditional_edges(
     ["generate_layout_json", "ask_clarification"]
 )
 
-# ask_clarification -> await_clarification_answer -> verify_instructions
+# Step 3: ask_clarification -> await_clarification_answer -> verify_instructions
 builder.add_node("ask_clarification", ask_clarification)
 builder.add_node("await_clarification_answer", await_clarification_answer)
 
-# ask_clarification goes to "await_clarification_answer"
 builder.add_edge("ask_clarification", "await_clarification_answer")
-
-# after user provides answer, we go back to verify_instructions
 builder.add_edge("await_clarification_answer", "verify_instructions")
 
-# generate_layout_json => user_confirm_layout
+# Step 4: generate_layout_json -> user_confirm_layout
 builder.add_node("generate_layout_json", generate_layout_json)
 builder.add_edge("generate_layout_json", "user_confirm_layout")
 
-# user_confirm_layout => (if layout_ok) generate_components_config else go back to generate_layout_json
+# Step 5: user_confirm_layout -> generate_components_config or back to generate_layout_json
 builder.add_node("user_confirm_layout", user_confirm_layout)
-
-def layout_confirmation_router(state: ReportGraphState):
-    if state.get("layout_ok"):
-        return "generate_components_config"
-    else:
-        return "generate_layout_json"
 
 builder.add_conditional_edges(
     "user_confirm_layout",
@@ -359,23 +377,23 @@ builder.add_conditional_edges(
     ["generate_components_config", "generate_layout_json"]
 )
 
-# generate_components_config => identify_and_unify_lists
+# Step 6: generate_components_config -> identify_and_unify_lists
 builder.add_node("generate_components_config", generate_components_config)
 builder.add_edge("generate_components_config", "identify_and_unify_lists")
 
-# identify_and_unify_lists => create_lists_contents
+# Step 7: identify_and_unify_lists -> create_lists_contents
 builder.add_node("identify_and_unify_lists", identify_and_unify_lists)
 builder.add_edge("identify_and_unify_lists", "create_lists_contents")
 
-# create_lists_contents => finalize_report_json => END
+# Step 8: create_lists_contents -> finalize_report_json -> END
 builder.add_node("create_lists_contents", create_lists_contents)
 builder.add_edge("create_lists_contents", "finalize_report_json")
 
 builder.add_node("finalize_report_json", finalize_report_json)
 builder.add_edge("finalize_report_json", END)
 
+# Compile the graph
 graph = builder.compile(
-    # We want to interrupt so user can provide a "clarification_answer" 
-    # at the "await_clarification_answer" node in the UI:
+    # Interrupt so the user can type in a "clarification_answer" at 'await_clarification_answer'
     interrupt_before=["await_clarification_answer"]
 )
