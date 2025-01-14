@@ -166,7 +166,7 @@ def generate_layout_json(state: ReportGraphState):
 
     # Pass full conversation:
     conversation = [system_msg] + state["messages"]
-    result = llm.invoke(conversation)
+    result = llm.invoke(conversation, json_mode=True)
 
     try:
         layout_dict = json.loads(result.content)
@@ -240,7 +240,7 @@ def generate_components_config(state: ReportGraphState):
 
         # Possibly we want the entire conversation in context, 
         # but let's keep it minimal for this step:
-        result = llm.invoke([system_msg, user_msg])
+        result = llm.invoke([system_msg, user_msg], json_mode=True)
         try:
             config_dict = json.loads(result.content)
         except json.JSONDecodeError:
