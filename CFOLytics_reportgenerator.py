@@ -157,27 +157,43 @@ def await_clarification_answer(state: ReportGraphState):
 # ---------------------------------------------------------------------------
 # 7) generate_layout_json node
 # ---------------------------------------------------------------------------
+import re
+import json
+
 def generate_layout_json(state: ReportGraphState):
     """
-    Uses the entire conversation (original prompt + any clarifications) to generate
-    the layout JSON. We'll read instructions from 'render_layout.xml' and pass in the conversation.
+    Generate the layout JSON from the LLM output.
+    Strips unwanted text and validates the JSON.
     """
     system_instructions = load_xml_instructions("render_layout.xml")
     system_msg = SystemMessage(content=system_instructions)
 
-    # Pass full conversation:
+    # Full conversation
     conversation = [system_msg] + state["messages"]
     result = llm.invoke(conversation)
 
+    # Extract raw output
+    raw_output = result.content
+
+    # Clean up and extract JSON using regex
     try:
-        layout_dict = json.loads(result.content)
-    except json.JSONDecodeError:
+        # Match the first JSON-like structure
+        json_match = re.search(r"\{.*\}", raw_output, re.DOTALL)
+        if json_match:
+            json_string = json_match.group(0)
+            layout_dict = json.loads(json_string)  # Parse as JSON
+        else:
+            raise ValueError("No valid JSON object found in LLM output")
+    except (json.JSONDecodeError, ValueError) as e:
+        # Return the raw output with an error for debugging
         layout_dict = {
             "error": "Could not parse LLM output as JSON",
-            "raw_llm_output": result.content
+            "raw_llm_output": raw_output,
+            "exception": str(e)
         }
 
     return {"layout_json": layout_dict}
+
 
 
 # ---------------------------------------------------------------------------
