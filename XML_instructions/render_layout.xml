@@ -248,8 +248,8 @@
 		</template1>
 	</examples>
   <jsonSchema>
-      Only output JSON that matches this schema
-      <![CDATA[{
+      Only output JSON that matches this schema, do not wrap the output with anything like ```json or anything else
+<![CDATA[{
   "name": "financial_report_config",
   "strict": false,
   "schema": {
