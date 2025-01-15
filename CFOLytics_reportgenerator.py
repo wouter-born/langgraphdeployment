@@ -41,7 +41,7 @@ from langchain_groq import ChatGroq
 llm = ChatGroq(
     temperature=0,
     model_name="llama-3.3-70b-specdec",
-    api_key="gsk_..."
+    api_key="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"
 )
 
 def load_xml_instructions(filename: str) -> str:
