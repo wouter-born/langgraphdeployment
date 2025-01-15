@@ -247,4 +247,165 @@
 			</output>
 		</template1>
 	</examples>
+  <jsonSchema>
+      Only output JSON that matches this schema
+      <![CDATA[{
+  "name": "financial_report_config",
+  "strict": false,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "reportTitle": {
+        "type": "string"
+      },
+      "numberFormat": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string"
+          },
+          "scale": {
+            "type": "string"
+          },
+          "decimals": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "currency",
+          "scale",
+          "decimals"
+        ],
+        "additionalProperties": false
+      },
+      "layout": {
+        "type": "object",
+        "properties": {
+          "gridColumns": {
+            "type": "object",
+            "properties": {
+              "sm": {
+                "type": "string"
+              },
+              "md": {
+                "type": "string"
+              },
+              "lg": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "additionalProperties": false
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "columns": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "colSpan": {
+                        "type": "object",
+                        "properties": {
+                          "sm": {
+                            "type": "string"
+                          },
+                          "md": {
+                            "type": "string"
+                          },
+                          "lg": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "sm",
+                          "md",
+                          "lg"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "components": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "type": {
+                              "type": "string"
+                            },
+                            "title": {
+                              "type": "string"
+                            },
+                            "noborder": {
+                              "type": "boolean"
+                            },
+                            "height": {
+                              "type": "integer"
+                            },
+                            "numberFormat": {
+                              "type": "object",
+                              "properties": {
+                                "scale": {
+                                  "type": "string"
+                                },
+                                "decimals": {
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "scale",
+                                "decimals"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "type"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": [
+                      "colSpan",
+                      "components"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "columns"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "gridColumns",
+          "rows"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "reportTitle",
+      "numberFormat",
+      "layout"
+    ],
+    "additionalProperties": false
+  }
+}]]>
+    
+  </jsonSchema>
 </task>
