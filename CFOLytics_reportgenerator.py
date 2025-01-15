@@ -120,42 +120,22 @@ def ask_clarification(state: ReportGraphState):
 # 3) get_user_clarification
 # -----------------------------------------------------------------------------
 def get_user_clarification(state: ReportGraphState):
-    """
-    We attempt to read the user's next reply from the conversation.
-    If the user hasn't responded yet, we keep asking (the same node).
-    If the user responded, we proceed.
-    
-    In practice, you'd re-run from this node after the user sends a new message
-    containing clarifications. We check the last message in the conversation to see
-    if it is from the user and posted AFTER the AI’s question.
-    """
-    # 1) We find the last AI message that was "clarification_question" (if any).
-    # 2) Then we look for the next user message. If found, we conclude the user clarified.
-
-    # We'll just check if the last message in the conversation is from a user
-    # posted after the last clarifying question from the AI. 
-    # If yes, we assume that's the clarification answer.
-    
-    # find the last AI clarifying question index
     idx_question = None
     for i, msg in reversed(list(enumerate(state["messages"]))):
         if isinstance(msg, AIMessage) and msg.name == "clarification_question":
             idx_question = i
             break
     if idx_question is None:
-        # No clarifying question was asked; proceed anyway
         return {}
 
-    # Now see if there's a user message after that index
     for j in range(idx_question+1, len(state["messages"])):
         msg = state["messages"][j]
         if isinstance(msg, HumanMessage):
-            # Found user’s answer
+            # User responded, proceed to next node
             return {}
-    
-    # If we get here, we haven't found a user answer
-    # We'll remain in this node so the user can post a new message
-    return {}  # The user needs to provide one more message
+
+    # Remain in this node until the user responds
+    return None  # Signal to remain in the current node
 
 
 # -----------------------------------------------------------------------------
@@ -422,12 +402,10 @@ builder.add_edge("generate_layout_json", "ask_if_layout_ok")
 builder.add_edge("ask_if_layout_ok", "check_layout_confirmation")
 
 def layout_ok_decider(state: ReportGraphState):
-    # If layout_ok is True => generate_components_config
-    # If layout_ok is False => go back to generate_layout_json
-    # If neither is set => remain in check_layout_confirmation node
     if "layout_ok" not in state:
-        return None  # Remain in node
+        return None  # Stay in the current node
     return "generate_components_config" if state["layout_ok"] else "generate_layout_json"
+
 
 builder.add_conditional_edges(
     "check_layout_confirmation",
