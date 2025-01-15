@@ -1,22 +1,22 @@
 """
-CFOLytics_reportgenerator.py
+CFOLytics_reportgenerator_no_manual_fields.py
 
-Revised LangGraph workflow that:
-1) Takes an initial user prompt.
-2) Checks clarity via LLM.
-3) If unclear, LLM asks a clarifying question → user answers → appended to conversation.
-4) Re-checks instructions with updated conversation.
-5) If clear, proceeds to generate a layout JSON using the entire conversation.
-6) Pauses at layout confirmation (interrupt) to let the user confirm or reject.
-7) Iterates over each component, passing the entire conversation plus the
-   "AI Generation Description" for that component to the LLM to generate config JSON.
-8) Unifies lists if needed, populates them, and finalizes the JSON.
+LangGraph workflow that:
+1) Takes an initial user prompt in the conversation (state["messages"]).
+2) Checks clarity using LLM instructions from 'verify_instructions.xml'.
+3) If unclear, LLM asks clarifying question -> user responds in the conversation -> we parse user’s new message -> re-check clarity.
+4) If clear, LLM generates a layout (render_layout.xml).
+5) LLM then asks user “Is this layout okay?” -> user answers in conversation -> we parse yes/no from the conversation -> if no, regenerate, if yes, proceed.
+6) Generate components, unify lists, finalize JSON.
+
+No need for manually adding `clarification_answer` or `layout_confirm` to the state. The conversation itself is the source of truth.
 
 Requires:
 - langgraph
 - langchain-core
 - langchain-community
-- langchain-openai (or your custom classes)
+- langchain-openai
+- Your custom ChatGroq, or whichever LLM wrapper you use
 """
 
 import os
@@ -26,84 +26,82 @@ from typing import List
 from typing_extensions import TypedDict
 
 # LangChain / LangGraph
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_core.messages import (
+    AIMessage, 
+    HumanMessage,
+    SystemMessage,
+    BaseMessage
+)
 from langchain_openai import ChatOpenAI
 from langgraph.constants import START, END
 from langgraph.graph import StateGraph, MessagesState
 
-# ---------------------------------------------------------------------------
-# 1) LLM Setup
-# ---------------------------------------------------------------------------
-# Using your custom ChatGroq per your snippet
+# Example: your custom ChatGroq usage
 from langchain_groq import ChatGroq
 llm = ChatGroq(
     temperature=0,
     model_name="llama-3.3-70b-specdec",
-    api_key="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"
+    api_key="gsk_..."
 )
 
-# ---------------------------------------------------------------------------
-# 2) XML Loader
-# ---------------------------------------------------------------------------
 def load_xml_instructions(filename: str) -> str:
     """
-    Load system instructions from an XML file in a "XML_instructions" folder.
-    Adjust if you store them differently or embed them directly.
+    Load system instructions from 'XML_instructions/filename' if you keep them externally.
+    Otherwise, just inline your prompts as strings.
     """
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, "XML_instructions", filename)
     with open(file_path, "r", encoding="utf-8") as f:
         return f.read()
 
-# ---------------------------------------------------------------------------
-# 3) State Definition
-# ---------------------------------------------------------------------------
 class FinalReportState(TypedDict):
     """
-    Holds data throughout the report-generation process.
+    Our final JSON structures and clarity status.
     """
-    instructions_clear: bool          # Whether instructions are considered clear
-    layout_json: dict                 # Generated layout JSON
-    final_json: dict                  # The final JSON after content generation
+    instructions_clear: bool
+    layout_json: dict
+    final_json: dict
 
 class ReportGraphState(MessagesState, FinalReportState):
     """
-    Extends the base MessagesState (which holds a conversation list)
-    with our custom keys for instructions clarity, layout JSON, etc.
+    Merges the base conversation messages plus our custom fields.
+    'messages' is a list of SystemMessage, HumanMessage, or AIMessage.
     """
     pass
 
-# ---------------------------------------------------------------------------
-# 4) verify_instructions node
-# ---------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# 1) verify_instructions
+# -----------------------------------------------------------------------------
+
 def verify_instructions(state: ReportGraphState):
     """
-    Checks the conversation so far to see if instructions are clear or need clarification.
-    Uses instructions from 'verify_instructions.xml'.
-    Appends the LLM's 'check' output as an AIMessage to state["messages"].
+    Node checks if the conversation so far implies the instructions are clear or not.
+    We load instructions from 'verify_instructions.xml'.
+    - LLM appends a final line "clear" or "not clear" or "unclear" which we parse.
+    - We store the LLM output in the conversation.
     """
     system_instructions = load_xml_instructions("verify_instructions.xml")
     system_msg = SystemMessage(content=system_instructions)
 
+    # We pass the entire conversation plus the system instructions.
     conversation = [system_msg] + state["messages"]
     result = llm.invoke(conversation)
 
-    # Store the result in the conversation
-    state["messages"].append(AIMessage(content=result.content, name="system-check"))
-
+    # Store the LLM's analysis as an AIMessage
+    state["messages"].append(AIMessage(content=result.content, name="clarity-check"))
+    
     text_lower = result.content.lower()
     if "not clear" in text_lower or "unclear" in text_lower:
         return {"instructions_clear": False}
     return {"instructions_clear": True}
 
-# ---------------------------------------------------------------------------
-# 5) ask_clarification node
-# ---------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# 2) ask_clarification
+# -----------------------------------------------------------------------------
 def ask_clarification(state: ReportGraphState):
     """
-    If instructions are unclear, ask a clarifying question (via LLM).
-    Appends that question as an AIMessage.
-    Next step is 'await_clarification_answer' (interrupt) so user can reply.
+    LLM asks the user clarifying questions. We store that question in the conversation.
     """
     system_instructions = load_xml_instructions("clarification_prompt.xml")
     system_msg = SystemMessage(content=system_instructions)
@@ -111,45 +109,75 @@ def ask_clarification(state: ReportGraphState):
     conversation = [system_msg] + state["messages"]
     result = llm.invoke(conversation)
 
-    clarification_q = AIMessage(content=result.content, name="clarification_question")
-    state["messages"].append(clarification_q)
+    # Append the AI’s clarifying question
+    question_msg = AIMessage(content=result.content, name="clarification_question")
+    state["messages"].append(question_msg)
 
-    return {"clarification_question": result.content}
+    return {}  # No direct state changes, just updated conversation
 
-# ---------------------------------------------------------------------------
-# 6) await_clarification_answer node
-# ---------------------------------------------------------------------------
-def await_clarification_answer(state: ReportGraphState):
+
+# -----------------------------------------------------------------------------
+# 3) get_user_clarification
+# -----------------------------------------------------------------------------
+def get_user_clarification(state: ReportGraphState):
     """
-    Interrupt node. The user must set 'clarification_answer' in the UI before continuing.
-    We then append that to the conversation as a HumanMessage.
+    We attempt to read the user's next reply from the conversation.
+    If the user hasn't responded yet, we keep asking (the same node).
+    If the user responded, we proceed.
+    
+    In practice, you'd re-run from this node after the user sends a new message
+    containing clarifications. We check the last message in the conversation to see
+    if it is from the user and posted AFTER the AI’s question.
     """
-    # If user hasn't provided an answer, do nothing so the flow stops here
-    if "clarification_answer" not in state or not state["clarification_answer"]:
+    # 1) We find the last AI message that was "clarification_question" (if any).
+    # 2) Then we look for the next user message. If found, we conclude the user clarified.
+
+    # We'll just check if the last message in the conversation is from a user
+    # posted after the last clarifying question from the AI. 
+    # If yes, we assume that's the clarification answer.
+    
+    # find the last AI clarifying question index
+    idx_question = None
+    for i, msg in reversed(list(enumerate(state["messages"]))):
+        if isinstance(msg, AIMessage) and msg.name == "clarification_question":
+            idx_question = i
+            break
+    if idx_question is None:
+        # No clarifying question was asked; proceed anyway
         return {}
-    # Otherwise, we have a user response
-    user_answer = state["clarification_answer"]
-    state["messages"].append(HumanMessage(content=user_answer, name="user-clarification"))
-    return {}
 
-# ---------------------------------------------------------------------------
-# 7) generate_layout_json node
-# ---------------------------------------------------------------------------
+    # Now see if there's a user message after that index
+    for j in range(idx_question+1, len(state["messages"])):
+        msg = state["messages"][j]
+        if isinstance(msg, HumanMessage):
+            # Found user’s answer
+            return {}
+    
+    # If we get here, we haven't found a user answer
+    # We'll remain in this node so the user can post a new message
+    return {}  # The user needs to provide one more message
+
+
+# -----------------------------------------------------------------------------
+# 4) generate_layout_json
+# -----------------------------------------------------------------------------
 def generate_layout_json(state: ReportGraphState):
     """
-    Uses the entire conversation to produce a JSON layout.
-    Loads 'render_layout.xml' as system instructions.
-    Attempts to parse the LLM's response for JSON via regex or direct parse.
+    We assume instructions are now clear. 
+    Use 'render_layout.xml' as system instructions, plus the entire conversation.
+    Then parse out a JSON layout from the LLM output.
     """
     system_instructions = load_xml_instructions("render_layout.xml")
     system_msg = SystemMessage(content=system_instructions)
 
     conversation = [system_msg] + state["messages"]
     result = llm.invoke(conversation)
-    raw_output = result.content.strip()
+    raw_output = result.content
 
-    # Attempt to parse JSON from the output
-    # We look for a { ... } block
+    # Store the AI’s layout as a message for transparency
+    state["messages"].append(AIMessage(content=raw_output, name="layout-draft"))
+
+    # Attempt to parse JSON
     match = re.search(r"\{.*\}", raw_output, re.DOTALL)
     if match:
         try:
@@ -168,230 +196,257 @@ def generate_layout_json(state: ReportGraphState):
 
     return {"layout_json": layout_dict}
 
-# ---------------------------------------------------------------------------
-# 8) user_confirm_layout node
-# ---------------------------------------------------------------------------
-def user_confirm_layout(state: ReportGraphState):
-    """
-    Pauses so the user can confirm the generated layout. 
-    We'll read 'layout_confirm' from the state:
-      - If user sets state["layout_confirm"] = "yes", proceed.
-      - If user sets state["layout_confirm"] = "no", we go back to generate_layout_json.
-    """
-    # If user hasn't set layout_confirm in the UI, we pause.
-    if "layout_confirm" not in state or not state["layout_confirm"]:
-        return {}
-    else:
-        # Return "layout_ok" based on user input
-        layout_confirm = state["layout_confirm"].lower()
-        if layout_confirm == "yes":
-            return {"layout_ok": True}
-        else:
-            return {"layout_ok": False}
 
-# ---------------------------------------------------------------------------
-# 9) generate_components_config node
-# ---------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# 5) ask_if_layout_ok
+# -----------------------------------------------------------------------------
+def ask_if_layout_ok(state: ReportGraphState):
+    """
+    The system/AI asks the user: "Is this layout okay? If not, type 'No' or mention changes."
+    We'll store that in the conversation as an AIMessage. Then the next node checks user’s answer.
+    """
+    # We can simply produce a short system/AI message that says “Here is the layout. Are you OK with this?”
+    # Or we can load from an XML if you want more instructions.
+
+    prompt = (
+        "Below is the current layout JSON I've generated.\n\n"
+        f"{json.dumps(state['layout_json'], indent=2)}\n\n"
+        "Are you satisfied with this layout? Please answer 'Yes' if it's good, or 'No' plus any changes you'd like."
+    )
+    ai_msg = AIMessage(content=prompt, name="layout-confirmation-question")
+    state["messages"].append(ai_msg)
+    return {}
+
+
+# -----------------------------------------------------------------------------
+# 6) check_layout_confirmation
+# -----------------------------------------------------------------------------
+def check_layout_confirmation(state: ReportGraphState):
+    """
+    We look for the user's next message after the "layout-confirmation-question".
+    If we see "Yes," we proceed. If "No," we revert to re-generate_layout_json.
+    If no user response is found, we remain here waiting.
+    """
+    # find last AI layout-confirmation-question
+    idx_question = None
+    for i, msg in reversed(list(enumerate(state["messages"]))):
+        if isinstance(msg, AIMessage) and msg.name == "layout-confirmation-question":
+            idx_question = i
+            break
+    if idx_question is None:
+        # No question was asked? Just proceed
+        return {"layout_ok": True}
+    
+    # see if there's a user message after idx_question
+    user_answer_msg = None
+    for j in range(idx_question+1, len(state["messages"])):
+        msg = state["messages"][j]
+        if isinstance(msg, HumanMessage):
+            user_answer_msg = msg
+            break
+
+    if not user_answer_msg:
+        # No answer yet, remain in this node
+        return {}
+
+    # parse user message
+    content_lower = user_answer_msg.content.lower().strip()
+    if content_lower.startswith("yes"):
+        # layout OK
+        return {"layout_ok": True}
+    else:
+        # user said "No" or "No plus changes"
+        return {"layout_ok": False}
+
+
+# -----------------------------------------------------------------------------
+# 7) generate_components_config
+# -----------------------------------------------------------------------------
 def generate_components_config(state: ReportGraphState):
     """
-    Iterates over all components in layout_json, calls LLM to produce config.
-    We pass the entire conversation (for context) + the component's "AI Generation Description"
-    if present. That helps avoid the "you haven't provided instructions" fallback.
+    Iterates over each component in layout_json, uses 'component_content_gen.xml'
+    plus the conversation to produce config. 
+    Stores the final config in layout_json.
     """
     layout_json = state.get("layout_json", {})
     if not layout_json or "error" in layout_json:
         return {}
 
-    # Gather all components
+    # find components
     components = []
-    def find_components(obj):
+    def walk(obj):
         if isinstance(obj, dict):
             if "components" in obj and isinstance(obj["components"], list):
                 for c in obj["components"]:
                     components.append(c)
             for v in obj.values():
-                find_components(v)
+                walk(v)
         elif isinstance(obj, list):
             for v in obj:
-                find_components(v)
-    find_components(layout_json)
+                walk(v)
+    walk(layout_json)
 
-    # We'll load instructions once outside the loop
-    system_instructions = load_xml_instructions("component_content_gen.xml")
-    system_msg = SystemMessage(content=system_instructions)
+    comp_instructions = load_xml_instructions("component_content_gen.xml")
+    system_msg = SystemMessage(content=comp_instructions)
 
-    def update_config(obj, comp_id, new_config):
+    def set_config(obj, comp_id, new_config):
         if isinstance(obj, dict):
             if obj.get("id") == comp_id:
                 obj["config"] = new_config
             else:
                 for v in obj.values():
-                    update_config(v, comp_id, new_config)
+                    set_config(v, comp_id, new_config)
         elif isinstance(obj, list):
             for v in obj:
-                update_config(v, comp_id, new_config)
+                set_config(v, comp_id, new_config)
 
-    # For each component, pass the entire conversation plus the AI Generation Description
+    # For each component
     for comp in components:
         desc = comp.get("AI Generation Description", "")
-        # If no desc, we can fallback to "No generation instructions"
         if not desc:
-            desc = "No specific AI Generation Description was provided."
-
-        # We'll pass the entire conversation + system instructions + user message with the desc
-        conversation = [system_msg] + state["messages"] + [HumanMessage(content=desc, name="comp-desc")]
-
+            desc = "No AI Generation Description was provided."
+        # entire conversation + system instructions + user message with desc
+        conversation = [system_msg] + state["messages"] + [
+            HumanMessage(content=desc, name="component-desc")
+        ]
         result = llm.invoke(conversation)
         raw_out = result.content.strip()
 
-        # Attempt to parse JSON
-        try:
-            config_dict = json.loads(raw_out)
-        except json.JSONDecodeError:
-            # Maybe there's a code block or partial JSON
-            match = re.search(r"\{.*\}", raw_out, re.DOTALL)
-            if match:
-                try:
-                    config_dict = json.loads(match.group(0))
-                except json.JSONDecodeError as e:
-                    config_dict = {
-                        "error": "Invalid JSON from LLM",
-                        "raw": raw_out,
-                        "exception": str(e)
-                    }
-            else:
+        # parse JSON
+        match = re.search(r"\{.*\}", raw_out, re.DOTALL)
+        if match:
+            try:
+                config_dict = json.loads(match.group(0))
+            except json.JSONDecodeError as e:
                 config_dict = {
-                    "error": "Invalid JSON from LLM, no braces found",
-                    "raw": raw_out
+                    "error": "Invalid JSON from LLM",
+                    "raw": raw_out,
+                    "exception": str(e)
                 }
-
-        # Insert config into layout
-        update_config(layout_json, comp.get("id"), config_dict)
+        else:
+            config_dict = {
+                "error": "No valid JSON object found",
+                "raw": raw_out
+            }
+        set_config(layout_json, comp["id"], config_dict)
 
     return {"layout_json": layout_json}
 
-# ---------------------------------------------------------------------------
-# 10) identify_and_unify_lists node
-# ---------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# 8) identify_and_unify_lists
+# -----------------------------------------------------------------------------
 def identify_and_unify_lists(state: ReportGraphState):
     """
-    Placeholder for optional list unification if multiple components have the same lists
-    with different references. You can do LLM-based logic or an algorithmic approach.
+    Placeholder for list unification. We'll just pass layout through.
     """
     layout_json = state.get("layout_json", {})
-    # No real logic here, just pass it through
     return {"layout_json": layout_json}
 
-# ---------------------------------------------------------------------------
-# 11) create_lists_contents node
-# ---------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# 9) create_lists_contents
+# -----------------------------------------------------------------------------
 def create_lists_contents(state: ReportGraphState):
     """
-    Looks for any "lists" in the layout JSON and populates them with dimension data.
-    We'll just hard-code them for demonstration.
+    Finds 'lists' keys and populates them with dimension members. Hard-coded example.
     """
     layout_json = state.get("layout_json", {})
     if not layout_json:
         return {}
 
-    # Gather lists
     lists_found = []
-    def walk_for_lists(obj):
+    def walk(obj):
         if isinstance(obj, dict):
             if "lists" in obj and isinstance(obj["lists"], list):
-                for item in obj["lists"]:
-                    lists_found.append(item)
+                for l_ in obj["lists"]:
+                    lists_found.append(l_)
             for v in obj.values():
-                walk_for_lists(v)
+                walk(v)
         elif isinstance(obj, list):
             for v in obj:
-                walk_for_lists(v)
+                walk(v)
+    walk(layout_json)
 
-    walk_for_lists(layout_json)
-
-    # Hard-code members for demonstration
     for item in lists_found:
         item["list"] = ["Jan", "Feb", "Mar"]
         if "AI Generation Description" not in item:
-            item["AI Generation Description"] = "Populated with 3 months as example."
+            item["AI Generation Description"] = "Populated with months for demonstration."
 
     return {"layout_json": layout_json}
 
-# ---------------------------------------------------------------------------
-# 12) finalize_report_json node
-# ---------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# 10) finalize_report_json
+# -----------------------------------------------------------------------------
 def finalize_report_json(state: ReportGraphState):
     """
-    Copy layout_json into final_json, concluding the process.
+    Copy layout_json => final_json
     """
     layout_json = state.get("layout_json", {})
     return {"final_json": layout_json}
 
-# ---------------------------------------------------------------------------
-# 13) Build the Graph
-# ---------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# Build the Graph
+# -----------------------------------------------------------------------------
 builder = StateGraph(ReportGraphState)
 
-# START -> verify_instructions
+# 1. START => verify_instructions
 builder.add_node("verify_instructions", verify_instructions)
 builder.add_edge(START, "verify_instructions")
 
-# Decide if instructions are clear => layout or not => clarification
+# 2. Decide: If instructions_clear => generate_layout_json, else => ask_clarification
 def instructions_decider(state: ReportGraphState):
-    if state["instructions_clear"]:
-        return "generate_layout_json"
-    else:
-        return "ask_clarification"
+    return "generate_layout_json" if state["instructions_clear"] else "ask_clarification"
 
 builder.add_conditional_edges(
     "verify_instructions",
     instructions_decider,
-    ["generate_layout_json", "ask_clarification"]
+    ["generate_layout_json","ask_clarification"]
 )
 
-# ask_clarification -> await_clarification_answer -> back to verify_instructions
+# 3. ask_clarification => get_user_clarification => verify_instructions
 builder.add_node("ask_clarification", ask_clarification)
-builder.add_node("await_clarification_answer", await_clarification_answer)
-builder.add_edge("ask_clarification", "await_clarification_answer")
-builder.add_edge("await_clarification_answer", "verify_instructions")
+builder.add_node("get_user_clarification", get_user_clarification)
 
-# generate_layout_json -> user_confirm_layout
+builder.add_edge("ask_clarification", "get_user_clarification")
+builder.add_edge("get_user_clarification", "verify_instructions")
+
+# 4. generate_layout_json => ask_if_layout_ok => check_layout_confirmation
 builder.add_node("generate_layout_json", generate_layout_json)
-builder.add_edge("generate_layout_json", "user_confirm_layout")
+builder.add_node("ask_if_layout_ok", ask_if_layout_ok)
+builder.add_node("check_layout_confirmation", check_layout_confirmation)
 
-# user_confirm_layout -> if yes => generate_components_config else => generate_layout_json
-builder.add_node("user_confirm_layout", user_confirm_layout)
-def layout_confirmation_router(state: ReportGraphState):
-    layout_ok = state.get("layout_ok", False)
-    if layout_ok:
-        return "generate_components_config"
-    else:
-        return "generate_layout_json"
+builder.add_edge("generate_layout_json", "ask_if_layout_ok")
+builder.add_edge("ask_if_layout_ok", "check_layout_confirmation")
+
+def layout_ok_decider(state: ReportGraphState):
+    # If layout_ok is True => generate_components_config
+    # If layout_ok is False => go back to generate_layout_json
+    # If neither is set => remain in check_layout_confirmation node
+    if "layout_ok" not in state:
+        return None  # Remain in node
+    return "generate_components_config" if state["layout_ok"] else "generate_layout_json"
 
 builder.add_conditional_edges(
-    "user_confirm_layout",
-    layout_confirmation_router,
+    "check_layout_confirmation",
+    layout_ok_decider,
     ["generate_components_config", "generate_layout_json"]
 )
 
-# generate_components_config -> identify_and_unify_lists
+# 5. generate_components_config => identify_and_unify_lists => create_lists_contents => finalize_report_json => END
 builder.add_node("generate_components_config", generate_components_config)
 builder.add_edge("generate_components_config", "identify_and_unify_lists")
 
-# identify_and_unify_lists -> create_lists_contents
 builder.add_node("identify_and_unify_lists", identify_and_unify_lists)
 builder.add_edge("identify_and_unify_lists", "create_lists_contents")
 
-# create_lists_contents -> finalize_report_json -> END
 builder.add_node("create_lists_contents", create_lists_contents)
 builder.add_edge("create_lists_contents", "finalize_report_json")
 
 builder.add_node("finalize_report_json", finalize_report_json)
 builder.add_edge("finalize_report_json", END)
 
-# We want to interrupt so the user can:
-# 1) Provide a clarification answer at 'await_clarification_answer'
-# 2) Confirm or deny the layout at 'user_confirm_layout'
-graph = builder.compile(
-    interrupt_before=["await_clarification_answer", "user_confirm_layout"]
-)
+# Finally, compile without using interrupt_before, because we rely on conversation-based logic
+graph = builder.compile()
