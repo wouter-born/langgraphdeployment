@@ -31,7 +31,7 @@ from langgraph.graph import StateGraph, MessagesState
 # 1) LLM Setup
 # ---------------------------------------------------------------------------
 from langchain_groq import ChatGroq
-llm = ChatGroq(temperature=0, model_name="llama-3.3-70b-versatile", api_key="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")
+llm = ChatGroq(temperature=0, model_name="llama-3.3-70b-specdec", api_key="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")
 
 # ---------------------------------------------------------------------------
 # 2) XML Loader (optional if you keep your prompts in .xml)
