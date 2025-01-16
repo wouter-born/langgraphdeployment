@@ -324,25 +324,21 @@ builder.add_conditional_edges(
     ["generate_layout_json","ask_clarification"]
 )
 
-# 3. ask_clarification => get_user_clarification => verify_instructions
 builder.add_node("ask_clarification", ask_clarification)
 builder.add_node("get_user_clarification", get_user_clarification)
+builder.add_node("generate_layout_json", generate_layout_json)
+builder.add_node("generate_components_config", generate_components_config)
+builder.add_node("identify_and_unify_lists", identify_and_unify_lists)
+builder.add_node("create_lists_contents", create_lists_contents)
+builder.add_node("finalize_report_json", finalize_report_json)
 
 builder.add_edge("ask_clarification", "get_user_clarification")
 builder.add_edge("get_user_clarification", "verify_instructions")
-builder.add_node("generate_layout_json", generate_layout_json)
-
-# 5. generate_components_config => identify_and_unify_lists => create_lists_contents => finalize_report_json => END
-builder.add_node("generate_components_config", generate_components_config)
+builder.add_edge("verify_instructions", "generate_layout_json")
+builder.add_edge("generate_layout_json", "generate_components_config")
 builder.add_edge("generate_components_config", "identify_and_unify_lists")
-
-builder.add_node("identify_and_unify_lists", identify_and_unify_lists)
 builder.add_edge("identify_and_unify_lists", "create_lists_contents")
-
-builder.add_node("create_lists_contents", create_lists_contents)
 builder.add_edge("create_lists_contents", "finalize_report_json")
-
-builder.add_node("finalize_report_json", finalize_report_json)
 builder.add_edge("finalize_report_json", END)
 
 # Finally, compile without using interrupt_before, because we rely on conversation-based logic
