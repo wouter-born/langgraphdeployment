@@ -334,7 +334,6 @@ builder.add_node("finalize_report_json", finalize_report_json)
 
 builder.add_edge("ask_clarification", "get_user_clarification")
 builder.add_edge("get_user_clarification", "verify_instructions")
-builder.add_edge("verify_instructions", "generate_layout_json")
 builder.add_edge("generate_layout_json", "generate_components_config")
 builder.add_edge("generate_components_config", "identify_and_unify_lists")
 builder.add_edge("identify_and_unify_lists", "create_lists_contents")
@@ -343,3 +342,4 @@ builder.add_edge("finalize_report_json", END)
 
 # Finally, compile without using interrupt_before, because we rely on conversation-based logic
 graph = builder.compile(interrupt_before=['get_user_clarification'])
+
