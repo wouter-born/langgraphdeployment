@@ -390,12 +390,12 @@ builder.add_conditional_edges(
 builder.add_node("ask_clarification", ask_clarification)
 builder.add_node("get_user_clarification", get_user_clarification)
 
-builder.add_edge("ask_clarification", "get_user_clarification", interrupt_after=True)
+builder.add_edge("ask_clarification", "get_user_clarification")
 builder.add_edge("get_user_clarification", "verify_instructions")
 
 # 4. generate_layout_json => ask_if_layout_ok => check_layout_confirmation
 builder.add_node("generate_layout_json", generate_layout_json)
-builder.add_node("ask_if_layout_ok", ask_if_layout_ok, interrupt_after=True)
+builder.add_node("ask_if_layout_ok", ask_if_layout_ok)
 builder.add_node("check_layout_confirmation", check_layout_confirmation)
 
 builder.add_edge("generate_layout_json", "ask_if_layout_ok")
@@ -427,4 +427,4 @@ builder.add_node("finalize_report_json", finalize_report_json)
 builder.add_edge("finalize_report_json", END)
 
 # Finally, compile without using interrupt_before, because we rely on conversation-based logic
-graph = builder.compile()
+graph = builder.compile(interrupt_before=['get_user_clarification','check_layout_confirmation'])
