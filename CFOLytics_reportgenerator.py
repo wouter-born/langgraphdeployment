@@ -178,68 +178,6 @@ def generate_layout_json(state: ReportGraphState):
 
 
 # -----------------------------------------------------------------------------
-# 5) ask_if_layout_ok
-# -----------------------------------------------------------------------------
-def ask_if_layout_ok(state: ReportGraphState):
-    """
-    The system/AI asks the user: "Is this layout okay? If not, type 'No' or mention changes."
-    We'll store that in the conversation as an AIMessage. Then the next node checks user’s answer.
-    """
-    # We can simply produce a short system/AI message that says “Here is the layout. Are you OK with this?”
-    # Or we can load from an XML if you want more instructions.
-
-    prompt = (
-        "Below is the current layout JSON I've generated.\n\n"
-        f"{json.dumps(state['layout_json'], indent=2)}\n\n"
-        "Are you satisfied with this layout? Please answer 'Yes' if it's good, or 'No' plus any changes you'd like."
-    )
-    ai_msg = AIMessage(content=prompt, name="layout-confirmation-question")
-    state["messages"].append(ai_msg)
-    return {}
-
-
-# -----------------------------------------------------------------------------
-# 6) check_layout_confirmation
-# -----------------------------------------------------------------------------
-def check_layout_confirmation(state: ReportGraphState):
-    """
-    We look for the user's next message after the "layout-confirmation-question".
-    If we see "Yes," we proceed. If "No," we revert to re-generate_layout_json.
-    If no user response is found, we remain here waiting.
-    """
-    # find last AI layout-confirmation-question
-    idx_question = None
-    for i, msg in reversed(list(enumerate(state["messages"]))):
-        if isinstance(msg, AIMessage) and msg.name == "layout-confirmation-question":
-            idx_question = i
-            break
-    if idx_question is None:
-        # No question was asked? Just proceed
-        return {"layout_ok": True}
-    
-    # see if there's a user message after idx_question
-    user_answer_msg = None
-    for j in range(idx_question+1, len(state["messages"])):
-        msg = state["messages"][j]
-        if isinstance(msg, HumanMessage):
-            user_answer_msg = msg
-            break
-
-    if not user_answer_msg:
-        # No answer yet, remain in this node
-        return {}
-
-    # parse user message
-    content_lower = user_answer_msg.content.lower().strip()
-    if content_lower.startswith("yes"):
-        # layout OK
-        return {"layout_ok": True}
-    else:
-        # user said "No" or "No plus changes"
-        return {"layout_ok": False}
-
-
-# -----------------------------------------------------------------------------
 # 7) generate_components_config
 # -----------------------------------------------------------------------------
 def generate_components_config(state: ReportGraphState):
@@ -392,26 +330,7 @@ builder.add_node("get_user_clarification", get_user_clarification)
 
 builder.add_edge("ask_clarification", "get_user_clarification")
 builder.add_edge("get_user_clarification", "verify_instructions")
-
-# 4. generate_layout_json => ask_if_layout_ok => check_layout_confirmation
 builder.add_node("generate_layout_json", generate_layout_json)
-builder.add_node("ask_if_layout_ok", ask_if_layout_ok)
-builder.add_node("check_layout_confirmation", check_layout_confirmation)
-
-builder.add_edge("generate_layout_json", "ask_if_layout_ok")
-builder.add_edge("ask_if_layout_ok", "check_layout_confirmation")
-
-def layout_ok_decider(state: ReportGraphState):
-    if "layout_ok" not in state:
-        return None  # Stay in the current node
-    return "generate_components_config" if state["layout_ok"] else "generate_layout_json"
-
-
-builder.add_conditional_edges(
-    "check_layout_confirmation",
-    layout_ok_decider,
-    ["generate_components_config", "generate_layout_json"]
-)
 
 # 5. generate_components_config => identify_and_unify_lists => create_lists_contents => finalize_report_json => END
 builder.add_node("generate_components_config", generate_components_config)
@@ -427,4 +346,4 @@ builder.add_node("finalize_report_json", finalize_report_json)
 builder.add_edge("finalize_report_json", END)
 
 # Finally, compile without using interrupt_before, because we rely on conversation-based logic
-graph = builder.compile(interrupt_before=['get_user_clarification','check_layout_confirmation'])
+graph = builder.compile(interrupt_before=['get_user_clarification'])
