@@ -137,10 +137,6 @@ def get_user_clarification(state: ReportGraphState):
     # Remain in this node until the user responds
     return None  # Signal to remain in the current node
 
-
-# -----------------------------------------------------------------------------
-# 4) generate_layout_json
-# -----------------------------------------------------------------------------
 def generate_layout_json(state: ReportGraphState):
     """
     We assume instructions are now clear. 
@@ -151,31 +147,26 @@ def generate_layout_json(state: ReportGraphState):
     system_msg = SystemMessage(content=system_instructions)
 
     conversation = [system_msg] + state["messages"]
-    result = llm.invoke(conversation)
-    raw_output = result.content
+    
+    from langchain_core.pydantic_v1 import BaseModel
+    class ReportConfig(BaseModel):
+        reportTitle: str
+        layout: dict
+        numberFormat: dict
+
+    structured_llm = llm.with_structured_output(
+        ReportConfig,
+        method="json_mode",
+        include_raw=True
+    )
+
+    output = structured_llm.invoke(conversation)
+    parsed_output = output["parsed"]
 
     # Store the AI’s layout as a message for transparency
-    state["messages"].append(AIMessage(content=raw_output, name="layout-draft"))
+    state["messages"].append(AIMessage(content=parsed_output, name="layout-draft"))
 
-    # Attempt to parse JSON
-    match = re.search(r"\{.*\}", raw_output, re.DOTALL)
-    if match:
-        try:
-            layout_dict = json.loads(match.group(0))
-        except json.JSONDecodeError as e:
-            layout_dict = {
-                "error": "Could not parse LLM output as JSON",
-                "raw_llm_output": raw_output,
-                "exception": str(e)
-            }
-    else:
-        layout_dict = {
-            "error": "No valid JSON object found in LLM output",
-            "raw_llm_output": raw_output
-        }
-
-    return {"layout_json": layout_dict}
-
+    return {"layout_json": parsed_output}
 
 # -----------------------------------------------------------------------------
 # 7) generate_components_config

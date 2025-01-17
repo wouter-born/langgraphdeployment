@@ -8,7 +8,7 @@
 			<instruction>**Follow the jsonStructure**: See the section jsonStructure for a detailed overview of how the JSON file should be structured</instruction>
 			<instruction>**Use the examples**: Use the examples to understand what kind of user queries should lead to certain results, use this for your creative process</instruction>
 			<instruction>**Add a createDescription attribute to each list. The createDescription will be used by antoher chatbot that will create the list JSON structure so be as detailed as possible how the list should look like</instruction>
-			
+			<instruction>**Only output Json and nothing else, no leading in text and no explanations afterwards. Start with "config": {} </instruction>
 		</instructionsForGeneratingModifications>
 		<importantNotes>
 			<importantNote>**Repeat members in list instructions**: When the user mentions a specific set of KPIs or other members in the report create instructions, make sure to repeat those instructions in the list creation instructions. This way the list creattion chatbot knows what to add</importantNote>

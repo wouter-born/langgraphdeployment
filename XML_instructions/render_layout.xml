@@ -121,8 +121,12 @@
 			<output>
 <![CDATA[
 {
-  "AI Generation Description": "Create a report showing the profit and loss in a table comparing actuals to budget. Next to the table I want to see a chart with 12 periods comparing Actuals to Budget for the current selected row in the table. Below the chart I want to see a small table breaking down the current selected line in to the product dimension.",
   "reportTitle": "Profit and Loss - Analysis",
+  "numberFormat": {
+    "currency": "USD",
+    "scale": "thousands",
+    "decimals": 0
+  },
   "layout": {
     "gridColumns": {
       "sm": 1,
