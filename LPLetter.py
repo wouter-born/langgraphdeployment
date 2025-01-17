@@ -265,7 +265,7 @@ lp_builder.add_edge("user_edits_draft", "finalize_letter")
 lp_builder.add_edge("finalize_letter", END)
 
 # Compile the graph
-lp_letter_graph = lp_builder.compile(
+graph = lp_builder.compile(
     # We can choose to interrupt before user feedback steps
     interrupt_before=["user_feedback_proposed_updates", "user_edits_draft"]
 )
