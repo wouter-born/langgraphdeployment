@@ -73,7 +73,15 @@ def generate_layout(state: OverallState):
         include_raw=True
     )
     conversation = [system_msg] + [user_msg]
-    output = structured_llm.invoke(conversation, stream=False)
+    print("Conversation:", conversation)
+    print("LLM Configuration:", {"stream": False, "response_format": "json"})
+    
+    try:
+        output = structured_llm.invoke(conversation, stream=False, response_format="json")
+    except Exception as e:
+        print("Error during LLM invocation:", str(e))
+        raise
+
     parsed_output = output["parsed"].model_dump()
 
     # Find components
