@@ -1,4 +1,19 @@
 import os
+from langgraph.constants import Send
+import operator
+from typing import Annotated
+from typing_extensions import TypedDict
+from pydantic import BaseModel
+from typing import Optional
+from langchain_groq import ChatGroq
+from langchain_core.messages import (
+    AIMessage, 
+    HumanMessage,
+    SystemMessage,
+    BaseMessage
+)
+from typing import TypedDict, List, Dict, Any, Annotated
+from langgraph.graph import StateGraph, START, END
 
 # Manually set the __file__ variable to the notebook's directory
 __file__ = os.path.abspath("notebook_name.ipynb")
@@ -11,30 +26,20 @@ def load_xml_instructions(filename: str) -> str:
     file_path = os.path.join(current_dir, "XML_instructions", filename)
     with open(file_path, "r", encoding="utf-8") as f:
         return f.read()
-from langchain_openai import ChatOpenAI
-from langchain_core.messages import (
-    AIMessage, 
-    HumanMessage,
-    SystemMessage,
-    BaseMessage
-)
+
 
 # Prompts we will use
 layout_prompt = load_xml_instructions("render_layout.xml")
 component_prompt = load_xml_instructions("component_content_gen.xml")
 
 # LLM
-from langchain_groq import ChatGroq
+
 model = ChatGroq(
     temperature=0,
     model_name="llama3-8b-8192",
     api_key="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"
 )
-import operator
-from typing import Annotated
-from typing_extensions import TypedDict
-from pydantic import BaseModel
-from typing import Optional
+
 
 class Components(BaseModel):
     Components: list[str]
@@ -88,7 +93,7 @@ def generate_layout(state: OverallState):
     # Output both JsonLayout and Components
     return {"JsonLayout": parsed_output, "Components": components}
 
-from langgraph.constants import Send
+
 
 def continue_to_components(state: OverallState):
     return [Send("generate_component", {"component": c}) for c in state["Components"]]
@@ -172,8 +177,7 @@ def gatheruniquelists(state: OverallState):
     return {
         "Lists": new_lists
     }
-from typing import TypedDict, List, Dict, Any, Annotated
-from langgraph.graph import StateGraph, START, END
+
 
 #########################################################
 # 1. Extend the TypedDict for your subchart state
