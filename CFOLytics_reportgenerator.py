@@ -73,7 +73,7 @@ def generate_layout(state: OverallState):
         include_raw=True
     )
     conversation = [system_msg] + [user_msg]
-    output = structured_llm.invoke(conversation)
+    output = structured_llm.invoke(conversation, stream=False)
     parsed_output = output["parsed"].model_dump()
 
     # Find components
@@ -119,7 +119,7 @@ def generate_component(state: ComponentState):
             include_raw=True
         )
         conversation = [system_msg] + [user_msg]
-        output = structured_llm.invoke(conversation)
+        output = structured_llm.invoke(conversation, stream=False)
         parsed_output = output["parsed"].model_dump()
     else:
         parsed_output = {}
@@ -269,7 +269,7 @@ def check_dynamic_or_fixed(state: ListSubchartState):
         include_raw=True
     )
     conversation = [system_msg] + [user_msg]
-    output = structured_llm.invoke(conversation)
+    output = structured_llm.invoke(conversation, stream=False)
     parsed_output = output["parsed"].model_dump()
 
     return {
@@ -331,7 +331,7 @@ def create_fixed_list(state: ListSubchartState):
         include_raw=True
     )
     conversation = [system_msg, user_msg]
-    output = structured_llm.invoke(conversation)
+    output = structured_llm.invoke(conversation, stream=False)
 
     # 6. Parse the LLM’s structured output
     parsed_output = output["parsed"]
@@ -387,7 +387,7 @@ def create_dynamic_list(state: ListSubchartState):
         include_raw=True
     )
     conversation = [system_msg, user_msg]
-    output = structured_llm.invoke(conversation)
+    output = structured_llm.invoke(conversation, stream=False)
 
     # 6. Parse the LLM’s structured output
     parsed_output = output["parsed"]
