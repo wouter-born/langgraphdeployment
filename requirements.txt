@@ -7,3 +7,6 @@ tavily-python
 wikipedia
 typing_extensions
 pydantic
+cryptography
+pyjwt
+watchfiles
