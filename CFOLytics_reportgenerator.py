@@ -1,4 +1,5 @@
 import os
+import json
 from langgraph.constants import Send
 import operator
 from typing import Annotated
@@ -73,8 +74,7 @@ def generate_layout(state: OverallState):
         include_raw=True
     )
     conversation = [system_msg] + [user_msg]
-    print("Conversation:", conversation)
-    print("LLM Configuration:", {"stream": False, "response_format": "json"})
+
     
     try:
         output = structured_llm.invoke(conversation, stream=False, response_format="json")
