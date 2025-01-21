@@ -407,7 +407,7 @@
 		<maintable>
 			<userInstruction>A table showing the profit and loss statement on the rows and comparing actuals to budget with a variance bar on the columns. The rows should be selectable.</userInstruction>
 			<output>
-<![CDATA[{
+<![CDATA[
 "config": {
     "selectRow": true,
     "firstColumnWidth": 250,
@@ -428,7 +428,7 @@
 		<trendchart>
 			<userInstruction>A column chart with 12 periods comparing Actuals to Budget.</userInstruction>
 			<output>
-<![CDATA[{
+<![CDATA[
 "config": {
     "lists": [
         {
@@ -496,7 +496,7 @@
 		<drilldowntable>
 			<userInstruction>A table breaking down the current selected line in to the product dimension comparing actuals to budget.</userInstruction>
 			<output>
-				<![CDATA[{
+				<![CDATA[
 "config": {
 	"firstColumnWidth": 175,
     "selectRow": false,
@@ -535,4 +535,6 @@
 		</drilldowntable>
 
 	</examples>
+
 </task>
+

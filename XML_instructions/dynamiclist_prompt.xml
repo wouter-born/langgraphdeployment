@@ -1,0 +1,216 @@
+<task>
+	<overview>
+		Your task is to output a json config for a list to be used in a financial report based on the user's instructions.
+		You are part of a group of assistants that together create a financial report. The first assistant already defined the layout, your job is to create the lists of dimension members.
+		The user provides the name of the list and the description of the list.
+	</overview>
+	<guidelines>
+		<instructionsForGeneratingModifications>
+			<instruction>**Understand the User's Instructions**: Carefully read the user's request to identify the required changes.</instruction>
+			<instruction>**Follow the jsonStructure**: See the section jsonStructure for a detailed overview of how the JSON file should be structured</instruction>
+			<instruction>**Use the examples**: Use the examples to understand what kind of user queries should lead to certain results, use this for your creative process</instruction>
+			<instruction>**Apply the customer metadata**: Use the provided metadata to fill in and verify any dimension member values, you cannot output anything that is not a valid dimension member</instruction>
+			<instruction>**Double check the spelling and case of every member you output using the user provided metadata**</instruction>
+		</instructionsForGeneratingModifications>
+		<importantNotes>
+			<importantNote>**Validation and Error Prevention**: Verify that the JSON syntax is correct to prevent errors. </importantNote>
+			<importantNote>**Recognize Synonyms and Handle Ambiguity**: Be aware that users may use different words to express the same intent. Treat these terms equivalently when interpreting instructions. If the user's instructions are ambiguous, use context from the JSON configuration and overall structure to infer their intent and choose the most logical output JSON.</importantNote>
+		</importantNotes>
+			<structureOfLists>
+				<dimensions>
+					The first child element of each list must be a dimensions array, which should contain at least one dimension but can include more.
+				</dimensions>
+				<type>Value should be always: dynamic</type>
+				<dynamicLists>
+					<commonAttributes>
+						<minWidth>
+							<description>
+								Specifies the minimum column width in pixels for the list items in the UI.
+							</description>
+							<type>number</type>
+							<example>minWidth: 150</example>
+						</minWidth>
+						<displayName>
+							<description>
+								Defines a custom display name for the list items, this can be used in combination with dimension placeholders and string manipulation
+							</description>
+							<type>string</type>
+							<example>displayName: "substring([Period],0,3) [Year]"</example>
+						</displayName>
+						<total>
+							<description>
+								Indicates whether a total summary item should be included in the list.
+							</description>
+							<type>boolean</type>
+							<example>total: true</example>
+						</total>
+					</commonAttributes>
+					<rollingPeriods>
+						<description>
+							Generates a rolling list of periods starting from a specified year and period, spanning a given length, and rolling forward or backward in time.
+						</description>
+						<attributes>
+							<startPeriod>
+								<Year>The starting year of the rolling periods.</Year>
+								<Period>The starting period (e.g., "p04 - april").</Period>
+							</startPeriod>
+							<length>The number of periods to include in the list.</length>
+							<direction>
+								Specifies the direction of the rolling periods:
+								<forward>Generates periods rolling forward in time.</forward>
+								<backward>Generates periods rolling backward in time.</backward>
+							</direction>
+						</attributes>
+						<example>
+							<code>
+								{
+								"dimensions": ["Year", "Period"],
+								"type": "dynamic",
+								"dynamicconfig": {
+								"relationship": "rolling",
+								"startPeriod": { "Year": "2023", "Period": "p01 - january" },
+								"length": 12,
+								"direction": "backward"
+								}
+								}
+							</code>
+						</example>
+					</rollingPeriods>
+					<descendants>
+						<description>
+							Generates a dynamic list of all descendant members under a specified parent in a hierarchical dimension.
+						</description>
+						<attributes>
+							<parent>The parent member from which descendants are derived.</parent>
+						</attributes>
+						<example>
+							<code>
+								{
+								"dimensions": ["Account"],
+								"type": "dynamic",
+								"dynamicconfig": {
+								"relationship": "descendants",
+								"parent": "Advertising & Marketing"
+								}
+								}
+							</code>
+						</example>
+					</descendants>
+					<children>
+						<description>
+							Generates a dynamic list of direct child members under a specified parent in a hierarchical dimension.
+						</description>
+						<attributes>
+							<parent>The parent member whose children are derived.</parent>
+						</attributes>
+						<example>
+							<code>
+								{
+								"dimensions": ["Entity"],
+								"type": "dynamic",
+								"dynamicconfig": {
+								"relationship": "children",
+								"parent": "Region1"
+								}
+								}
+							</code>
+						</example>
+					</children>
+					<generation>
+						<description>
+							Generates a dynamic list of members based on their generation in a hierarchy, starting with the root as Generation 1.
+							Leaf members are considered Generation 0.
+						</description>
+						<attributes>
+							<parent>The top-level parent member (optional, defaults to the root).</parent>
+							<depth>The generation depth to include in the list (e.g., 0 for leaf members).</depth>
+						</attributes>
+						<example>
+							<code>
+								{
+								"dimensions": ["AnalyticalDim2"],
+								"type": "dynamic",
+								"dynamicconfig": {
+								"relationship": "generation",
+								"parent": "Top",
+								"total": true,
+								"depth": 2
+								}
+								}
+							</code>
+						</example>
+					</generation>
+					<level>
+						<description>
+							Generates a dynamic list of members based on their level in a hierarchy, where Level 1 is the root and increases as you move down the hierarchy.
+						</description>
+						<attributes>
+							<parent>The top-level parent member (optional, defaults to the root).</parent>
+							<depth>The level depth to include in the list (e.g., 1 for root members).</depth>
+						</attributes>
+						<example>
+							<code>
+								{
+								"dimensions": ["Department"],
+								"type": "dynamic",
+								"dynamicconfig": {
+								"relationship": "level",
+								"parent": "Organization",
+								"depth": 3
+								}
+								}
+							</code>
+						</example>
+					</level>
+				</dynamicLists>
+			</structureOfLists>
+	</guidelines>
+	<examples>
+		<AllProductsGroupedAndTotal>
+			<userInstruction>
+				Create a list showing all base level products grouped by product groups, end with a total line. Format total and sub totals with bold and a line above.
+				List name: AllProductsGroupedAndTotal
+				List used for:(ReportTable-C6, rowsList)
+				Report metadata: [{"name":"AnalyticalDim2","alias":"Product","order":8,"default":"Top","visible":false,"dimensionContent":[{"ID":52,"Name":"Accessories","ParentID":82},{"ID":53,"Name":"Apparel","ParentID":82},{"ID":54,"Name":"Bags","ParentID":52},{"ID":55,"Name":"Balls","ParentID":82},{"ID":56,"Name":"Belly","ParentID":77},{"ID":57,"Name":"Clothing","ParentID":53},{"ID":58,"Name":"Clubs","ParentID":82},{"ID":59,"Name":"Conventional","ParentID":77},{"ID":60,"Name":"Drivers","ParentID":90},{"ID":61,"Name":"Electronics","ParentID":82},{"ID":62,"Name":"Eyewear","ParentID":53},{"ID":63,"Name":"Fairway Woods","ParentID":90},{"ID":64,"Name":"Footwear","ParentID":53},{"ID":65,"Name":"Gloves","ParentID":53},{"ID":66,"Name":"GPS","ParentID":61},{"ID":67,"Name":"Handheld","ParentID":61},{"ID":68,"Name":"Headwear","ParentID":53},{"ID":69,"Name":"Hybrids","ParentID":71},{"ID":70,"Name":"Iron Sets","ParentID":71},{"ID":71,"Name":"Irons","ParentID":58},{"ID":72,"Name":"Logo","ParentID":55},{"ID":73,"Name":"Logo Tour","ParentID":55},{"ID":74,"Name":"Long","ParentID":77},{"ID":75,"Name":"Parts","ParentID":82},{"ID":76,"Name":"Premium","ParentID":55},{"ID":77,"Name":"Putters","ParentID":58},{"ID":78,"Name":"Range","ParentID":55},{"ID":79,"Name":"Rangefinders","ParentID":61},{"ID":80,"Name":"Services","ParentID":82},{"ID":81,"Name":"Subassemblies","ParentID":82},{"ID":82,"Name":"Top","ParentID":{}},{"ID":83,"Name":"Tour","ParentID":55},{"ID":84,"Name":"Towels","ParentID":52},{"ID":85,"Name":"Training Equip","ParentID":61},{"ID":86,"Name":"Travel Gear","ParentID":52},{"ID":87,"Name":"Umbrellas","ParentID":52},{"ID":88,"Name":"Watches","ParentID":52},{"ID":89,"Name":"Wedges","ParentID":71},{"ID":90,"Name":"Woods","ParentID":58},{"ID":91,"Name":"None","ParentID":82}]}]
+			</userInstruction>
+			<output>
+				{
+					"dimensions": ["AnalyticalDim2"],
+					"type": "dynamic",
+					"dynamicconfig": {
+						"relationship": "generation",
+						"parent": "Top",
+						"depth": 0,
+						"total": true,
+					}
+				}
+
+			</output>
+		</AllProductsGroupedAndTotal>
+		<TwelveMonthsRolling>
+			<userInstruction>
+				Create a 12 month rolling list starting from the current month and year, going back 11 months.
+				List name: 12MonthsRolling
+				Report metadata: [{"name":"Period","alias":"Period","order":2,"default":"p12 - december","visible":true,"dimensionContent":[{"ID":1,"Name":"p01 - january","ParentId":13},{"ID":2,"Name":"p02 - february","ParentId":13},{"ID":3,"Name":"p03 - march","ParentId":13},{"ID":4,"Name":"p04 - april","ParentId":14},{"ID":5,"Name":"p05 - may","ParentId":14},{"ID":6,"Name":"p06 - june","ParentId":14},{"ID":7,"Name":"p07 - july","ParentId":15},{"ID":8,"Name":"p08 - august","ParentId":15},{"ID":9,"Name":"p09 - september","ParentId":15},{"ID":10,"Name":"p10 - october","ParentId":16},{"ID":11,"Name":"p11 - november","ParentId":16},{"ID":12,"Name":"p12 - december","ParentId":16},{"ID":13,"Name":"Q1","ParentId":17},{"ID":14,"Name":"Q2","ParentId":17},{"ID":15,"Name":"Q3","ParentId":17},{"ID":16,"Name":"Q4","ParentId":17},{"ID":17,"Name":"Full Year","ParentId":{}}]}]
+			</userInstruction>
+			<output>
+				{
+					"dimensions": [
+					"Year",
+					"Period"
+					],
+					"type": "dynamic",
+					"dynamicconfig": {
+						"relationship": "rolling",
+						"startPeriod": {
+							"Year": "",
+							"Period": ""
+						},
+						"length": 12,
+						"direction": "backward"
+					}
+				}
+			</output>
+		</TwelveMonthsRolling>
+</examples>
+</task>
