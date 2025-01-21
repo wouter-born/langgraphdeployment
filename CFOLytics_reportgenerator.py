@@ -35,7 +35,7 @@ component_prompt = load_xml_instructions("component_content_gen.xml")
 # LLM
 model = ChatGroq(
     temperature=0,
-    model_name="llama3-8b-8192",
+    model_name="llama-3.3-70b-specdec",
     api_key="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",
     streaming=False
 )
