@@ -286,6 +286,33 @@ def check_dynamic_or_fixed(state: ListSubchartState):
         "dimensions": parsed_output["dimensions"]
     }
 
+def build_hierarchy_string(filtered_metadata, parent_id=None, indent=0):
+    """
+    Convert multiple dimensions of `filtered_metadata` into a hierarchical string representation.
+
+    :param filtered_metadata: List of dictionaries containing dimension metadata.
+    :param parent_id: The ID of the current parent node (None for root).
+    :param indent: Current indentation level.
+    :return: A string representing the hierarchy.
+    """
+    result = ""
+    for metadata in filtered_metadata:
+        # Extract the dimension content
+        dimension_content = metadata.get("dimensionContent", [])
+        for item in dimension_content:
+            # Normalize ParentId to handle {} as None
+            item_parent_id = item.get("ParentId")
+            if item_parent_id == {}:
+                item_parent_id = None
+
+            if item_parent_id == parent_id:
+                # Add the current item's name with indentation
+                result += "    " * indent + f"{item['Name']}\n"
+                # Recursively add children
+                result += build_hierarchy_string([metadata], parent_id=item["ID"], indent=indent + 1)
+    return result
+
+
 class FixedListReply(BaseModel):
     dimensions: list
     items: List[dict]
@@ -327,11 +354,16 @@ def create_fixed_list(state: ListSubchartState):
     #   Construct a user message that contains:
     #   - The current list definition
     #   - The filtered dimension metadata
+    print (filtered_metadata)
+    hierarchystring = build_hierarchy_string(filtered_metadata)
+    print (hierarchystring)
     user_input = {
         "listObject": current_list,
-        "filteredMetadata": filtered_metadata
+        "hierarchy": hierarchystring
     }
     user_msg = HumanMessage(content=json.dumps(user_input, indent=2))
+
+    print (user_input)
 
     # 5. Invoke the LLM with structured output
     structured_llm = model.with_structured_output(
