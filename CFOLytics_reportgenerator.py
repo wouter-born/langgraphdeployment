@@ -293,25 +293,24 @@ def build_hierarchy_string(filtered_metadata, parent_id=None, indent=0):
     :param filtered_metadata: List of dictionaries containing dimension metadata.
     :param parent_id: The ID of the current parent node (None for root).
     :param indent: Current indentation level.
-    :return: A string representing the hierarchy.
+    :return: A string representing the hierarchy with explicit \\n and \\t for visibility.
     """
     result = ""
     for metadata in filtered_metadata:
         # Extract the dimension content
         dimension_content = metadata.get("dimensionContent", [])
         for item in dimension_content:
-            # Normalize ParentId to handle {} as None
-            item_parent_id = item.get("ParentId")
+            # Normalize ParentID to handle {} as None
+            item_parent_id = item.get("ParentID")
             if item_parent_id == {}:
                 item_parent_id = None
 
             if item_parent_id == parent_id:
-                # Add the current item's name with indentation
-                result += "    " * indent + f"{item['Name']}\n"
+                # Add the current item's name with explicit \\n and \\t
+                result += "\\t" * indent + f"{item['Name']}\\n"
                 # Recursively add children
                 result += build_hierarchy_string([metadata], parent_id=item["ID"], indent=indent + 1)
     return result
-
 
 class FixedListReply(BaseModel):
     dimensions: list

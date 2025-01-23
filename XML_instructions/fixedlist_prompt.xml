@@ -141,156 +141,168 @@
 		</structureOfLists>
 	</guidelines>
 	<examples>
-		<createKPIList>
-			<userInstruction>
-				Create a list for the following KPIs (including drillowns): Portfolio ARR, Investments, Income, COGS, OperatingCosts and EBITDA formatted as a short P&L statement.
-				List name: KPIList
-				Report metadata: [{"name":"Account","alias":"Account","order":6,"default":"Income","visible":false,"dimensionContent":[{"ID":1,"Name":"Net Profit","ParentId":{},"Valuation":"positive"},{"ID":2,"Name":"Profit before taxes","ParentId":1,"Valuation":"positive"},{"ID":3,"Name":"EBITDA","ParentId":2,"Valuation":"positive"},{"ID":4,"Name":"Gross margin","ParentId":3,"Valuation":"positive"},{"ID":5,"Name":"Income","ParentId":4,"Valuation":"positive"},{"ID":6,"Name":"COGS","ParentId":4,"Valuation":"negative"},{"ID":7,"Name":"Operating Costs","ParentId":3,"Valuation":"negative"},{"ID":8,"Name":"Advertising & Marketing","ParentId":7,"Valuation":"negative"},{"ID":9,"Name":"Data Subscriptions","ParentId":8,"Valuation":"negative"},{"ID":10,"Name":"Marketing Contractors","ParentId":8,"Valuation":"negative"},{"ID":11,"Name":"Marketing SaaS Solutions","ParentId":8,"Valuation":"negative"},{"ID":12,"Name":"PR & Promotion","ParentId":8,"Valuation":"negative"},{"ID":13,"Name":"Website","ParentId":8,"Valuation":"negative"},{"ID":14,"Name":"Legal & Professional Services","ParentId":7,"Valuation":"negative"},{"ID":15,"Name":"Accounting","ParentId":14,"Valuation":"negative"},{"ID":16,"Name":"Professional Fees","ParentId":14,"Valuation":"negative"},{"ID":17,"Name":"Office Supplies & Software","ParentId":7,"Valuation":"negative"},{"ID":18,"Name":"Office Equipment","ParentId":17,"Valuation":"negative"},{"ID":19,"Name":"Saas Admin","ParentId":17,"Valuation":"negative"},{"ID":20,"Name":"SaaS Communication & Productivity","ParentId":17,"Valuation":"negative"},{"ID":21,"Name":"Virtual Office","ParentId":17,"Valuation":"negative"},{"ID":22,"Name":"Payroll Expenses","ParentId":7,"Valuation":"negative"},{"ID":23,"Name":"Contractors","ParentId":22,"Valuation":"negative"},{"ID":24,"Name":"Travel","ParentId":7,"Valuation":"negative"},{"ID":25,"Name":"Travel-Airline","ParentId":24,"Valuation":"negative"},{"ID":26,"Name":"Travel-Lodging","ParentId":24,"Valuation":"negative"},{"ID":27,"Name":"Travel-Meals","ParentId":24,"Valuation":"negative"},{"ID":28,"Name":"Travel-Other","ParentId":24,"Valuation":"negative"},{"ID":29,"Name":"Travel-Taxi","ParentId":24,"Valuation":"negative"},{"ID":30,"Name":"Meals & Entertainment","ParentId":24,"Valuation":"negative"},{"ID":31,"Name":"Miscellaneous","ParentId":7,"Valuation":"negative"},{"ID":32,"Name":"Bank Charges & Fees","ParentId":31,"Valuation":"negative"},{"ID":33,"Name":"Rent & Lease","ParentId":31,"Valuation":"negative"},{"ID":34,"Name":"Phone & Internet","ParentId":31,"Valuation":"negative"},{"ID":35,"Name":"Professional Development","ParentId":31,"Valuation":"negative"},{"ID":36,"Name":"Taxes & Licenses","ParentId":31,"Valuation":"negative"},{"ID":37,"Name":"Other Expenses","ParentId":2,"Valuation":"negative"},{"ID":38,"Name":"Charitable Contributions","ParentId":37,"Valuation":"negative"},{"ID":39,"Name":"Management Fee Payout","ParentId":1,"Valuation":"negative"},{"ID":101,"Name":"Investments","ParentId":{},"Valuation":"positive"},{"ID":102,"Name":"Portfolio ARR","ParentId":{},"Valuation":"positive"}]}]
-			</userInstruction>
-			<output>
-				{
-					"dimensions": ["Account"],
-					"items": [
-						{
-							"name": "Portfolio ARR",
-							"displayName": "[Account]",
-							"format": "bold_skip",
-							"dimensions": {
-								"Account": {
-									"member": "Portfolio ARR",
-									"valuation": "positive"
-								}
-							}
-						},
-						{
-							"name": "Investments",
-							"displayName": "[Account]",
-							"format": "bold_skip",
-							"dimensions": {
-								"Account": {
-									"member": "Investments",
-									"valuation": "positive"
-								}
-							}
-						},
-						{
-							"name": "Income",
-							"displayName": "[Account]",
-							"drilldown": "Account.[Account].children",
-							"dimensions": {
-								"Account": {
-									"member": "Income",
-									"valuation": "positive"
-								}
-							}
-						},
-						{
-							"name": "COGS",
-							"displayName": "[Account]",
-							"format": "underline",
-							"dimensions": {
-								"Account": {
-									"member": "COGS",
-									"valuation": "negative"
-								}
-							}
-						},
-						{
-							"name": "Operating Costs",
-							"displayName": "[Account]",
-							"format": "bold_underline",
-							"drilldown": "Account.[Account].children",
-							"dimensions": {
-								"Account": {
-									"member": "Operating Costs",
-									"valuation": "negative"
-								}
-							}
-						},
-						{
-							"name": "EBITDA",
-							"displayName": "[Account]",
-							"format": "bold",
-							"dimensions": {
-								"Account": {
-									"member": "EBITDA",
-									"valuation": "positive"
-								}
-							}
-						}
-					]
-				}
-			</output>
-		</createKPIList>
 		<shortPAndLStatment>
 			<userInstruction>
-				Create a short Profit and Loss statement with key indicators like Income, COGS, Operating Costs, etc.
-				List name: ShortPLStatement
-				Report metadata: [{"name":"Account","alias":"Account","order":6,"default":"Income","visible":false,"dimensionContent":[{"ID":1,"Name":"Net Profit","ParentId":{},"Valuation":"positive"},{"ID":2,"Name":"Profit before taxes","ParentId":1,"Valuation":"positive"},{"ID":3,"Name":"EBITDA","ParentId":2,"Valuation":"positive"},{"ID":4,"Name":"Gross margin","ParentId":3,"Valuation":"positive"},{"ID":5,"Name":"Income","ParentId":4,"Valuation":"positive"},{"ID":6,"Name":"COGS","ParentId":4,"Valuation":"negative"},{"ID":7,"Name":"Operating Costs","ParentId":3,"Valuation":"negative"},{"ID":8,"Name":"Advertising & Marketing","ParentId":7,"Valuation":"negative"},{"ID":9,"Name":"Data Subscriptions","ParentId":8,"Valuation":"negative"},{"ID":10,"Name":"Marketing Contractors","ParentId":8,"Valuation":"negative"},{"ID":11,"Name":"Marketing SaaS Solutions","ParentId":8,"Valuation":"negative"},{"ID":12,"Name":"PR & Promotion","ParentId":8,"Valuation":"negative"},{"ID":13,"Name":"Website","ParentId":8,"Valuation":"negative"},{"ID":14,"Name":"Legal & Professional Services","ParentId":7,"Valuation":"negative"},{"ID":15,"Name":"Accounting","ParentId":14,"Valuation":"negative"},{"ID":16,"Name":"Professional Fees","ParentId":14,"Valuation":"negative"},{"ID":17,"Name":"Office Supplies & Software","ParentId":7,"Valuation":"negative"},{"ID":18,"Name":"Office Equipment","ParentId":17,"Valuation":"negative"},{"ID":19,"Name":"Saas Admin","ParentId":17,"Valuation":"negative"},{"ID":20,"Name":"SaaS Communication & Productivity","ParentId":17,"Valuation":"negative"},{"ID":21,"Name":"Virtual Office","ParentId":17,"Valuation":"negative"},{"ID":22,"Name":"Payroll Expenses","ParentId":7,"Valuation":"negative"},{"ID":23,"Name":"Contractors","ParentId":22,"Valuation":"negative"},{"ID":24,"Name":"Travel","ParentId":7,"Valuation":"negative"},{"ID":25,"Name":"Travel-Airline","ParentId":24,"Valuation":"negative"},{"ID":26,"Name":"Travel-Lodging","ParentId":24,"Valuation":"negative"},{"ID":27,"Name":"Travel-Meals","ParentId":24,"Valuation":"negative"},{"ID":28,"Name":"Travel-Other","ParentId":24,"Valuation":"negative"},{"ID":29,"Name":"Travel-Taxi","ParentId":24,"Valuation":"negative"},{"ID":30,"Name":"Meals & Entertainment","ParentId":24,"Valuation":"negative"},{"ID":31,"Name":"Miscellaneous","ParentId":7,"Valuation":"negative"},{"ID":32,"Name":"Bank Charges & Fees","ParentId":31,"Valuation":"negative"},{"ID":33,"Name":"Rent & Lease","ParentId":31,"Valuation":"negative"},{"ID":34,"Name":"Phone & Internet","ParentId":31,"Valuation":"negative"},{"ID":35,"Name":"Professional Development","ParentId":31,"Valuation":"negative"},{"ID":36,"Name":"Taxes & Licenses","ParentId":31,"Valuation":"negative"},{"ID":37,"Name":"Other Expenses","ParentId":2,"Valuation":"negative"},{"ID":38,"Name":"Charitable Contributions","ParentId":37,"Valuation":"negative"},{"ID":39,"Name":"Management Fee Payout","ParentId":1,"Valuation":"negative"},{"ID":101,"Name":"Investments","ParentId":{},"Valuation":"positive"},{"ID":102,"Name":"Portfolio ARR","ParentId":{},"Valuation":"positive"}]}]
+				{
+					"listObject": {
+						"listReference": "rowsList",
+						"list": "ProfitAndLossAccounts",
+						"createDescription": "A formatted profit and loss statement to be used on table rows, include drilldowms where applicable"
+					},
+					"hierarchy": "Net Income\n\tProfit Before Taxes\n\t\tEBITDA\n\t\t\tGross Margin\n\t\t\t\tIncome\n\t\t\t\t\tOnline Sales\n\t\t\t\t\tOther Sales\n\t\t\t\tCost of Goods Sold (COGS)\n\t\t\t\t\tCOGS - Other Sales\n\t\t\t\t\tCOGS - Trade Sales & Services\n\t\tOperating Expenses\n\t\t\tAdvertising & Marketing\n\t\t\t\tData Subscriptions\n\t\t\t\tMarketing Contractors\n\t\t\tGeneral & Administrative\n\t\t\t\tLegal & Professional Services\n\t\t\t\tOffice Supplies & Software\n\t\t\tPayroll Expenses\n\t\t\t\tSalaries & Wages\n\t\t\t\tEmployee Benefits\n\t\t\tRent & Utilities\n\t\t\t\tRent\n\t\t\t\tElectricity and Cooling\n\t\t\tDepreciation & Amortization\n\t\t\t\tDepreciation\n\t\t\t\tAmortization - Software Cost\n\t\t\tExtraordinary Expenses\n\t\t\t\tExtraordinary Loss\n\t\t\t\tExtraordinary Income\n\tNet Sales\n\t\tDiscounts\n\t\t\tTrade Discounts\n\t\t\tLoyalty Discounts\n\t\tGross Sales"
+				}
 			</userInstruction>
 			<output>
-				{
-					"dimensions": ["Account"],
-					"items": [
-							{
-							"name": "Income",
-							"displayName": "Income",
-							"format": "",
-							"drilldown": "Account.[Account].children",
-							"dimensions": {
-								"Account": {
-									"member": "Income",
-									"valuation": "positive"
-								}
-							}
-						},
-						{
-							"name": "COGS",
-							"displayName": "COGS",
-							"format": "underline",
-							"dimensions": {
-								"Account": {
-									"member": "COGS",
-									"valuation": "negative"
-								}
-							}
-						},
-						{
-							"name": "Gross Margin",
-							"displayName": "Gross Margin",
-							"format": "bold",
-							"dimensions": {
-								"Account": {
-									"member": "Gross margin",
-									"valuation": "positive"
-								}
-							}
-						},
-						{
-							"name": "Operating Costs",
-							"displayName": "Operating Costs",
-							"format": "underline",
-							"drilldown": "Account.[Account].children",
-								"dimensions": {
-								"Account": {
-									"member": "Operating Costs",
-									"valuation": "negative"
-								}
-							}
-						},
-						{
-							"name": "EBITDA",
-							"displayName": "EBITDA",
-							"format": "bold",
-							"dimensions": {
-								"Account": {
-									"member": "EBITDA",
-									"valuation": "positive"
-								}
-							}
+			{
+				"dimensions": [
+					"Account"
+				],
+				"items": [
+					{
+					"name": "R1",
+					"dimensions": {
+						"Account": {
+						"member": "Gross Sales"
 						}
-					]
-				}
+					},
+					"displayName": "[Account]",
+					"format": "",
+					"drilldown": "Account.[Account].descendants"
+					},
+					{
+					"name": "R2",
+					"dimensions": {
+						"Account": {
+						"member": "Discounts"
+						}
+					},
+					"displayName": "[Account]",
+					"format": "",
+					"drilldown": "Account.[Account].descendants"
+					},
+					{
+					"name": "R3",
+					"dimensions": {
+						"Account": {
+						"member": "Net Sales"
+						}
+					},
+					"displayName": "[Account]",
+					"format": "bold_lineabove_skip"
+					},
+					{
+					"name": "R4",
+					"dimensions": {
+						"Account": {
+						"member": "Cost of goods sold"
+						}
+					},
+					"displayName": "[Account]",
+					"format": ""
+					},
+					{
+					"name": "R5",
+					"dimensions": {
+						"Account": {
+						"member": "Other cost of goods sold"
+						}
+					},
+					"displayName": "[Account]",
+					"format": ""
+					},
+					{
+					"name": "R6",
+					"dimensions": {
+						"Account": {
+						"member": "Direct Staff costs salaries and wages"
+						}
+					},
+					"displayName": "[Account]",
+					"format": ""
+					},
+					{
+					"name": "R7",
+					"dimensions": {
+						"Account": {
+						"member": "Direct Staff costs others"
+						}
+					},
+					"displayName": "[Account]",
+					"format": ""
+					},
+					{
+					"name": "R8",
+					"dimensions": {
+						"Account": {
+						"member": "Gross Margin"
+						}
+					},
+					"displayName": "[Account]",
+					"format": "bold_skip_lineabove"
+					},
+					{
+					"name": "R9",
+					"dimensions": {
+						"Account": {
+						"member": "Advertising and marketing"
+						}
+					},
+					"displayName": "Marketing Expenses",
+					"format": ""
+					},
+					{
+					"name": "R10",
+					"dimensions": {
+						"Account": {
+						"member": "Rent & Utilities"
+						}
+					},
+					"displayName": "[Account]",
+					"format": "",
+					"drilldown": "Account.[Account].descendants"
+					},
+					{
+					"name": "R11",
+					"dimensions": {
+						"Account": {
+						"member": "EBITDA"
+						}
+					},
+					"displayName": "[Account]",
+					"format": "bold_skip_lineabove"
+					},
+					{
+					"name": "R12",
+					"dimensions": {
+						"Account": {
+						"member": "Depreciation"
+						}
+					},
+					"displayName": "[Account]",
+					"format": ""
+					},
+					{
+					"name": "R13",
+					"dimensions": {
+						"Account": {
+						"member": "Extraordinary Expense"
+						}
+					},
+					"displayName": "[Account]",
+					"format": ""
+					},
+					{
+					"name": "R14",
+					"dimensions": {
+						"Account": {
+						"member": "Net Profit"
+						}
+					},
+					"displayName": "[Account]",
+					"format": "bold_skip_lineabove"
+					}
+				]
+			}
 			</output>
 		</shortPAndLStatment>
 	</examples>
