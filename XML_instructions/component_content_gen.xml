@@ -414,11 +414,14 @@
     "lists": [
 		{
 			"listReference": "rowsList",
-			"list": "ProfitAndLossAccounts"
+			"list": "ProfitAndLossAccounts",
+			"createDescription": "A formatted profit and loss statement to be used on table rows, include drilldowms where applicable"
+		
 		},
 		{
 			"listReference": "columnsList",
-			"list": "ActualsBudgetVariance%VarianceBar"
+			"list": "ActualsBudgetVariance%VarianceBar",
+			"createDescription": "A list with Actuals, Budget and a Variance bar to be used on table columns"
 		}
     ]
 }           
@@ -426,18 +429,20 @@
 			</output>
 		</maintable>
 		<trendchart>
-			<userInstruction>A column chart with 12 periods comparing Actuals to Budget.</userInstruction>
+			<userInstruction>A column chart with 12 rolling periods comparing Actuals to Budget.</userInstruction>
 			<output>
 <![CDATA[
 "config": {
     "lists": [
         {
-        "listReference": "categoryList",
-        "list": "12periods"
+			"listReference": "categoryList",
+			"list": "12periods",
+			"createDescription": "A list with 12 rolling months starting from the current period going 11 months back to be used on the x-axis of the chart"
         },
         {
-        "listReference": "seriesList",
-        "list": "ActualsBudget"
+			"listReference": "seriesList",
+			"list": "ActualsBudget",
+			"createDescription": "A list with Actuals and Budget to be used on the y-axis of the chart"
         }
     ],
     "KPI": {
@@ -494,7 +499,7 @@
 			</output>
 		</trendchart>
 		<drilldowntable>
-			<userInstruction>A table breaking down the current selected line in to the product dimension comparing actuals to budget.</userInstruction>
+			<userInstruction>A table breaking down the current selected line in to 4 different dimensions (Entity, Cost Center, Product and Region) using a list selector. On the columns actuals, budget and a variance column.</userInstruction>
 			<output>
 				<![CDATA[
 "config": {
@@ -507,26 +512,31 @@
         "availableLists": [
 			{
 				"label": "Entity",
-				"list": "entity"
+				"list": "entity",
+				"createDescription": "A list drilling down form the top entity into all descendants to be used as a selector"
 			},
 			{
 				"label": "Cost Center",
-				"list": "costCenters"
+				"list": "costCenters",
+				"createDescription": "A list drilling down form the top cost center into all descendants to be used as a selector"
 			},
 			{
 				"label": "Channel",
-				"list": "products"
+				"list": "products",
+				"createDescription": "A list drilling down form the top product into all descendants to be used as a selector"
 			},
 			{
 				"label": "Location",
-				"list": "regions"
+				"list": "regions",
+				"createDescription": "A list drilling down form the top region into all descendants to be used as a selector"
 			}
         ]
     },
     "lists": [
         {
 			"listReference": "columnsList",
-			"list": "ActualsBudgedVarianceBar"
+			"list": "ActualsBudgedVarianceBar",
+			"createDescription": "A list with Actuals, Budget and a Variance bar to be used on table columns"
         }
     ]
 }            
