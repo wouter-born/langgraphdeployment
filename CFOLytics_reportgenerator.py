@@ -1,5 +1,6 @@
 import os
 import json
+
 from langgraph.constants import Send
 import operator
 from typing import Annotated
@@ -36,7 +37,7 @@ component_prompt = load_xml_instructions("component_content_gen.xml")
 # LLM
 model = ChatGroq(
     temperature=0,
-    model_name="llama-3.3-70b-specdec",
+    model_name="llama3-8b-8192",
     api_key="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",
     disable_streaming=True
 )
