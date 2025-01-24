@@ -64,6 +64,13 @@ class NestedNumberFormat(BaseModel):
     scale: str
     decimals: int
 
+class GridColumns(BaseModel):
+    sm: Union[int, str]
+    md: Union[int, str]
+    lg: Union[int, str]
+    class Config:
+        extra = "forbid"
+
 class Layout(BaseModel):
     gridColumns: Optional[GridColumns] = None  # Made optional to allow NestedRow behavior
     rows: List[Row]  # Always required
@@ -105,14 +112,6 @@ class Column(BaseModel):
 class Row(BaseModel):
     columns: List[Column]
 
-    class Config:
-        extra = "forbid"
-
-
-class GridColumns(BaseModel):
-    sm: Union[int, str]
-    md: Union[int, str]
-    lg: Union[int, str]
     class Config:
         extra = "forbid"
 
