@@ -208,7 +208,7 @@ def generate_layout(state: OverallState):
     parsed_output["POV"] = state["POV"]
 
     # Output both JsonLayout and Components
-    return {"JsonLayout": parsed_output, "Components": components}
+    return {"JsonLayout": parsed_output, "Components": components, "ReportMetadata": state["ReportMetadata"]}
 
 
 
