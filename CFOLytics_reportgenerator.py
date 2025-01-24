@@ -35,13 +35,19 @@ layout_prompt = load_xml_instructions("render_layout.xml")
 component_prompt = load_xml_instructions("component_content_gen.xml")
 
 # LLM
-model = ChatGroq(
+modelVers = ChatGroq(
     temperature=0,
     model_name="llama-3.3-70b-versatile",
     api_key="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",
     disable_streaming=True
 )
 
+modelSpec = ChatGroq(
+    temperature=0,
+    model_name="llama-3.3-70b-specdec",
+    api_key="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",
+    disable_streaming=True
+)
 
 class Components(BaseModel):
     Components: list[str]
@@ -153,7 +159,7 @@ def generate_layout(state: OverallState):
     system_msg = SystemMessage(content=system_instructions)
     user_msg = HumanMessage(content=state["ReportQuery"])
     
-    structured_llm = model.with_structured_output(
+    structured_llm = modelSpec.with_structured_output(
         ReportConfig,
         method="json_mode",
         include_raw=True
@@ -220,7 +226,7 @@ def generate_component(state: ComponentState):
         system_msg = SystemMessage(content=system_instructions)
         user_msg = HumanMessage(content=ai_description)
         
-        structured_llm = model.with_structured_output(
+        structured_llm = modelSpec.with_structured_output(
             ComponentConfig,
             method="json_mode",
             include_raw=True
@@ -370,7 +376,7 @@ def check_dynamic_or_fixed(state: ListSubchartState):
 
     user_msg = HumanMessage(content=json.dumps(user_input, indent=2))
         
-    structured_llm = model.with_structured_output(
+    structured_llm = modelSpec.with_structured_output(
         DynamicOrFixedReply,
         method="json_mode",
         include_raw=True
@@ -464,7 +470,7 @@ def create_fixed_list(state: ListSubchartState):
 
 
     # 5. Invoke the LLM with structured output
-    structured_llm = model.with_structured_output(
+    structured_llm = modelVers.with_structured_output(
         FixedListReply,
         method="json_mode",
         include_raw=True
@@ -523,7 +529,7 @@ def create_dynamic_list(state: ListSubchartState):
     user_msg = HumanMessage(content=json.dumps(user_input, indent=2))
 
     # 5. Invoke the LLM with structured output
-    structured_llm = model.with_structured_output(
+    structured_llm = modelVers.with_structured_output(
         DynamicListReply,
         method="json_mode",
         include_raw=True
