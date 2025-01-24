@@ -64,17 +64,22 @@ class NestedNumberFormat(BaseModel):
     scale: str
     decimals: int
 
+class Layout(BaseModel):
+    gridColumns: Optional[GridColumns] = None  # Made optional to allow NestedRow behavior
+    rows: List[Row]  # Always required
+    class Config:
+        extra = "forbid"
+
 class Component(BaseModel):
     id: str
     type: str
     title: Optional[str] = None
-    AI_Generation_Description: Optional[str] = Field(
-        None,
-        alias="AI Generation Description"
-    )
+    AI_Generation_Description: Optional[str] = None
     noborder: Optional[bool] = None
     height: Optional[int] = None
     numberFormat: Optional[NestedNumberFormat] = None  # Overrides
+    config: Optional[Layout] = None  # Recursive field to support nested rows
+
 
     class Config:
         populate_by_name = True
@@ -149,7 +154,21 @@ def generate_layout(state: OverallState):
 
     
     output = structured_llm.invoke(conversation, stream=False, response_format="json")
-    
+
+    if output["parsed"] is None:
+        # Construct a meaningful error message
+        error_message = (
+            "Parsing failed: The 'parsed' field in the output is None.\n"
+            "Raw LLM Output:\n"
+            f"{output.get('raw', 'No raw output available')}\n\n"
+            "Additional Context:\n"
+            f"Model Name: {output.get('response_metadata', {}).get('model_name', 'Unknown')}\n"
+            f"Token Usage: {output.get('response_metadata', {}).get('token_usage', 'Unknown')}\n"
+            f"Finish Reason: {output.get('response_metadata', {}).get('finish_reason', 'Unknown')}\n"
+            "Please check the raw output for errors or unexpected formatting."
+        )
+        raise Exception(error_message)
+
     parsed_output = output["parsed"].model_dump()
 
     # Find components
