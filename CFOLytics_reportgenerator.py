@@ -65,7 +65,7 @@ class ComponentConfig(BaseModel):
 class OverallState(TypedDict):
     ReportQuery: str
     POV: list
-    ReportMetadata: Annotated[List[Dict[str, Any]], operator.add]
+    ReportMetadata: List[Dict[str, Any]]
     JsonLayout: dict
     Components: list
     JsonLayoutWithComponentConfig: Annotated[list, operator.add]
@@ -164,7 +164,8 @@ def generate_layout(state: OverallState):
     system_instructions = load_xml_instructions("render_layout.xml")
     system_msg = SystemMessage(content=system_instructions)
     user_msg = HumanMessage(content=state["ReportQuery"])
-    
+    report_metadata = state["ReportMetadata"]
+
     structured_llm = modelSpec.with_structured_output(
         ReportConfig,
         method="json_mode",
@@ -208,7 +209,7 @@ def generate_layout(state: OverallState):
     parsed_output["POV"] = state["POV"]
 
     # Output both JsonLayout and Components
-    return {"JsonLayout": parsed_output, "Components": components, "ReportMetadata": state["ReportMetadata"]}
+    return {"JsonLayout": parsed_output, "Components": components, "ReportMetadata": report_metadata}
 
 
 
