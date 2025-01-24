@@ -5,7 +5,7 @@ from langgraph.constants import Send
 import operator
 from typing import Annotated
 from typing_extensions import TypedDict
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 from langchain_groq import ChatGroq
 from langchain_core.messages import (
@@ -14,7 +14,7 @@ from langchain_core.messages import (
     SystemMessage,
     BaseMessage
 )
-from typing import TypedDict, List, Dict, Any, Annotated
+from typing import TypedDict, List, Dict, Any, Annotated, Union
 from langgraph.graph import StateGraph, START, END
 
 # Manually set the __file__ variable to the notebook's directory
@@ -37,7 +37,7 @@ component_prompt = load_xml_instructions("component_content_gen.xml")
 # LLM
 model = ChatGroq(
     temperature=0,
-    model_name="llama3-8b-8192",
+    model_name="llama-3.3-70b-versatile",
     api_key="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",
     disable_streaming=True
 )
@@ -46,22 +46,93 @@ model = ChatGroq(
 class Components(BaseModel):
     Components: list[str]
 
-class ReportConfig(BaseModel):
-    reportTitle: str
-    layout: dict
-    numberFormat: Optional[dict]
 
 class ComponentConfig(BaseModel):
     config : dict
 
 class OverallState(TypedDict):
     ReportQuery: str
+    POV: list
     ReportMetadata: Annotated[List[Dict[str, Any]], operator.add]
     JsonLayout: dict
     Components: list
     JsonLayoutWithComponentConfig: Annotated[list, operator.add]
     Lists: list
     JsonLists: Annotated[list, operator.add]
+
+class NestedNumberFormat(BaseModel):
+    scale: str
+    decimals: int
+
+class Component(BaseModel):
+    id: str
+    type: str
+    title: Optional[str] = None
+    AI_Generation_Description: Optional[str] = Field(
+        None,
+        alias="AI Generation Description"
+    )
+    noborder: Optional[bool] = None
+    height: Optional[int] = None
+    numberFormat: Optional[NestedNumberFormat] = None  # Overrides
+
+    class Config:
+        populate_by_name = True
+        extra = "forbid"  # Disallow extra fields beyond what's defined
+
+class ColSpan(BaseModel):
+    sm: Union[int, str]
+    md: Union[int, str]
+    lg: Union[int, str]
+
+    class Config:
+        extra = "forbid"
+
+
+class Column(BaseModel):
+    colSpan: ColSpan
+    components: List[Component]
+
+    class Config:
+        extra = "forbid"
+
+
+class Row(BaseModel):
+    columns: List[Column]
+
+    class Config:
+        extra = "forbid"
+
+
+class GridColumns(BaseModel):
+    sm: Union[int, str]
+    md: Union[int, str]
+    lg: Union[int, str]
+    class Config:
+        extra = "forbid"
+
+
+class Layout(BaseModel):
+    gridColumns: GridColumns
+    rows: List[Row]
+    class Config:
+        extra = "forbid"
+
+
+class NumberFormat(BaseModel):
+    currency: str
+    scale: str
+    decimals: int
+    class Config:
+        extra = "forbid"
+
+
+class ReportConfig(BaseModel):
+    reportTitle: str
+    numberFormat: NumberFormat
+    layout: Layout
+    class Config:
+        extra = "forbid"  # Disallow additional top-level fields not defined here
 
 
 def generate_layout(state: OverallState):
@@ -77,12 +148,8 @@ def generate_layout(state: OverallState):
     conversation = [system_msg] + [user_msg]
 
     
-    try:
-        output = structured_llm.invoke(conversation, stream=False, response_format="json")
-    except Exception as e:
-        print("Error during LLM invocation:", str(e))
-        raise
-
+    output = structured_llm.invoke(conversation, stream=False, response_format="json")
+    
     parsed_output = output["parsed"].model_dump()
 
     # Find components
@@ -99,6 +166,8 @@ def generate_layout(state: OverallState):
                 walk(v)
     walk(parsed_output)
     
+    parsed_output["POV"] = state["POV"]
+
     # Output both JsonLayout and Components
     return {"JsonLayout": parsed_output, "Components": components}
 
@@ -114,10 +183,12 @@ class ComponentState(TypedDict):
 
 def generate_component(state: ComponentState):
     component = state["component"]
-    ai_description = component.get("AI Generation Description", "None")
+    ai_description = component.get("AI_Generation_Description", "None")
+    ai_description = ai_description.strip() if isinstance(ai_description, str) else ai_description
+    ai_description = None if ai_description == "None" else ai_description
+
     component_id = component.get("id", "NoId")
-    
-    if(ai_description != "None"):
+    if(ai_description is not None):
         system_instructions = load_xml_instructions("component_content_gen.xml")
         system_msg = SystemMessage(content=system_instructions)
         user_msg = HumanMessage(content=ai_description)
@@ -334,6 +405,7 @@ def create_fixed_list(state: ListSubchartState):
     #    This example also limits each dimensionContent to the first 3 members,
     #    just like we did earlier, but adapt as needed.
     filtered_metadata = []
+    dims = []
     for dim in all_metadata:
         if dim["name"] in chosen_dims:
             new_dim = {
@@ -342,6 +414,7 @@ def create_fixed_list(state: ListSubchartState):
                 "dimensionContent": dim.get("dimensionContent", [])
             }
             filtered_metadata.append(new_dim)
+            dims.append(dim["name"])
 
  # 3. Load the fixed list LLM instructions from an XML file
     #    Adjust the path or method to match your environment
@@ -353,16 +426,15 @@ def create_fixed_list(state: ListSubchartState):
     #   Construct a user message that contains:
     #   - The current list definition
     #   - The filtered dimension metadata
-    print (filtered_metadata)
     hierarchystring = build_hierarchy_string(filtered_metadata)
-    print (hierarchystring)
+
     user_input = {
         "listObject": current_list,
+        "dimensions": dims,
         "hierarchy": hierarchystring
     }
     user_msg = HumanMessage(content=json.dumps(user_input, indent=2))
 
-    print (user_input)
 
     # 5. Invoke the LLM with structured output
     structured_llm = model.with_structured_output(
@@ -376,9 +448,12 @@ def create_fixed_list(state: ListSubchartState):
     # 6. Parse the LLM’s structured output
     parsed_output = output["parsed"]
     final_list = parsed_output.model_dump()
-    print (final_list)
+
+    list_name = current_list.get("list", "Unnamed List")
+    named_list = {list_name: final_list}
+
     # 7. Return final state
-    return {"JsonLists": [final_list] }
+    return {"JsonLists": [named_list] }
 
 class DynamicListReply(BaseModel):
     dimensions: list
@@ -416,7 +491,7 @@ def create_dynamic_list(state: ListSubchartState):
     #   - The filtered dimension metadata
     user_input = {
         "listObject": current_list,
-        "filteredMetadata": filtered_metadata
+        "filteredMetadata": build_hierarchy_string(filtered_metadata)
     }
     user_msg = HumanMessage(content=json.dumps(user_input, indent=2))
 
@@ -429,12 +504,15 @@ def create_dynamic_list(state: ListSubchartState):
     conversation = [system_msg, user_msg]
     output = structured_llm.invoke(conversation, stream=False)
 
-    # 6. Parse the LLM’s structured output
+     # 6. Parse the LLM’s structured output
     parsed_output = output["parsed"]
     final_list = parsed_output.model_dump()
-    print (final_list)
+
+    list_name = current_list.get("list", "Unnamed List")
+    named_list = {list_name: final_list}
+
     # 7. Return final state
-    return {"JsonLists": [final_list] }
+    return {"JsonLists": [named_list] }
 
 #########################################################
 # 4. Build the subgraph: define nodes & edges
@@ -484,6 +562,23 @@ subgraph.add_edge("create_fixed_list", END)
 # Compile the subchart
 generate_list_subchart = subgraph.compile()
 
+def remove_none_members(data):
+    """
+    Recursively removes all None members from a JSON-like dictionary or list structure.
+    
+    :param data: The input data (dict, list, or any JSON-serializable structure).
+    :return: The cleaned data with None members removed.
+    """
+    if isinstance(data, dict):
+        # Recursively process dictionary values and remove keys with None values
+        return {k: remove_none_members(v) for k, v in data.items() if v is not None}
+    elif isinstance(data, list):
+        # Recursively process list elements
+        return [remove_none_members(item) for item in data if item is not None]
+    else:
+        # Return the data itself if it is not a dict or list
+        return data
+
 def consolidate_lists_to_layout(state: OverallState):
     """
     Consolidates all the lists generated by the subgraph into the final layout JSON.
@@ -494,13 +589,22 @@ def consolidate_lists_to_layout(state: OverallState):
 
     # Ensure a 'Lists' child exists in JsonLayout
     if "Lists" not in state["JsonLayout"]:
-        state["JsonLayout"]["lists"] = []
+        state["JsonLayout"]["lists"] = {}
 
     # Gather all generated lists from the subgraph
-    generated_lists = state.get("JsonLists", [])
-    state["JsonLayout"]["lists"].extend(generated_lists)
+    generated_lists = state.get("JsonLists", {})
+    print(generated_lists)
+
+    for generated_list in generated_lists:
+        if isinstance(generated_list, dict):
+            state["JsonLayout"]["lists"].update(generated_list)
+
+    # cleaned_json = remove_none_members(state["JsonLayout"])
+
+    # state["JsonLayout"] = json.loads(cleaned_json)
 
     return {"JsonLayout": state["JsonLayout"]}
+
 # Main graph
 graph = StateGraph(OverallState)
 

@@ -6,11 +6,11 @@
 	</overview>
 	<guidelines>
 		<instructionsForGeneratingModifications>
-			<instruction>**Understand the User's Instructions**: Carefully read the user's request to identify the required changes.</instruction>
+			<instruction>**Understand the User's Instructions**: Carefully read the user's request to identify the required result. If for example the user asks for a list with 3 items, you cannot output 4 items</instruction>
 			<instruction>**Follow the jsonStructure**: See the section jsonStructure for a detailed overview of how the JSON file should be structured</instruction>
-			<instruction>**Use the examples**: Use the examples to understand what kind of user queries should lead to certain results, use this for your creative process</instruction>
-			<instruction>**Apply the customer metadata**: Use the provided metadata to fill in and verify any dimension member values, you cannot output anything that is not a valid dimension member</instruction>
-			<instruction>Double check the spelling and case of every member you output using the user provided metadata</instruction>
+			<instruction>**Use the examples**: Use the examples to understand what kind of user queries should lead to certain results, but do not copy the examples. It is more important to follow the user instructions</instruction>
+			<instruction>**Use the hierarchies**: Use the provided hierarchies to verify any dimension member values, you cannot output anything that is not specified in the hierarchy</instruction>
+			<instruction>**Exclude None attributes**:  Only include fields in the JSON output that are relevant and explicitly required. Exclude optional fields that are not set or contain a value of "None".</instruction>
 		</instructionsForGeneratingModifications>
 		<importantNotes>
 			<importantNote>**Validation and Error Prevention**: Verify that the JSON syntax is correct to prevent errors. </importantNote>
@@ -305,5 +305,90 @@
 			}
 			</output>
 		</shortPAndLStatment>
+		<ActualsBudgetVariancePercVarianceBar>
+			<userInstruction>
+			{
+				'listObject': {
+					'listReference': 'columnsList', 
+					'list': 'ActualsBudgetVariancePercVarianceBar', 
+					'createDescription': 'A list with Actuals, Forecast, variance percentage and a Variance bar to be used on table columns'}, 
+					'dimensions': ['Category'], 
+					'hierarchy': 'Actual\\nBudget\\nForecast Jun\\n'
+			}
+			</userInstruction>
+			<output>
+			{
+				"dimensions": [
+					"Category"
+				],
+				"items": [
+					{
+						"name": "Actual",
+						"dimensions": {
+							"Category": {
+							"member": "Actual"
+							}
+						},
+						"displayName": "Actual",
+						"attributes": {
+							"minWidth": 75
+						}
+					},
+					{
+						"name": "Forecast",
+						"dimensions": {
+							"Category": {
+								"member": "Forecast Jun",
+								"alias": "Forecast"
+							}
+						},
+						"displayName": "Forecast",
+						"attributes": {
+							"minWidth": 75
+						}
+					},
+					{
+						"name": "Variance",
+						"dimensions": {
+							"Category": {
+							"member": "Δ"
+							}
+						},
+						"displayName": "Δ",
+						"formula": {
+							"type": "varianceAbsolute",
+							"parameters": [
+								"Actual",
+								"Forecast"
+							]
+						},
+						"attributes": {
+							"minWidth": 75
+						}
+					},
+					{
+						"name": "Bar",
+						"dimensions": {
+							"Category": {
+							"member": " "
+							}
+						},
+						"displayName": " ",
+						"formula": {
+							"type": "varianceRelative",
+							"parameters": [
+								"Actual",
+								"Forecast"
+							],
+							"displayStyle": "Bars"
+						},
+						"attributes": {
+							"minWidth": 150
+						}
+					}
+				]
+			}
+			</output>
+		</ActualsBudgetVariancePercVarianceBar>		
 	</examples>
 </task>
