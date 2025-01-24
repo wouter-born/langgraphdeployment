@@ -64,33 +64,17 @@ class NestedNumberFormat(BaseModel):
     scale: str
     decimals: int
 
+from typing import List, Optional, Union
+from pydantic import BaseModel, Field
+
+# Define the lowest-level models first
 class GridColumns(BaseModel):
     sm: Union[int, str]
     md: Union[int, str]
     lg: Union[int, str]
+
     class Config:
         extra = "forbid"
-
-class Layout(BaseModel):
-    gridColumns: Optional[GridColumns] = None  # Made optional to allow NestedRow behavior
-    rows: List[Row]  # Always required
-    class Config:
-        extra = "forbid"
-
-class Component(BaseModel):
-    id: str
-    type: str
-    title: Optional[str] = None
-    AI_Generation_Description: Optional[str] = None
-    noborder: Optional[bool] = None
-    height: Optional[int] = None
-    numberFormat: Optional[NestedNumberFormat] = None  # Overrides
-    config: Optional[Layout] = None  # Recursive field to support nested rows
-
-
-    class Config:
-        populate_by_name = True
-        extra = "forbid"  # Disallow extra fields beyond what's defined
 
 class ColSpan(BaseModel):
     sm: Union[int, str]
@@ -100,6 +84,30 @@ class ColSpan(BaseModel):
     class Config:
         extra = "forbid"
 
+class NestedNumberFormat(BaseModel):
+    scale: str
+    decimals: int
+
+    class Config:
+        extra = "forbid"
+
+# Define rows and columns next
+class Component(BaseModel):
+    id: str
+    type: str
+    title: Optional[str] = None
+    AI_Generation_Description: Optional[str] = Field(
+        None,
+        alias="AI Generation Description"
+    )
+    noborder: Optional[bool] = None
+    height: Optional[int] = None
+    numberFormat: Optional[NestedNumberFormat] = None
+    config: Optional["Layout"] = None  # Use forward reference for recursive Layout
+
+    class Config:
+        populate_by_name = True
+        extra = "forbid"
 
 class Column(BaseModel):
     colSpan: ColSpan
@@ -108,35 +116,36 @@ class Column(BaseModel):
     class Config:
         extra = "forbid"
 
-
 class Row(BaseModel):
     columns: List[Column]
 
     class Config:
         extra = "forbid"
 
-
+# Define layout after rows and columns
 class Layout(BaseModel):
-    gridColumns: GridColumns
+    gridColumns: Optional[GridColumns] = None
     rows: List[Row]
+
     class Config:
         extra = "forbid"
 
-
+# Define the top-level models
 class NumberFormat(BaseModel):
     currency: str
     scale: str
     decimals: int
+
     class Config:
         extra = "forbid"
-
 
 class ReportConfig(BaseModel):
     reportTitle: str
     numberFormat: NumberFormat
     layout: Layout
+
     class Config:
-        extra = "forbid"  # Disallow additional top-level fields not defined here
+        extra = "forbid"
 
 
 def generate_layout(state: OverallState):
