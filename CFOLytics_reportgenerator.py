@@ -17,6 +17,12 @@ from langchain_core.messages import (
 from typing import TypedDict, List, Dict, Any, Annotated, Union
 from langgraph.graph import StateGraph, START, END
 
+os.environ["LANGCHAIN_TRACING_V2"] = os.getenv("CUSTOM_TRACING_V2", "true")
+os.environ["LANGCHAIN_ENDPOINT"] = os.getenv("CUSTOM_ENDPOINT", "https://api.smith.langchain.com")
+os.environ["LANGCHAIN_API_KEY"] = os.getenv("CUSTOM_API_KEY", "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")
+os.environ["LANGCHAIN_PROJECT"] = os.getenv("CUSTOM_PROJECT", "CFOLytics_reportgenerator")
+
+
 # Manually set the __file__ variable to the notebook's directory
 __file__ = os.path.abspath("notebook_name.ipynb")
 def load_xml_instructions(filename: str) -> str:
