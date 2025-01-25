@@ -10,7 +10,10 @@
 			<instruction>**Follow the jsonStructure**: See the section jsonStructure for a detailed overview of how the JSON file should be structured</instruction>
 			<instruction>**Use the examples**: Use the examples to understand what kind of user queries should lead to certain results, but do not copy the examples. It is more important to follow the user instructions</instruction>
 			<instruction>**Use the hierarchies**: Use the provided hierarchies to verify any dimension member values, you cannot output anything that is not specified in the hierarchy</instruction>
-			<instruction>**Exclude None attributes**:  Only include fields in the JSON output that are relevant and explicitly required. Exclude optional fields that are not set or contain a value of "None".</instruction>
+			<instruction>
+				**Profit and Loss Statements**:  When asked to create a P&L statement, first parse the hierarchy and look for the Net Profit or Net Income account and follow the hierarchy so you can understand what accounts to use.
+				A typical P&L statement will have the following structure: Sales, COGS, Gross Margin, Operating Expenses, EBITDA, Net Income.
+			</instruction>
 		</instructionsForGeneratingModifications>
 		<importantNotes>
 			<importantNote>**Validation and Error Prevention**: Verify that the JSON syntax is correct to prevent errors. </importantNote>

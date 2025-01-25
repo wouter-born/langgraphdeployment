@@ -233,7 +233,7 @@ def generate_component(state: ComponentState):
         system_msg = SystemMessage(content=system_instructions)
         user_msg = HumanMessage(content=ai_description)
         
-        structured_llm = modelSpec.with_structured_output(
+        structured_llm = modelVers.with_structured_output(
             ComponentConfig,
             method="json_mode",
             include_raw=True
@@ -477,7 +477,7 @@ def create_fixed_list(state: ListSubchartState):
 
 
     # 5. Invoke the LLM with structured output
-    structured_llm = modelVers.with_structured_output(
+    structured_llm = modelSpec.with_structured_output(
         FixedListReply,
         method="json_mode",
         include_raw=True
