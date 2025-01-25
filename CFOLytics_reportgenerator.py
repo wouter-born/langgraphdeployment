@@ -1,12 +1,14 @@
 import os
 import json
-
-from langgraph.constants import Send
+import time
+from collections import deque
 import operator
 from typing import Annotated
 from typing_extensions import TypedDict
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, TypedDict, List, Dict, Any, Union
+
+from langgraph.constants import Send
 from langchain_groq import ChatGroq
 from langchain_core.messages import (
     AIMessage, 
@@ -14,17 +16,52 @@ from langchain_core.messages import (
     SystemMessage,
     BaseMessage
 )
-from typing import TypedDict, List, Dict, Any, Annotated, Union
 from langgraph.graph import StateGraph, START, END
+
+###############################################
+# SPECDEC 30k tokens/minute THROTTLING LOGIC
+###############################################
+MAX_TOKENS_PER_MIN = 30000
+token_usage_window_specdec = deque()
+
+def record_specdec_token_usage(token_count):
+    now = time.time()
+    token_usage_window_specdec.append((now, token_count))
+    # Remove any usage older than 60 seconds
+    while token_usage_window_specdec and (now - token_usage_window_specdec[0][0]) > 60:
+        token_usage_window_specdec.popleft()
+
+def get_specdec_tokens_last_minute():
+    now = time.time()
+    return sum(t[1] for t in token_usage_window_specdec if (now - t[0]) <= 60)
+
+def safe_invoke_specdec(structured_llm, conversation, **kwargs):
+    """
+    Invokes SpecDec LLM calls while ensuring we don't exceed 30k tokens in the last minute.
+    """
+    while True:
+        tokens_in_last_min = get_specdec_tokens_last_minute()
+        if tokens_in_last_min < MAX_TOKENS_PER_MIN:
+            break
+        # If we're at or above the limit, wait briefly before trying again
+        time.sleep(1)
+
+    output = structured_llm.invoke(conversation, **kwargs)
+
+    # Record the tokens used from response metadata
+    used_tokens = output.get("response_metadata", {}).get("token_usage", {}).get("total_tokens", 0)
+    record_specdec_token_usage(used_tokens)
+    return output
+
 
 os.environ["LANGCHAIN_TRACING_V2"] = os.getenv("CUSTOM_TRACING_V2", "true")
 os.environ["LANGCHAIN_ENDPOINT"] = os.getenv("CUSTOM_ENDPOINT", "https://api.smith.langchain.com")
 os.environ["LANGCHAIN_API_KEY"] = os.getenv("CUSTOM_API_KEY", "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")
 os.environ["LANGCHAIN_PROJECT"] = os.getenv("CUSTOM_PROJECT", "CFOLytics_reportgenerator")
 
-
 # Manually set the __file__ variable to the notebook's directory
 __file__ = os.path.abspath("notebook_name.ipynb")
+
 def load_xml_instructions(filename: str) -> str:
     """
     Load system instructions from 'XML_instructions/filename' if you keep them externally.
@@ -34,7 +71,6 @@ def load_xml_instructions(filename: str) -> str:
     file_path = os.path.join(current_dir, "XML_instructions", filename)
     with open(file_path, "r", encoding="utf-8") as f:
         return f.read()
-
 
 # Prompts we will use
 layout_prompt = load_xml_instructions("render_layout.xml")
@@ -57,7 +93,6 @@ modelSpec = ChatGroq(
 
 class Components(BaseModel):
     Components: list[str]
-
 
 class ComponentConfig(BaseModel):
     config : dict
@@ -159,7 +194,6 @@ class ReportConfig(BaseModel):
     class Config:
         extra = "forbid"
 
-
 def generate_layout(state: OverallState):
     system_instructions = load_xml_instructions("render_layout.xml")
     system_msg = SystemMessage(content=system_instructions)
@@ -173,8 +207,8 @@ def generate_layout(state: OverallState):
     )
     conversation = [system_msg] + [user_msg]
 
-    
-    output = structured_llm.invoke(conversation, stream=False, response_format="json")
+    # Use safe_invoke_specdec to ensure we don't exceed token limits
+    output = safe_invoke_specdec(structured_llm, conversation, stream=False, response_format="json")
 
     if output["parsed"] is None:
         # Construct a meaningful error message
@@ -212,12 +246,12 @@ def generate_layout(state: OverallState):
     return {"JsonLayout": parsed_output, "Components": components, "ReportMetadata": report_metadata}
 
 
-
 def continue_to_components(state: OverallState):
     return [Send("generate_component", {"component": c}) for c in state["Components"]]
 
 def continue_to_lists(state: OverallState):
     return [Send("generate_list_subchart",{"List": l,"ReportMetadata": state["ReportMetadata"] }) for l in state["Lists"]]
+
 class ComponentState(TypedDict):
     component: dict
 
@@ -239,6 +273,7 @@ def generate_component(state: ComponentState):
             include_raw=True
         )
         conversation = [system_msg] + [user_msg]
+        # This is a Versatile model call, so we keep it as is
         output = structured_llm.invoke(conversation, stream=False)
         parsed_output = output["parsed"].model_dump()
     else:
@@ -250,8 +285,6 @@ def generate_component(state: ComponentState):
         "generatedConfig": parsed_output
     }
 
-    
-        
     return {"JsonLayoutWithComponentConfig": [generated_config]}  # Return as list
 
 def update_json_layout(state: OverallState):
@@ -282,7 +315,6 @@ def gatheruniquelists(state: OverallState):
     new_lists = []
     
     for component_config in state.get("JsonLayoutWithComponentConfig", []):
-
         generated_config = component_config.get("generatedConfig", {})
         config_obj = generated_config.get("config", {})
         comp_lists = config_obj.get("lists", [])
@@ -297,7 +329,6 @@ def gatheruniquelists(state: OverallState):
     return {
         "Lists": new_lists
     }
-
 
 #########################################################
 # 1. Extend the TypedDict for your subchart state
@@ -325,10 +356,7 @@ def check_if_list_exists(state: ListSubchartState):
     Placeholder: checks if the list already exists.
     Set 'listExists' in the returned partial state.
     """
-   
     # Example logic (replace with real check):
-    #    existing = lookup_list_in_db(state["List"].get("list"))
-    #    list_exists_flag = existing is not None
     list_exists_flag = False  # Placeholder: always assume it doesn't exist
 
     return {"listExists": list_exists_flag}
@@ -339,10 +367,8 @@ def return_existing_list(state: ListSubchartState):
     Placeholder: if the list already exists, retrieve and return it.
     """
     # Example logic (replace with real retrieval):
-    #   existing_list_data = ...
     existing_list_data = {"someExistingList": True}  # Placeholder
 
-    # Update both FinalList & JsonLists if desired
     return {
         "FinalList": existing_list_data,
         "JsonLists": [existing_list_data]
@@ -354,26 +380,21 @@ class DynamicOrFixedReply(BaseModel):
 
 def check_dynamic_or_fixed(state: ListSubchartState):
     """
-    Uses an LLM to decide if the list is 'Fixed' or 'Dynamic' and determine
+    Uses an LLM (SpecDec) to decide if the list is 'Fixed' or 'Dynamic' and determine
     which top-level dimensions apply to the list.
-
-    Returns:
-      {"listType": "...", "dimensionsUsed": [...]}
     """
-
     current_list = state["List"]
     report_metadata = state["ReportMetadata"]
     top_level_dims = [
         {
             "name": dim["name"],
             "alias": dim["alias"],
-            "members": [member["Name"] for member in dim.get("dimensionContent", [])[:3]]  # First three members
+            "members": [member["Name"] for member in dim.get("dimensionContent", [])[:3]]
         }
         for dim in report_metadata
     ]
     
     dynamic_or_fixed_prompt = load_xml_instructions("dynamic_or_fixed_prompt.xml")
-
     system_msg = SystemMessage(content=dynamic_or_fixed_prompt)
 
     user_input = {
@@ -389,7 +410,9 @@ def check_dynamic_or_fixed(state: ListSubchartState):
         include_raw=True
     )
     conversation = [system_msg] + [user_msg]
-    output = structured_llm.invoke(conversation, stream=False)
+
+    # Use safe_invoke_specdec
+    output = safe_invoke_specdec(structured_llm, conversation, stream=False)
     parsed_output = output["parsed"].model_dump()
 
     return {
@@ -400,24 +423,17 @@ def check_dynamic_or_fixed(state: ListSubchartState):
 def build_hierarchy_string(filtered_metadata, parent_id=None, indent=0):
     """
     Convert multiple dimensions of `filtered_metadata` into a hierarchical string representation.
-
-    :param filtered_metadata: List of dictionaries containing dimension metadata.
-    :param parent_id: The ID of the current parent node (None for root).
-    :param indent: Current indentation level.
-    :return: A string representing the hierarchy with explicit \\n and \\t for visibility.
     """
     result = ""
     for metadata in filtered_metadata:
-        # Extract the dimension content
         dimension_content = metadata.get("dimensionContent", [])
         for item in dimension_content:
-            # Normalize ParentID to handle {} as None
             item_parent_id = item.get("ParentID")
             if item_parent_id == {}:
                 item_parent_id = None
 
             if item_parent_id == parent_id:
-                # Add the current item's name with explicit \\n and \\t
+                # Add the current item's name with explicit \n and \t
                 result += "\\t" * indent + f"{item['Name']}\\n"
                 # Recursively add children
                 result += build_hierarchy_string([metadata], parent_id=item["ID"], indent=indent + 1)
@@ -429,21 +445,12 @@ class FixedListReply(BaseModel):
 
 def create_fixed_list(state: ListSubchartState):
     """
-    Create a fixed list using the LLM and filtered metadata.
-    1. Filter the metadata based on the dimensions in state["dimensions"].
-    2. Load instructions from fixedlist_prompt.xml as the system message.
-    3. Invoke the LLM using structured output to parse the final JSON.
-    4. Return {"FinalList": ...} so subsequent nodes can use it.
+    Create a fixed list using the LLM (SpecDec) and filtered metadata.
     """
+    current_list = state["List"]
+    all_metadata = state["ReportMetadata"]
+    chosen_dims = state.get("dimensions", [])
 
-    # 1. Gather relevant fields from the state
-    current_list = state["List"]              # The user’s list definition
-    all_metadata = state["ReportMetadata"]    # The full set of dimension metadata
-    chosen_dims = state.get("dimensions", []) # The dimension names from check_dynamic_or_fixed
-
-    # 2. Filter the metadata to include only chosen dimensions
-    #    This example also limits each dimensionContent to the first 3 members,
-    #    just like we did earlier, but adapt as needed.
     filtered_metadata = []
     dims = []
     for dim in all_metadata:
@@ -456,18 +463,10 @@ def create_fixed_list(state: ListSubchartState):
             filtered_metadata.append(new_dim)
             dims.append(dim["name"])
 
- # 3. Load the fixed list LLM instructions from an XML file
-    #    Adjust the path or method to match your environment
-    fixedlist_prompt = load_xml_instructions("fixedlist_prompt.xml")  # placeholder function
-
-    # 4. Prepare messages for the LLM
+    fixedlist_prompt = load_xml_instructions("fixedlist_prompt.xml")
     system_msg = SystemMessage(content=fixedlist_prompt)
 
-    #   Construct a user message that contains:
-    #   - The current list definition
-    #   - The filtered dimension metadata
     hierarchystring = build_hierarchy_string(filtered_metadata)
-
     user_input = {
         "listObject": current_list,
         "dimensions": dims,
@@ -475,24 +474,21 @@ def create_fixed_list(state: ListSubchartState):
     }
     user_msg = HumanMessage(content=json.dumps(user_input, indent=2))
 
-
-    # 5. Invoke the LLM with structured output
     structured_llm = modelSpec.with_structured_output(
         FixedListReply,
         method="json_mode",
         include_raw=True
     )
     conversation = [system_msg, user_msg]
-    output = structured_llm.invoke(conversation, stream=False)
 
-    # 6. Parse the LLM’s structured output
+    # Use safe_invoke_specdec
+    output = safe_invoke_specdec(structured_llm, conversation, stream=False)
     parsed_output = output["parsed"]
     final_list = parsed_output.model_dump()
 
     list_name = current_list.get("list", "Unnamed List")
     named_list = {list_name: final_list}
 
-    # 7. Return final state
     return {"JsonLists": [named_list] }
 
 class DynamicListReply(BaseModel):
@@ -501,14 +497,13 @@ class DynamicListReply(BaseModel):
     dynamicconfig: dict
 
 def create_dynamic_list(state: ListSubchartState):
-    # 1. Gather relevant fields from the state
-    current_list = state["List"]              # The user’s list definition
-    all_metadata = state["ReportMetadata"]    # The full set of dimension metadata
-    chosen_dims = state.get("dimensions", []) # The dimension names from check_dynamic_or_fixed
+    """
+    Create a dynamic list using the Versatile model (no token limit logic needed).
+    """
+    current_list = state["List"]
+    all_metadata = state["ReportMetadata"]
+    chosen_dims = state.get("dimensions", [])
 
-    # 2. Filter the metadata to include only chosen dimensions
-    #    This example also limits each dimensionContent to the first 3 members,
-    #    just like we did earlier, but adapt as needed.
     filtered_metadata = []
     for dim in all_metadata:
         if dim["name"] in chosen_dims:
@@ -519,23 +514,16 @@ def create_dynamic_list(state: ListSubchartState):
             }
             filtered_metadata.append(new_dim)
 
- # 3. Load the fixed list LLM instructions from an XML file
-    #    Adjust the path or method to match your environment
-    dynamiclist_prompt = load_xml_instructions("dynamiclist_prompt.xml")  # placeholder function
-
-    # 4. Prepare messages for the LLM
+    dynamiclist_prompt = load_xml_instructions("dynamiclist_prompt.xml")
     system_msg = SystemMessage(content=dynamiclist_prompt)
 
-    #   Construct a user message that contains:
-    #   - The current list definition
-    #   - The filtered dimension metadata
     user_input = {
         "listObject": current_list,
         "filteredMetadata": build_hierarchy_string(filtered_metadata)
     }
     user_msg = HumanMessage(content=json.dumps(user_input, indent=2))
 
-    # 5. Invoke the LLM with structured output
+    # This is a Versatile model call, so no special token limit logic
     structured_llm = modelVers.with_structured_output(
         DynamicListReply,
         method="json_mode",
@@ -544,14 +532,12 @@ def create_dynamic_list(state: ListSubchartState):
     conversation = [system_msg, user_msg]
     output = structured_llm.invoke(conversation, stream=False)
 
-     # 6. Parse the LLM’s structured output
     parsed_output = output["parsed"]
     final_list = parsed_output.model_dump()
 
     list_name = current_list.get("list", "Unnamed List")
     named_list = {list_name: final_list}
 
-    # 7. Return final state
     return {"JsonLists": [named_list] }
 
 #########################################################
@@ -569,7 +555,6 @@ subgraph.add_node("create_dynamic_list", create_dynamic_list)
 # Edges
 subgraph.add_edge(START, "check_if_list_exists")
 
-# 4A: Conditional edge from check_if_list_exists
 def list_exists_routing(state: ListSubchartState):
     if state.get("listExists") is True:
         return "return_existing_list"
@@ -578,11 +563,8 @@ def list_exists_routing(state: ListSubchartState):
 
 subgraph.add_conditional_edges("check_if_list_exists", list_exists_routing,
                                ["return_existing_list", "check_dynamic_or_fixed"])
-
-# If the list exists, we return it and end
 subgraph.add_edge("return_existing_list", END)
 
-# 4B: Conditional edge from check_dynamic_or_fixed
 def dynamic_or_fixed_routing(state: ListSubchartState):
     if state.get("listType") == "Dynamic":
         return "create_dynamic_list"
@@ -591,12 +573,7 @@ def dynamic_or_fixed_routing(state: ListSubchartState):
 
 subgraph.add_conditional_edges("check_dynamic_or_fixed", dynamic_or_fixed_routing,
                                ["create_dynamic_list", "create_fixed_list"])
-
-# If dynamic -> create_dynamic_list ->  END
 subgraph.add_edge("create_dynamic_list", END)
-
-
-# If fixed -> create_fixed_list ->  END
 subgraph.add_edge("create_fixed_list", END)
 
 # Compile the subchart
@@ -605,43 +582,29 @@ generate_list_subchart = subgraph.compile()
 def remove_none_members(data):
     """
     Recursively removes all None members from a JSON-like dictionary or list structure.
-    
-    :param data: The input data (dict, list, or any JSON-serializable structure).
-    :return: The cleaned data with None members removed.
     """
     if isinstance(data, dict):
-        # Recursively process dictionary values and remove keys with None values
         return {k: remove_none_members(v) for k, v in data.items() if v is not None}
     elif isinstance(data, list):
-        # Recursively process list elements
         return [remove_none_members(item) for item in data if item is not None]
     else:
-        # Return the data itself if it is not a dict or list
         return data
 
 def consolidate_lists_to_layout(state: OverallState):
     """
     Consolidates all the lists generated by the subgraph into the final layout JSON.
     """
-    # Initialize the layout if not already present
     if "JsonLayout" not in state or state["JsonLayout"] is None:
         state["JsonLayout"] = {}
 
-    # Ensure a 'Lists' child exists in JsonLayout
     if "Lists" not in state["JsonLayout"]:
         state["JsonLayout"]["lists"] = {}
 
-    # Gather all generated lists from the subgraph
     generated_lists = state.get("JsonLists", {})
-    print(generated_lists)
 
     for generated_list in generated_lists:
         if isinstance(generated_list, dict):
             state["JsonLayout"]["lists"].update(generated_list)
-
-    # cleaned_json = remove_none_members(state["JsonLayout"])
-
-    # state["JsonLayout"] = json.loads(cleaned_json)
 
     return {"JsonLayout": state["JsonLayout"]}
 
@@ -653,9 +616,8 @@ graph.add_node("generate_component", generate_component)
 graph.add_node("update_json_layout", update_json_layout)
 graph.add_node("gatheruniquelists", gatheruniquelists)
 graph.add_node("generate_list_subchart", generate_list_subchart)  # Subchart
-graph.add_node("consolidate_lists_to_layout", consolidate_lists_to_layout)  # New node
+graph.add_node("consolidate_lists_to_layout", consolidate_lists_to_layout)
 
-# Define edges
 graph.add_edge(START, "generate_layout")
 graph.add_conditional_edges("generate_layout", continue_to_components, ["generate_component"])
 graph.add_edge("generate_component", "update_json_layout")
