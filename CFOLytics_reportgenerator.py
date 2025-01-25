@@ -65,7 +65,7 @@ class ComponentConfig(BaseModel):
 class OverallState(TypedDict):
     ReportQuery: str
     POV: list
-    ReportMetadata: List[Dict[str, Any]]
+    ReportMetadata: Annotated[List[Dict[str, Any]], operator.add]
     JsonLayout: dict
     Components: list
     JsonLayoutWithComponentConfig: Annotated[list, operator.add]
