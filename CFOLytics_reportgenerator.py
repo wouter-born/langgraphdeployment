@@ -35,23 +35,51 @@ def get_specdec_tokens_last_minute():
     now = time.time()
     return sum(t[1] for t in token_usage_window_specdec if (now - t[0]) <= 60)
 
+def approximate_token_count(conversation: List[BaseMessage]) -> int:
+    """
+    A naive approach to estimate token usage by counting words.
+    If total words > 6000, we'll avoid SpecDec (it can handle ~8000 tokens).
+    In a production environment, consider a more accurate token counting method.
+    """
+    total_words = 0
+    for msg in conversation:
+        total_words += len(msg.content.split())
+    return total_words
+
 def safe_invoke_specdec(structured_llm, conversation, **kwargs):
     """
-    Invokes SpecDec LLM calls while ensuring we don't exceed 30k tokens in the last minute.
+    Invokes SpecDec LLM calls while ensuring we:
+     1) Avoid using SpecDec if the input tokens exceed 6000.
+     2) Use Versatile if rolling token usage + input + expected output > 28k.
+        (Since SpecDec has an ~8k token limit total, and we're accounting for 2k output tokens.)
     """
-    while True:
-        tokens_in_last_min = get_specdec_tokens_last_minute()
-        if tokens_in_last_min < MAX_TOKENS_PER_MIN:
-            break
-        # If we're at or above the limit, wait briefly before trying again
-        time.sleep(1)
+    # Approximate token usage of the input conversation
+    input_tokens_approx = approximate_token_count(conversation)
+    
+    # Estimate total tokens after the request
+    expected_output_tokens = 2000  # Fixed assumption as per logic
+    rolling_token_usage = get_specdec_tokens_last_minute()
+    estimated_total_tokens = rolling_token_usage + input_tokens_approx + expected_output_tokens
 
+    # Check if we should fallback to modelVers
+    if input_tokens_approx > 6000 or estimated_total_tokens > 28000:
+        # Fallback to modelVers with the same structured output schema
+        fallback_llm = modelVers.with_structured_output(
+            structured_llm.output_schema,
+            method=structured_llm.method,
+            include_raw=structured_llm.include_raw
+        )
+        output = fallback_llm.invoke(conversation, **kwargs)
+        return output
+
+    # Proceed with SpecDec if limits are respected
     output = structured_llm.invoke(conversation, **kwargs)
 
-    # Record the tokens used from response metadata
+    # Record the actual tokens used for SpecDec to update rolling token usage
     used_tokens = output.get("response_metadata", {}).get("token_usage", {}).get("total_tokens", 0)
     record_specdec_token_usage(used_tokens)
     return output
+
 
 
 os.environ["LANGCHAIN_TRACING_V2"] = os.getenv("CUSTOM_TRACING_V2", "true")
@@ -267,14 +295,16 @@ def generate_component(state: ComponentState):
         system_msg = SystemMessage(content=system_instructions)
         user_msg = HumanMessage(content=ai_description)
         
-        structured_llm = modelVers.with_structured_output(
+        structured_llm = modelSpec.with_structured_output(
             ComponentConfig,
             method="json_mode",
             include_raw=True
         )
+
         conversation = [system_msg] + [user_msg]
         # This is a Versatile model call, so we keep it as is
-        output = structured_llm.invoke(conversation, stream=False)
+
+        output = safe_invoke_specdec(structured_llm, conversation, stream=False, response_format="json")
         parsed_output = output["parsed"].model_dump()
     else:
         parsed_output = {}
@@ -524,13 +554,13 @@ def create_dynamic_list(state: ListSubchartState):
     user_msg = HumanMessage(content=json.dumps(user_input, indent=2))
 
     # This is a Versatile model call, so no special token limit logic
-    structured_llm = modelVers.with_structured_output(
+    structured_llm = modelSpec.with_structured_output(
         DynamicListReply,
         method="json_mode",
         include_raw=True
     )
     conversation = [system_msg, user_msg]
-    output = structured_llm.invoke(conversation, stream=False)
+    safe_invoke_specdec(structured_llm, conversation, stream=False)
 
     parsed_output = output["parsed"]
     final_list = parsed_output.model_dump()

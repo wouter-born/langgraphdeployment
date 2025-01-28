@@ -27,55 +27,64 @@
 
     <example>
       <input>
+      <![CDATA[
         {
           "list": "ActualsBudgetVariance%VarianceBar",
           "createDescription": "Create a list named ActualsBudgetVariance%VarianceBar that includes the actual values, budget values, variance, and variance bar for comparison."
         }
         [{'name': 'Category', 'alias': 'Category', 'members': ['Actuals', 'Budget']}, {'name': 'Year', 'alias': 'Year', 'members': [2022, 2023, 2024]}, {'name': 'Period', 'alias': 'Period', 'members': ['p01 - january', 'p02 - february', 'p03 - march']}, {'name': 'View', 'alias': 'View', 'members': ['Periodic', 'YTD']}, {'name': 'Account', 'alias': 'Account', 'members': ['Net Profit', 'Profit before taxes', 'EBITDA']}, {'name': 'AnalyticalDim1', 'alias': 'Product', 'members': ['TotalProduct', 'CFOTech Fund', 'OnPLan SPV']}, {'name': 'AnalyticalDim2', 'alias': 'Investment', 'members': ['FinTechCore', 'CFO Insights', 'ProfitWave']}, {'name': 'Entity', 'alias': 'Entity', 'members': ['Total Born Capital']}]
+      ]]>
       </input>
       <output>
+      <![CDATA[
         {
           "type": "Fixed",
           "dimensions": ["Category"]
         }
+      ]]>
       </output>
     </example>
 
     <example>
       <input>
+        <![CDATA[
         {
           "list": "12periods",
           "createDescription": "Create a list named '12periods' with 12 consecutive time periods, for example 'Jan' to 'Dec', and assign it to the categoryList""
         }
         [{'name': 'Category', 'alias': 'Category', 'members': ['Actuals', 'Budget']}, {'name': 'Year', 'alias': 'Year', 'members': [2022, 2023, 2024]}, {'name': 'Period', 'alias': 'Period', 'members': ['p01 - january', 'p02 - february', 'p03 - march']}, {'name': 'View', 'alias': 'View', 'members': ['Periodic', 'YTD']}, {'name': 'Account', 'alias': 'Account', 'members': ['Net Profit', 'Profit before taxes', 'EBITDA']}, {'name': 'AnalyticalDim1', 'alias': 'Product', 'members': ['TotalProduct', 'CFOTech Fund', 'OnPLan SPV']}, {'name': 'AnalyticalDim2', 'alias': 'Investment', 'members': ['FinTechCore', 'CFO Insights', 'ProfitWave']}, {'name': 'Entity', 'alias': 'Entity', 'members': ['Total Born Capital']}]
+        ]]>
       </input>
       <output>
+        <![CDATA[
         {
           "type": "Dynamic",
           "dimensions": ["Year", "Period"]
         }
+        ]]>
       </output>
     </example>
 
     <example>
       <input>
+        <![CDATA[
         {
           "list": "products",
           "createDescription": "This list should contain all the product members, and should be used to break down the current selected line into the product dimension."
         }
         [{'name': 'Category', 'alias': 'Category', 'members': ['Actuals', 'Budget']}, {'name': 'Year', 'alias': 'Year', 'members': [2022, 2023, 2024]}, {'name': 'Period', 'alias': 'Period', 'members': ['p01 - january', 'p02 - february', 'p03 - march']}, {'name': 'View', 'alias': 'View', 'members': ['Periodic', 'YTD']}, {'name': 'Account', 'alias': 'Account', 'members': ['Net Profit', 'Profit before taxes', 'EBITDA']}, {'name': 'AnalyticalDim1', 'alias': 'Product', 'members': ['TotalProduct', 'CFOTech Fund', 'OnPLan SPV']}, {'name': 'AnalyticalDim2', 'alias': 'Investment', 'members': ['FinTechCore', 'CFO Insights', 'ProfitWave']}, {'name': 'Entity', 'alias': 'Entity', 'members': ['Total Born Capital']}]
+        ]]>
       </input>
       <output>
+        <![CDATA[
         {
           "type": "Dynamic",
           "dimensions": ["AnalyticalDim1"]
         }
+        ]]>
       </output>
     </example>
-
-   
   </examples>
-
   <formatNotes>
     1. Final answer must be valid JSON of the form:
        {

@@ -11,6 +11,7 @@
 			<instruction>**Use the examples**: Use the examples to understand what kind of user queries should lead to certain results, use this for your creative process</instruction>
 			<instruction>**Apply the customer metadata**: Use the provided metadata to fill in and verify any dimension member values, you cannot output anything that is not a valid dimension member</instruction>
 			<instruction>**Double check the spelling and case of every member you output using the user provided metadata**</instruction>
+			<instruction>**When a user indicates current year and current period, the output should be an emty string ""**</instruction>
 		</instructionsForGeneratingModifications>
 		<importantNotes>
 			<importantNote>**Validation and Error Prevention**: Verify that the JSON syntax is correct to prevent errors. </importantNote>
@@ -189,9 +190,14 @@
 		</AllProductsGroupedAndTotal>
 		<TwelveMonthsRolling>
 			<userInstruction>
-				Create a 12 month rolling list starting from the current month and year, going back 11 months.
-				List name: 12MonthsRolling
-				Report metadata: [{"name":"Period","alias":"Period","order":2,"default":"p12 - december","visible":true,"dimensionContent":[{"ID":1,"Name":"p01 - january","ParentId":13},{"ID":2,"Name":"p02 - february","ParentId":13},{"ID":3,"Name":"p03 - march","ParentId":13},{"ID":4,"Name":"p04 - april","ParentId":14},{"ID":5,"Name":"p05 - may","ParentId":14},{"ID":6,"Name":"p06 - june","ParentId":14},{"ID":7,"Name":"p07 - july","ParentId":15},{"ID":8,"Name":"p08 - august","ParentId":15},{"ID":9,"Name":"p09 - september","ParentId":15},{"ID":10,"Name":"p10 - october","ParentId":16},{"ID":11,"Name":"p11 - november","ParentId":16},{"ID":12,"Name":"p12 - december","ParentId":16},{"ID":13,"Name":"Q1","ParentId":17},{"ID":14,"Name":"Q2","ParentId":17},{"ID":15,"Name":"Q3","ParentId":17},{"ID":16,"Name":"Q4","ParentId":17},{"ID":17,"Name":"Full Year","ParentId":{}}]}]
+			{
+				"listObject": {
+					"listReference": "categoryList",
+					"list": "12periods",
+					"createDescription": "A list with 12 rolling months starting from the current period going 11 months back to be used on the x-axis of the chart"
+				},
+				"filteredMetadata": "Full Year\\n\\tQ1\\n\\t\\tJan\\n\\t\\tFeb\\n\\t\\tMar\\n\\tQ2\\n\\t\\tApr\\n\\t\\tMay\\n\\t\\tJun\\n\\tQ3\\n\\t\\tJul\\n\\t\\tAug\\n\\t\\tSep\\n\\tQ4\\n\\t\\tOct\\n\\t\\tNov\\n\\t\\tDec\\nFull Year\\n\\tQ1\\n\\t\\tJan\\n\\t\\tFeb\\n\\t\\tMar\\n\\tQ2\\n\\t\\tApr\\n\\t\\tMay\\n\\t\\tJun\\n\\tQ3\\n\\t\\tJul\\n\\t\\tAug\\n\\t\\tSep\\n\\tQ4\\n\\t\\tOct\\n\\t\\tNov\\n\\t\\tDec\\n"
+			}
 			</userInstruction>
 			<output>
 				{

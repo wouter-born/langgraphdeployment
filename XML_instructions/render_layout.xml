@@ -8,10 +8,8 @@
 			<instruction>**Understand the User's Instructions**: Carefully read the user's request to identify the required changes.</instruction>
 			<instruction>**Follow the jsonStructure**: See the section jsonStructure for a detailed overview of how the JSON file should be structured</instruction>
 			<instruction>**Use the examples**: Use the examples to understand what kind of user queries should lead to certain results, use this for your creative process</instruction>
-			<instruction>**Add a createDescription attribute to each list. The createDescription will be used by antoher chatbot that will create the list JSON structure so be as detailed as possible how the list should look like</instruction>
 		</Instructions>
 		<importantNotes>
-			<importantNote>**Repeat members in list instructions**: When the user mentions a specific set of KPIs or other members in the report create instructions, make sure to repeat those instructions in the list creation instructions. This way the list creattion chatbot knows what to add</importantNote>
 			<importantNote>**Validation and Error Prevention**: Verify that the JSON syntax is correct to prevent errors. </importantNote>
 			<importantNote>**Recognize Synonyms and Handle Ambiguity**: Be aware that users may use different words to express the same intent. Treat these terms equivalently when interpreting instructions. If the user's instructions are ambiguous, use context from the JSON configuration and overall structure to infer their intent and choose the most logical output JSON.</importantNote>
 		</importantNotes>
