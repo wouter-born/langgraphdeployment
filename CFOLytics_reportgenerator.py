@@ -46,31 +46,31 @@ def approximate_token_count(conversation: List[BaseMessage]) -> int:
         total_words += len(msg.content.split())
     return total_words
 
-def safe_invoke_specdec(structured_llm, conversation, **kwargs):
-    """
-    Invokes SpecDec LLM calls while ensuring we:
-     1) Avoid using SpecDec if the input tokens exceed 6000.
-     2) Use Versatile if rolling token usage + input + expected output > 28k.
-        (Since SpecDec has an ~8k token limit total, and we're accounting for 2k output tokens.)
-    """
-    # Approximate token usage of the input conversation
-    input_tokens_approx = approximate_token_count(conversation)
+# def safe_invoke_specdec(structured_llm, conversation, **kwargs):
+#     """
+#     Invokes SpecDec LLM calls while ensuring we:
+#      1) Avoid using SpecDec if the input tokens exceed 6000.
+#      2) Use Versatile if rolling token usage + input + expected output > 28k.
+#         (Since SpecDec has an ~8k token limit total, and we're accounting for 2k output tokens.)
+#     """
+#     # Approximate token usage of the input conversation
+#     input_tokens_approx = approximate_token_count(conversation)
     
-    # Estimate total tokens after the request
-    expected_output_tokens = 2000  # Fixed assumption as per logic
-    rolling_token_usage = get_specdec_tokens_last_minute()
-    estimated_total_tokens = rolling_token_usage + input_tokens_approx + expected_output_tokens
+#     # Estimate total tokens after the request
+#     expected_output_tokens = 2000  # Fixed assumption as per logic
+#     rolling_token_usage = get_specdec_tokens_last_minute()
+#     estimated_total_tokens = rolling_token_usage + input_tokens_approx + expected_output_tokens
 
-    # Check if we should fallback to modelVers
-    if input_tokens_approx > 6000 or estimated_total_tokens > 28000:
-        # Fallback to modelVers with the same structured output schema
-        fallback_llm = modelVers.with_structured_output(
-            structured_llm.output_schema,
-            method=structured_llm.method,
-            include_raw=structured_llm.include_raw
-        )
-        output = fallback_llm.invoke(conversation, **kwargs)
-        return output
+#     # Check if we should fallback to modelVers
+#     if input_tokens_approx > 6000 or estimated_total_tokens < 28000:
+#         # Fallback to modelVers with the same structured output schema
+#         fallback_llm = modelVers.with_structured_output(
+#             structured_llm.output_schema,
+#             method=structured_llm.method,
+#             include_raw=structured_llm.include_raw
+#         )
+#         output = fallback_llm.invoke(conversation, **kwargs)
+#         return output
 
     # Proceed with SpecDec if limits are respected
     output = structured_llm.invoke(conversation, **kwargs)
@@ -236,7 +236,8 @@ def generate_layout(state: OverallState):
     conversation = [system_msg] + [user_msg]
 
     # Use safe_invoke_specdec to ensure we don't exceed token limits
-    output = safe_invoke_specdec(structured_llm, conversation, stream=False, response_format="json")
+    output = structured_llm.invoke(conversation, stream=False, response_format="json")
+    
 
     if output["parsed"] is None:
         # Construct a meaningful error message
@@ -295,7 +296,7 @@ def generate_component(state: ComponentState):
         system_msg = SystemMessage(content=system_instructions)
         user_msg = HumanMessage(content=ai_description)
         
-        structured_llm = modelSpec.with_structured_output(
+        structured_llm = modelVers.with_structured_output(
             ComponentConfig,
             method="json_mode",
             include_raw=True
@@ -304,7 +305,8 @@ def generate_component(state: ComponentState):
         conversation = [system_msg] + [user_msg]
         # This is a Versatile model call, so we keep it as is
 
-        output = safe_invoke_specdec(structured_llm, conversation, stream=False, response_format="json")
+        output = structured_llm.invoke(conversation, stream=False, response_format="json")
+  
         parsed_output = output["parsed"].model_dump()
     else:
         parsed_output = {}
@@ -442,7 +444,7 @@ def check_dynamic_or_fixed(state: ListSubchartState):
     conversation = [system_msg] + [user_msg]
 
     # Use safe_invoke_specdec
-    output = safe_invoke_specdec(structured_llm, conversation, stream=False)
+    output = structured_llm.invoke(conversation, stream=False, response_format="json")
     parsed_output = output["parsed"].model_dump()
 
     return {
@@ -512,7 +514,7 @@ def create_fixed_list(state: ListSubchartState):
     conversation = [system_msg, user_msg]
 
     # Use safe_invoke_specdec
-    output = safe_invoke_specdec(structured_llm, conversation, stream=False)
+    output = structured_llm.invoke(conversation, stream=False, response_format="json")
     parsed_output = output["parsed"]
     final_list = parsed_output.model_dump()
 
@@ -554,14 +556,14 @@ def create_dynamic_list(state: ListSubchartState):
     user_msg = HumanMessage(content=json.dumps(user_input, indent=2))
 
     # This is a Versatile model call, so no special token limit logic
-    structured_llm = modelSpec.with_structured_output(
+    structured_llm = modelVers.with_structured_output(
         DynamicListReply,
         method="json_mode",
         include_raw=True
     )
     conversation = [system_msg, user_msg]
-    output = safe_invoke_specdec(structured_llm, conversation, stream=False)
-
+    output = structured_llm.invoke(conversation, stream=False, response_format="json")
+    
     parsed_output = output["parsed"]
     final_list = parsed_output.model_dump()
 
