@@ -82,7 +82,7 @@ def safe_invoke_specdec(structured_llm, conversation, **kwargs):
 
 
 
-os.environ["LANGCHAIN_TRACING_V2"] = os.getenv("CUSTOM_TRACING_V2", "true")
+os.environ["LANGCHAIN_TRACING_V2"] = os.getenv("CUSTOM_TRACING_V2", "True")
 os.environ["LANGCHAIN_ENDPOINT"] = os.getenv("CUSTOM_ENDPOINT", "https://api.smith.langchain.com")
 os.environ["LANGCHAIN_API_KEY"] = os.getenv("CUSTOM_API_KEY", "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")
 os.environ["LANGCHAIN_PROJECT"] = os.getenv("CUSTOM_PROJECT", "CFOLytics_reportgenerator")
@@ -560,7 +560,7 @@ def create_dynamic_list(state: ListSubchartState):
         include_raw=True
     )
     conversation = [system_msg, user_msg]
-    safe_invoke_specdec(structured_llm, conversation, stream=False)
+    output = safe_invoke_specdec(structured_llm, conversation, stream=False)
 
     parsed_output = output["parsed"]
     final_list = parsed_output.model_dump()
