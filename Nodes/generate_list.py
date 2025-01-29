@@ -72,25 +72,25 @@ def check_dynamic_or_fixed(state: ListSubchartState):
         "dimensions": parsed_output["dimensions"]
     }
 
-def build_hierarchy_string(filtered_metadata, parent_id=None, indent=0):
-    """
-    Convert multiple dimensions of `filtered_metadata` into a hierarchical string representation
-    with parents below their children.
-    """
-    result = ""
-    for metadata in filtered_metadata:
-        dimension_content = metadata.get("dimensionContent", [])
-        for item in dimension_content:
-            item_parent_id = item.get("ParentID")
-            if item_parent_id == {}:
-                item_parent_id = None
+# def build_hierarchy_string(filtered_metadata, parent_id=None, indent=0):
+#     """
+#     Convert multiple dimensions of `filtered_metadata` into a hierarchical string representation
+#     with parents below their children.
+#     """
+#     result = ""
+#     for metadata in filtered_metadata:
+#         dimension_content = metadata.get("dimensionContent", [])
+#         for item in dimension_content:
+#             item_parent_id = item.get("ParentID")
+#             if item_parent_id == {}:
+#                 item_parent_id = None
 
-            if item_parent_id == parent_id:
-                # First, recursively add children
-                result += build_hierarchy_string([metadata], parent_id=item["ID"], indent=indent + 1)
-                # Then, add the current item's name with indentation
-                result += "\t" * indent + f"{item['Name']}\n"
-    return result
+#             if item_parent_id == parent_id:
+#                 # First, recursively add children
+#                 result += build_hierarchy_string([metadata], parent_id=item["ID"], indent=indent + 1)
+#                 # Then, add the current item's name with indentation
+#                 result += "\t" * indent + f"{item['Name']}\n"
+#     return result
 
 class FixedListReply(BaseModel):
     dimensions: list
@@ -116,15 +116,15 @@ def create_fixed_list(state: ListSubchartState):
     fixedlist_prompt = load_xml_instructions("fixedlist_prompt.xml")
     system_msg = SystemMessage(content=fixedlist_prompt)
 
-    hierarchystring = build_hierarchy_string(filtered_metadata)
+    
     user_input = {
         "listObject": current_list,
         "dimensions": dims,
-        "hierarchy": hierarchystring
+        "hierarchy": filtered_metadata
     }
     user_msg = HumanMessage(content=json.dumps(user_input, indent=2))
 
-    structured_llm = modelSpec.with_structured_output(
+    structured_llm = modelVers.with_structured_output(
         FixedListReply,
         method="json_mode",
         include_raw=True
@@ -164,10 +164,9 @@ def create_dynamic_list(state: ListSubchartState):
     system_msg = SystemMessage(content=dynamiclist_prompt)
 
     # Build a simple string from the metadata
-    hierarchystring = build_hierarchy_string(filtered_metadata)
     user_input = {
         "listObject": current_list,
-        "filteredMetadata": hierarchystring
+        "filteredMetadata": filtered_metadata
     }
     user_msg = HumanMessage(content=json.dumps(user_input, indent=2))
 
