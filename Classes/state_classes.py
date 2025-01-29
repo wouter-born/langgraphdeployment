@@ -22,6 +22,7 @@ class SpecializedComponentState(TypedDict):
     and returns a config structure that updates the layout.
     """
     component: dict
+    selected_node: str
     JsonLayoutWithComponentConfig: List[dict]  # same format as your main returns
 
 

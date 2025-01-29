@@ -13,23 +13,21 @@ class ComponentConfig(BaseModel):
     config : dict
 
 def component_selector(state: SpecializedComponentState):
-    """
-    Selector node that chooses which specialized node to run 
-    based on 'component["type"]'.
-    """
     ctype = state["component"].get("type", "").lower()
     
     if ctype == "chart":
-        return "generate_chart_component"
-    elif ctype == "table":
-        return "generate_table_component"
+        selected_node = "generate_chart_component"
+    elif ctype == "reportTable":
+        selected_node = "generate_table_component"
     elif ctype == "waterfall":
-        return "generate_waterfall_component"
+        selected_node = "generate_waterfall_component"
     elif ctype == "tile":
-        return "generate_tile_component"
+        selected_node = "generate_tile_component"
     else:
-        # Fallback or unknown type
-        return "generate_generic_component"
+        selected_node = "generate_generic_component"
+    
+    # Update the state with the selected node
+    return {"selected_node": selected_node}
 
 def selector_routing(state: SpecializedComponentState):
     """
@@ -41,7 +39,9 @@ def selector_routing(state: SpecializedComponentState):
     - 'generate_tile_component'
     - 'generate_generic_component'
     """
+
     return component_selector(state)
+
 
 
 def _base_component_generation(component: dict, system_instructions_file: str) -> dict:

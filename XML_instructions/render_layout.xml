@@ -142,8 +142,7 @@
                     {
                       "id": "C1",
                       "type": "ReportTable",
-                      "AI_Generation_Description": "A table showing the profit and loss statement on the rows and comparing actuals to budget with a variance bar on the columns. The rows should be selectable.",
-                      "NextNode": "TableCreator"
+                      "AI_Generation_Description": "A table showing the profit and loss statement on the rows and comparing actuals to budget with a variance bar on the columns. The rows should be selectable."
                     }
                   ]
                 },
