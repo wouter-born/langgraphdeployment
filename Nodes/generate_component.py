@@ -14,20 +14,19 @@ class ComponentConfig(BaseModel):
 
 def component_selector(state: SpecializedComponentState):
     ctype = state["component"].get("type", "").lower()
-    
+    selected_node = "generate_generic_component"
+
     if ctype == "chart":
         selected_node = "generate_chart_component"
-    elif ctype == "reportTable":
+    elif ctype == "reporttable":
         selected_node = "generate_table_component"
     elif ctype == "waterfall":
         selected_node = "generate_waterfall_component"
     elif ctype == "tile":
         selected_node = "generate_tile_component"
-    else:
-        selected_node = "generate_generic_component"
     
     # Update the state with the selected node
-    return {"selected_node": selected_node}
+    return {"selected_node": selected_node, "component": state["component"]}
 
 def selector_routing(state: SpecializedComponentState):
     """
@@ -40,7 +39,7 @@ def selector_routing(state: SpecializedComponentState):
     - 'generate_generic_component'
     """
 
-    return component_selector(state)
+    return component_selector(state)["selected_node"]
 
 
 
