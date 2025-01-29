@@ -101,11 +101,3 @@ graph.add_edge("consolidate_lists_to_layout", END)
 
 # Compile the main graph
 app = graph.compile()
-
-
-
-import json
-
-with open("sample.json", "r", encoding="utf-8") as f:
-    stateobj = OverallState(json.load(f))
-    app.invoke(stateobj)
