@@ -26,8 +26,9 @@ def component_selector(state: SpecializedComponentState):
         selected_node = "generate_tile_component"
     
     # Update the state with the selected node
-    return {"selected_node": selected_node, "component": state["component"]}
-
+    state["selected_node"] = selected_node
+    return state  # Return the full updated state
+    
 def selector_routing(state: SpecializedComponentState):
     """
     Return the node name chosen by 'component_selector'.
@@ -38,8 +39,7 @@ def selector_routing(state: SpecializedComponentState):
     - 'generate_tile_component'
     - 'generate_generic_component'
     """
-
-    return component_selector(state)["selected_node"]
+    return state["selected_node"]
 
 
 

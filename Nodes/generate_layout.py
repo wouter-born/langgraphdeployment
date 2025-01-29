@@ -134,7 +134,6 @@ def generate_layout(state: OverallState):
             f"Finish Reason: {output.get('response_metadata', {}).get('finish_reason', 'Unknown')}\n"
             "Please check the raw output for errors or unexpected formatting."
         )
-        print(output["raw"])
         raise Exception(error_message)
     parsed_output = output["parsed"].model_dump()
 
