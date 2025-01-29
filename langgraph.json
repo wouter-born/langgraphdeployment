@@ -3,9 +3,7 @@
   "graphs": {
     "chatbot": "./chatbot.py:graph",
     "research": "./research_assistant.py:graph",
-    "CFOLytics_reportgenerator": "./CFOLytics_reportgenerator.py:graph",
-    "CFOLytics_reportgenerator2": "./CFOLytics_reportgenerator2.py:graph",
-    "CFOLytics_reportgenerator3": "./CFOLytics_reportgenerator3.py:graph"
+    "CFOLytics_reportgenerator": "./CFOLytics_reportgenerator.py:graph"
   },
   "env": "./.env",
   "python_version": "3.11",
