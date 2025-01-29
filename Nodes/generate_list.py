@@ -74,7 +74,8 @@ def check_dynamic_or_fixed(state: ListSubchartState):
 
 def build_hierarchy_string(filtered_metadata, parent_id=None, indent=0):
     """
-    Convert multiple dimensions of `filtered_metadata` into a hierarchical string representation.
+    Convert multiple dimensions of `filtered_metadata` into a hierarchical string representation
+    with parents below their children.
     """
     result = ""
     for metadata in filtered_metadata:
@@ -85,10 +86,10 @@ def build_hierarchy_string(filtered_metadata, parent_id=None, indent=0):
                 item_parent_id = None
 
             if item_parent_id == parent_id:
-                # Add the current item's name with explicit \n and \t
-                result += "\\t" * indent + f"{item['Name']}\\n"
-                # Recursively add children
+                # First, recursively add children
                 result += build_hierarchy_string([metadata], parent_id=item["ID"], indent=indent + 1)
+                # Then, add the current item's name with indentation
+                result += "\t" * indent + f"{item['Name']}\n"
     return result
 
 class FixedListReply(BaseModel):

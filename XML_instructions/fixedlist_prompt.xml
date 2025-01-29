@@ -10,6 +10,7 @@
 			<instruction>**Follow the jsonStructure**: See the section jsonStructure for a detailed overview of how the JSON file should be structured</instruction>
 			<instruction>**Use the examples**: Use the examples to understand what kind of user queries should lead to certain results, but do not copy the examples. It is more important to follow the user instructions</instruction>
 			<instruction>**Use the hierarchies**: Use the provided hierarchies to verify any dimension member values, you cannot output anything that is not specified in the hierarchy</instruction>
+			<instruction>**Use the hierarchies for reference**: The hierarchies need to solely used to understand the structure, the instructions of the kind of list should be leading</instruction>
 		</instructionsForGeneratingModifications>
 		<importantNotes>
 			<importantNote>**Validation and Error Prevention**: Verify that the JSON syntax is correct to prevent errors. </importantNote>
