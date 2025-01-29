@@ -142,6 +142,7 @@
 	<examples>
 		<shortPAndLStatment>
 			<userInstruction>
+			<![CDATA[
 				{
 					"listObject": {
 						"listReference": "rowsList",
@@ -150,8 +151,10 @@
 					},
 					"hierarchy": "Net Income\n\tProfit Before Taxes\n\t\tEBITDA\n\t\t\tGross Margin\n\t\t\t\tIncome\n\t\t\t\t\tOnline Sales\n\t\t\t\t\tOther Sales\n\t\t\t\tCost of Goods Sold (COGS)\n\t\t\t\t\tCOGS - Other Sales\n\t\t\t\t\tCOGS - Trade Sales & Services\n\t\tOperating Expenses\n\t\t\tAdvertising & Marketing\n\t\t\t\tData Subscriptions\n\t\t\t\tMarketing Contractors\n\t\t\tGeneral & Administrative\n\t\t\t\tLegal & Professional Services\n\t\t\t\tOffice Supplies & Software\n\t\t\tPayroll Expenses\n\t\t\t\tSalaries & Wages\n\t\t\t\tEmployee Benefits\n\t\t\tRent & Utilities\n\t\t\t\tRent\n\t\t\t\tElectricity and Cooling\n\t\t\tDepreciation & Amortization\n\t\t\t\tDepreciation\n\t\t\t\tAmortization - Software Cost\n\t\t\tExtraordinary Expenses\n\t\t\t\tExtraordinary Loss\n\t\t\t\tExtraordinary Income\n\tNet Sales\n\t\tDiscounts\n\t\t\tTrade Discounts\n\t\t\tLoyalty Discounts\n\t\tGross Sales"
 				}
+			]]>
 			</userInstruction>
 			<output>
+			<![CDATA[
 			{
 				"dimensions": [
 					"Account"
@@ -302,10 +305,12 @@
 					}
 				]
 			}
+			]]>
 			</output>
 		</shortPAndLStatment>
 		<ActualsBudgetVariancePercVarianceBar>
 			<userInstruction>
+			<![CDATA[
 			{
 				'listObject': {
 					'listReference': 'columnsList', 
@@ -314,8 +319,10 @@
 					'dimensions': ['Category'], 
 					'hierarchy': 'Actual\\nBudget\\nForecast Jun\\n'
 			}
+			]]>
 			</userInstruction>
 			<output>
+			<![CDATA[
 			{
 				"dimensions": [
 					"Category"
@@ -387,6 +394,7 @@
 					}
 				]
 			}
+			]]>
 			</output>
 		</ActualsBudgetVariancePercVarianceBar>		
 	</examples>
