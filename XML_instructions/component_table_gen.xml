@@ -94,69 +94,69 @@
         <maintable>
             <userInstruction>A table showing the profit and loss statement on the rows and comparing actuals to budget with a variance bar on the columns. The rows should be selectable.</userInstruction>
             <output>
-<![CDATA[
-"config": {
-    "selectRow": true,
-    "firstColumnWidth": 250,
-    "lists": [
-        {
-            "listReference": "rowsList",
-            "list": "ProfitAndLossAccounts",
-            "createDescription": "A formatted profit and loss statement to be used on table rows, including drill-downs where applicable."
-        },
-        {
-            "listReference": "columnsList",
-            "list": "ActualsBudgetVariance%VarianceBar",
-            "createDescription": "A list with Actuals, Budget, and a Variance bar to be used on table columns."
-        }
-    ]
-}           
-]]>
+                <![CDATA[
+                "config": {
+                    "selectRow": true,
+                    "firstColumnWidth": 250,
+                    "lists": [
+                        {
+                            "listReference": "rowsList",
+                            "list": "ProfitAndLossAccounts",
+                            "createDescription": "A formatted profit and loss statement to be used on table rows, including drill-downs where applicable."
+                        },
+                        {
+                            "listReference": "columnsList",
+                            "list": "ActualsBudgetVariance%VarianceBar",
+                            "createDescription": "A list with Actuals, Budget, and a Variance bar to be used on table columns."
+                        }
+                    ]
+                }           
+                ]]>
             </output>
         </maintable>
         <drilldowntable>
             <userInstruction>A table breaking down the current selected line into 4 different dimensions (Entity, Cost Center, Product, and Region) using a list selector. On the columns actuals, budget, and a variance column.</userInstruction>
             <output>
-<![CDATA[
-"config": {
-    "firstColumnWidth": 175,
-    "selectRow": false,
-    "listSelector": {
-        "enabled": true,
-        "listReference": "rowsList",
-        "defaultList": "entity",
-        "availableLists": [
-            {
-                "label": "Entity",
-                "list": "entity",
-                "createDescription": "A list drilling down from the top entity into all descendants to be used as a selector."
-            },
-            {
-                "label": "Cost Center",
-                "list": "costCenters",
-                "createDescription": "A list drilling down from the top cost center into all descendants to be used as a selector."
-            },
-            {
-                "label": "Product",
-                "list": "products",
-                "createDescription": "A list drilling down from the top product into all descendants to be used as a selector."
-            },
-            {
-                "label": "Region",
-                "list": "regions",
-                "createDescription": "A list drilling down from the top region into all descendants to be used as a selector."
-            }
-        ]
-    },
-    "lists": [
-        {
-            "listReference": "columnsList",
-            "list": "ActualsBudgetVarianceBar",
-            "createDescription": "A list with Actuals, Budget, and a Variance bar to be used on table columns."
-        }
-    ]
-}            
-]]>
+                <![CDATA[
+                "config": {
+                    "firstColumnWidth": 175,
+                    "selectRow": false,
+                    "listSelector": {
+                        "enabled": true,
+                        "listReference": "rowsList",
+                        "defaultList": "entity",
+                        "availableLists": [
+                            {
+                                "label": "Entity",
+                                "list": "entity",
+                                "createDescription": "A list drilling down from the top entity into all descendants to be used as a selector."
+                            },
+                            {
+                                "label": "Cost Center",
+                                "list": "costCenters",
+                                "createDescription": "A list drilling down from the top cost center into all descendants to be used as a selector."
+                            },
+                            {
+                                "label": "Product",
+                                "list": "products",
+                                "createDescription": "A list drilling down from the top product into all descendants to be used as a selector."
+                            },
+                            {
+                                "label": "Region",
+                                "list": "regions",
+                                "createDescription": "A list drilling down from the top region into all descendants to be used as a selector."
+                            }
+                        ]
+                    },
+                    "lists": [
+                        {
+                            "listReference": "columnsList",
+                            "list": "ActualsBudgetVarianceBar",
+                            "createDescription": "A list with Actuals, Budget, and a Variance bar to be used on table columns."
+                        }
+                    ]
+                }            
+                ]]>
             </output>
         </drilldowntable>
     </examples>

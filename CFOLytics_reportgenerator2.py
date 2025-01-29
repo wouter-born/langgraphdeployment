@@ -512,9 +512,9 @@ class ListSubchartState(TypedDict):
     List: dict              # The raw definition of a list or instructions for how to create it
     listExists: bool        # Whether the list already exists
     listType: str           # 'dynamic' or 'fixed'
-    dimensions: List        # Top-level dimensions for the list
-    ReportMetadata: Annotated[List[Dict[str, Any]], operator.add]
-    JsonLists: List[dict]   # The final generated JSON list(s)
+    dimensions: List        # Top-level dimensions for the list # type: ignore
+    ReportMetadata: Annotated[List[Dict[str, Any]], operator.add] # type: ignore
+    JsonLists: List[dict]   # The final generated JSON list(s) # type: ignore
     FinalList: dict         # The actual final list data (if you want it separate from JsonLists)
 
 def check_if_list_exists(state: ListSubchartState):
