@@ -135,7 +135,20 @@
         "order": 3,
         "default": "Actual",
         "visible": false,
-        "dimensionContent": []
+        "dimensionContent": [
+          {
+            "ID": 1,
+            "Name": "Actual"
+          },
+          {
+            "ID": 2,
+            "Name": "Budget"
+          },
+          {
+            "ID": 3,
+            "Name": "Forecast Jun"
+          }
+        ]
       },
       {
         "name": "Year",
@@ -143,7 +156,24 @@
         "order": 1,
         "default": 2024,
         "visible": true,
-        "dimensionContent": []
+        "dimensionContent": [
+          {
+            "ID": 1,
+            "Name": "2023"
+          },
+          {
+            "ID": 2,
+            "Name": "2024"
+          },
+          {
+            "ID": 3,
+            "Name": "2025"
+          },
+          {
+            "ID": 4,
+            "Name": "2026"
+          }
+        ]
       },
       {
         "name": "Period",
@@ -155,104 +185,104 @@
           {
             "ID": 1,
             "Name": "Jan",
-            "Order": 1,
-            "ParentID": 13
+            "ParentID": 13,
+            "Order": 1
           },
           {
             "ID": 2,
             "Name": "Feb",
-            "Order": 2,
-            "ParentID": 13
+            "ParentID": 13,
+            "Order": 2
           },
           {
             "ID": 3,
             "Name": "Mar",
-            "Order": 3,
-            "ParentID": 13
+            "ParentID": 13,
+            "Order": 3
           },
           {
             "ID": 4,
             "Name": "Apr",
-            "Order": 4,
-            "ParentID": 14
+            "ParentID": 14,
+            "Order": 4
           },
           {
             "ID": 5,
             "Name": "May",
-            "Order": 5,
-            "ParentID": 14
+            "ParentID": 14,
+            "Order": 5
           },
           {
             "ID": 6,
             "Name": "Jun",
-            "Order": 6,
-            "ParentID": 14
+            "ParentID": 14,
+            "Order": 6
           },
           {
             "ID": 7,
             "Name": "Jul",
-            "Order": 7,
-            "ParentID": 15
+            "ParentID": 15,
+            "Order": 7
           },
           {
             "ID": 8,
             "Name": "Aug",
-            "Order": 8,
-            "ParentID": 15
+            "ParentID": 15,
+            "Order": 8
           },
           {
             "ID": 9,
             "Name": "Sep",
-            "Order": 9,
-            "ParentID": 15
+            "ParentID": 15,
+            "Order": 9
           },
           {
             "ID": 10,
             "Name": "Oct",
-            "Order": 10,
-            "ParentID": 16
+            "ParentID": 16,
+            "Order": 10
           },
           {
             "ID": 11,
             "Name": "Nov",
-            "Order": 11,
-            "ParentID": 16
+            "ParentID": 16,
+            "Order": 11
           },
           {
             "ID": 12,
             "Name": "Dec",
-            "Order": 12,
-            "ParentID": 16
+            "ParentID": 16,
+            "Order": 12
           },
           {
             "ID": 13,
             "Name": "Q1",
-            "Order": 3,
-            "ParentID": 17
+            "ParentID": 17,
+            "Order": 3
           },
           {
             "ID": 14,
             "Name": "Q2",
-            "Order": 6,
-            "ParentID": 17
+            "ParentID": 17,
+            "Order": 6
           },
           {
             "ID": 15,
             "Name": "Q3",
-            "Order": 9,
-            "ParentID": 17
+            "ParentID": 17,
+            "Order": 9
           },
           {
             "ID": 16,
             "Name": "Q4",
-            "Order": 12,
-            "ParentID": 17
+            "ParentID": 17,
+            "Order": 12
           },
           {
             "ID": 17,
             "Name": "Full Year",
-            "Order": 12,
-            "ParentID": null
+            "ParentID": null,
+            "Order": 12
           }
         ]
       },
@@ -262,7 +292,16 @@
         "order": 2,
         "default": "Periodic",
         "visible": true,
-        "dimensionContent": []
+        "dimensionContent": [
+          {
+            "ID": 1,
+            "Name": "Periodic"
+          },
+          {
+            "ID": 2,
+            "Name": "YTD"
+          }
+        ]
       },
       {
         "name": "Account",
@@ -290,6 +329,12 @@
             "Valuation": "positive"
           },
           {
+            "ID": 1062,
+            "Name": "Other cost of goods sold",
+            "ParentID": 1333,
+            "Valuation": "positive"
+          },
+          {
             "ID": 1063,
             "Name": "Others",
             "ParentID": 1330,
@@ -314,6 +359,12 @@
             "Valuation": "positive"
           },
           {
+            "ID": 1067,
+            "Name": "Delivery expenses - Fulfillment Cost ",
+            "ParentID": 1325,
+            "Valuation": "positive"
+          },
+          {
             "ID": 1068,
             "Name": "Insurance",
             "ParentID": 1329,
@@ -332,6 +383,18 @@
             "Valuation": "positive"
           },
           {
+            "ID": 1071,
+            "Name": "Discounts",
+            "ParentID": 1323,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1072,
+            "Name": "Direct Staff costs others",
+            "ParentID": 1333,
+            "Valuation": "positive"
+          },
+          {
             "ID": 1073,
             "Name": "Rent - IFRS16",
             "ParentID": null,
@@ -341,6 +404,12 @@
             "ID": 1074,
             "Name": "Interest on term loan - IFRS16",
             "ParentID": null,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1075,
+            "Name": "Aggregator Fees",
+            "ParentID": 1325,
             "Valuation": "positive"
           },
           {
@@ -356,9 +425,21 @@
             "Valuation": "positive"
           },
           {
+            "ID": 1078,
+            "Name": "Other sales",
+            "ParentID": 1322,
+            "Valuation": "positive"
+          },
+          {
             "ID": 1079,
             "Name": "Staff costs salaries and wages",
             "ParentID": 1327,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1080,
+            "Name": "Charges on Credit Card Sales",
+            "ParentID": 1325,
             "Valuation": "positive"
           },
           {
@@ -374,15 +455,45 @@
             "Valuation": "positive"
           },
           {
+            "ID": 1083,
+            "Name": "Direct Staff costs salaries and wages",
+            "ParentID": 1333,
+            "Valuation": "positive"
+          },
+          {
             "ID": 1084,
             "Name": "Extraordinary Expense",
             "ParentID": 1332,
             "Valuation": "positive"
           },
           {
+            "ID": 1085,
+            "Name": "Online sales",
+            "ParentID": 1322,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1086,
+            "Name": "Cost of goods sold",
+            "ParentID": 1324,
+            "Valuation": "positive"
+          },
+          {
             "ID": 1087,
             "Name": "Staff costs others",
             "ParentID": 1327,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1088,
+            "Name": "Purchase discount",
+            "ParentID": 1324,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1089,
+            "Name": "Inventory Adjustment",
+            "ParentID": 1333,
             "Valuation": "positive"
           },
           {
@@ -407,6 +518,150 @@
             "ID": 1173,
             "Name": "Realized Foreign exchange gains and losses",
             "ParentID": 1061,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1174,
+            "Name": "COGS - Other Sales",
+            "ParentID": 1062,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1175,
+            "Name": "COGS- Cafe",
+            "ParentID": 1062,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1176,
+            "Name": "Delivery Expenses, purchases",
+            "ParentID": 1062,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1177,
+            "Name": "Direct Cost Applied",
+            "ParentID": 1062,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1178,
+            "Name": "Direct Cost Applied, Rawmat.",
+            "ParentID": 1062,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1179,
+            "Name": "Disc. Received, Raw Materials",
+            "ParentID": 1062,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1180,
+            "Name": "Other Purchase Cost",
+            "ParentID": 1062,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1181,
+            "Name": "Packing Materials",
+            "ParentID": 1062,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1182,
+            "Name": "Purch., Raw Materials - Dom.",
+            "ParentID": 1062,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1183,
+            "Name": "Purchase - Discount",
+            "ParentID": 1062,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1184,
+            "Name": "Purchases- Inventory",
+            "ParentID": 1062,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1185,
+            "Name": "Purchases- Services",
+            "ParentID": 1062,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1186,
+            "Name": "Shop Use - Aquatics (only)",
+            "ParentID": 1062,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1187,
+            "Name": "Shop Use - Grooming",
+            "ParentID": 1062,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1188,
+            "Name": "STOCK WRITE OFF- Damaged/shop use/write off",
+            "ParentID": 1062,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1189,
+            "Name": "Business Entertainment & meetings",
+            "ParentID": 1063,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1190,
+            "Name": "Cash Discrepancies",
+            "ParentID": 1063,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1191,
+            "Name": "Cleaning",
+            "ParentID": 1063,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1192,
+            "Name": "Consultancy fee- Petsville",
+            "ParentID": 1063,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1193,
+            "Name": "Misc Income / Other income",
+            "ParentID": 1063,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1194,
+            "Name": "Miscellaneous Expenses",
+            "ParentID": 1063,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1195,
+            "Name": "Other Income from Petsville Luxury Others",
+            "ParentID": 1063,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1196,
+            "Name": "Other Losses",
+            "ParentID": 1063,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1197,
+            "Name": "Vehicle Repairs and Maintenance  (P&M,MGRM)",
+            "ParentID": 1063,
             "Valuation": "positive"
           },
           {
@@ -446,6 +701,24 @@
             "Valuation": "positive"
           },
           {
+            "ID": 1204,
+            "Name": "Kitchen & Other Sanitary Supplies",
+            "ParentID": 1065,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1205,
+            "Name": "Office & Shop Supplies",
+            "ParentID": 1065,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1206,
+            "Name": "Office and shop Supplies",
+            "ParentID": 1065,
+            "Valuation": "positive"
+          },
+          {
             "ID": 1207,
             "Name": "Marketing, Promotions & E-Commerce",
             "ParentID": 1066,
@@ -458,6 +731,240 @@
             "Valuation": "positive"
           },
           {
+            "ID": 1209,
+            "Name": "Gasoline and Motor Oil (Fuel)",
+            "ParentID": 1067,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1210,
+            "Name": "Last Mile - Insurance",
+            "ParentID": 1067,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1211,
+            "Name": "Last Mile - Parking Expenses",
+            "ParentID": 1067,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1212,
+            "Name": "Last Mile - RTA Fines",
+            "ParentID": 1067,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1213,
+            "Name": "Last Mile - Salik",
+            "ParentID": 1067,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1214,
+            "Name": "Outsource Delivery Charges",
+            "ParentID": 1067,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1215,
+            "Name": "Vehicle Leasing ",
+            "ParentID": 1067,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1216,
+            "Name": "Vehicle Registration Fees",
+            "ParentID": 1067,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1217,
+            "Name": "Vehicle Repairs and Maintenance",
+            "ParentID": 1067,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1218,
+            "Name": "Insurance - Building/Shop ",
+            "ParentID": 1068,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1219,
+            "Name": "Internet & Phone/Mobile Cards",
+            "ParentID": 1069,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1220,
+            "Name": "General Maintenance",
+            "ParentID": 1070,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1221,
+            "Name": "Rent -chiller and Service charges 2023",
+            "ParentID": 1070,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1222,
+            "Name": "Repairs and Maintenance - General",
+            "ParentID": 1070,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1223,
+            "Name": "Service/Chiller Charges - Long term",
+            "ParentID": 1070,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1224,
+            "Name": "Discount -  Trade Sales & Services(Item discounts)",
+            "ParentID": 1071,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1225,
+            "Name": "Discount - B2B Rebates",
+            "ParentID": 1071,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1226,
+            "Name": "Discount - Suppliers Promotions support",
+            "ParentID": 1071,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1227,
+            "Name": "Discount Granted-Web/others(promo/coupons)",
+            "ParentID": 1071,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1228,
+            "Name": "Discount Loyalty Provision",
+            "ParentID": 1071,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1229,
+            "Name": "Discounts- Cafe'",
+            "ParentID": 1071,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1230,
+            "Name": "Gift Card/Coupon/Winning Vouchers",
+            "ParentID": 1071,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1231,
+            "Name": "Loyality Points - Redemption",
+            "ParentID": 1071,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1232,
+            "Name": "Waive Off/Discount by CS (Online Sales)",
+            "ParentID": 1071,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1233,
+            "Name": "Bonus Expense",
+            "ParentID": 1072,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1234,
+            "Name": "Employee Air Ticket Expense",
+            "ParentID": 1072,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1235,
+            "Name": "Employee Air Ticket Expense-Direct",
+            "ParentID": 1072,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1236,
+            "Name": "Gratuity Expense",
+            "ParentID": 1072,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1237,
+            "Name": "Gratuity Expense-Direct",
+            "ParentID": 1072,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1238,
+            "Name": "Health Insurance & Medical Expense-Direct",
+            "ParentID": 1072,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1239,
+            "Name": "Health Insurance Expense",
+            "ParentID": 1072,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1240,
+            "Name": "Leaves Salary & Vacation Compensation",
+            "ParentID": 1072,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1241,
+            "Name": "Leaves Salary & Vacation Compensation-Direct",
+            "ParentID": 1072,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1242,
+            "Name": "Other employee benefits-Direct",
+            "ParentID": 1072,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1243,
+            "Name": "Salaries - Notice/Final Settlement-Direct",
+            "ParentID": 1072,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1244,
+            "Name": "Sales Incentive ",
+            "ParentID": 1072,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1245,
+            "Name": "Staff Training and Entertainment-Direct",
+            "ParentID": 1072,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1246,
+            "Name": "Visa Application Expenses",
+            "ParentID": 1072,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1247,
+            "Name": "Visa Expenses (Application/Cancellation)-Direct",
+            "ParentID": 1072,
+            "Valuation": "positive"
+          },
+          {
             "ID": 1248,
             "Name": "Rent -IFRS 16 REversal",
             "ParentID": 1073,
@@ -467,6 +974,150 @@
             "ID": 1249,
             "Name": "Finance cost - IFRS 16",
             "ParentID": 1074,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1250,
+            "Name": "Affiliate Service Charges (Instashop,El Grocer,Swan etc...)",
+            "ParentID": 1075,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1251,
+            "Name": "Prof fees- PRO &Registration Fees",
+            "ParentID": 1076,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1252,
+            "Name": "Professional Fees",
+            "ParentID": 1076,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1253,
+            "Name": "Recruitment expenses",
+            "ParentID": 1076,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1254,
+            "Name": "Transportation - Employees",
+            "ParentID": 1077,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1255,
+            "Name": "Affiliate Service Fees (Instashop, El Grocer etc....)",
+            "ParentID": 1078,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1256,
+            "Name": "Listing Fees Other sales",
+            "ParentID": 1078,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1257,
+            "Name": "Shipping charges",
+            "ParentID": 1078,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1258,
+            "Name": "Salaries & Wages-Indirect",
+            "ParentID": 1079,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1259,
+            "Name": "Salaries and Wages- Outsourced",
+            "ParentID": 1079,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1260,
+            "Name": "Amazone Delivery Fees/Charges",
+            "ParentID": 1080,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1261,
+            "Name": "Credit Card & Other Charges",
+            "ParentID": 1080,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1262,
+            "Name": "Credit Card Charges",
+            "ParentID": 1080,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1263,
+            "Name": "Electricity and Cooling (Utilities)",
+            "ParentID": 1081,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1264,
+            "Name": "Other Income from Petsville Luxury Electricity and Cooling",
+            "ParentID": 1081,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1265,
+            "Name": "Rent - Shops/ Warehouse",
+            "ParentID": 1082,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1266,
+            "Name": "Rent Income",
+            "ParentID": 1082,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1267,
+            "Name": "Rent -shop/ warehouse short term",
+            "ParentID": 1082,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1268,
+            "Name": "Rent- Shops/ Warehouse",
+            "ParentID": 1082,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1269,
+            "Name": "Rent- Turnover Adjustment",
+            "ParentID": 1082,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1270,
+            "Name": "Overtime / Lieu day-Drect",
+            "ParentID": 1083,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1271,
+            "Name": "Overtime Expense",
+            "ParentID": 1083,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1272,
+            "Name": "Salaries",
+            "ParentID": 1083,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1273,
+            "Name": "Salaries & Wages-Direct",
+            "ParentID": 1083,
             "Valuation": "positive"
           },
           {
@@ -497,6 +1148,282 @@
             "ID": 1278,
             "Name": "Profits on Sales of Fixed Assets",
             "ParentID": 1084,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1279,
+            "Name": "Other - Sales",
+            "ParentID": 1085,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1280,
+            "Name": "Service - Mobile Grooming",
+            "ParentID": 1085,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1281,
+            "Name": "Service - Petrelocation",
+            "ParentID": 1085,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1282,
+            "Name": "Shop - Sales",
+            "ParentID": 1085,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1283,
+            "Name": "Shop Sales- Cafe'",
+            "ParentID": 1085,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1284,
+            "Name": "Trade Sales & Services",
+            "ParentID": 1085,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1285,
+            "Name": "COGS - Trade Sales & Services",
+            "ParentID": 1086,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1286,
+            "Name": "Employee Air Ticket Expense-Indirect",
+            "ParentID": 1087,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1287,
+            "Name": "Employee Uniforms",
+            "ParentID": 1087,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1288,
+            "Name": "GPSSA PENSION EXPENSE -INDIRECT",
+            "ParentID": 1087,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1289,
+            "Name": "Gratuity Expense-Indirect",
+            "ParentID": 1087,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1290,
+            "Name": "Health Insurance & Medical Expense-Indirect",
+            "ParentID": 1087,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1291,
+            "Name": "Leaves Salary & Vacation Compensation-Indirect",
+            "ParentID": 1087,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1292,
+            "Name": "Management bonus",
+            "ParentID": 1087,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1293,
+            "Name": "Other employee benefits-Indirect",
+            "ParentID": 1087,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1294,
+            "Name": "Overtime / Lieu day-Indirect",
+            "ParentID": 1087,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1295,
+            "Name": "Salaries - Notice/Final Settlement-Indirect",
+            "ParentID": 1087,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1296,
+            "Name": "Staff Training and Entertainment-Indirect",
+            "ParentID": 1087,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1297,
+            "Name": "Visa Expenses (Application/Cancellation)-Indirect",
+            "ParentID": 1087,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1298,
+            "Name": "Listing Fees Purchase discount",
+            "ParentID": 1088,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1299,
+            "Name": "Supplier Discounts and Rebates",
+            "ParentID": 1088,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1300,
+            "Name": "Audit Roll Adjustments (Inv. Adjustments)",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1301,
+            "Name": "Inventory Adjmt. (Effect of Physical Count & Jnl.)",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1302,
+            "Name": "Inventory Adjsutment - effect of stock take",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1303,
+            "Name": "Inventory Adjsutment- POS / Sales orders",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1304,
+            "Name": "Inventory Costing Adjustment – Conversions",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1305,
+            "Name": "Other Gain/Loss (Inv. Rnd)",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1306,
+            "Name": "Stock Write Off  - Contamination",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1307,
+            "Name": "Stock Write Off  - Dented",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1308,
+            "Name": "Stock Write Off  - Leakage",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1309,
+            "Name": "Stock Write Off  - Manufacturing Defect",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1310,
+            "Name": "Stock Write Off  - Missing Parts",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1311,
+            "Name": "Stock Write Off  - Old Display Model",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1312,
+            "Name": "Stock Write Off  - Packing Defect",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1313,
+            "Name": "Stock Write Off  - Rat Infested",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1314,
+            "Name": "Stock Write Off  - Rusted",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1315,
+            "Name": "Stock Write Off  - Scratched",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1316,
+            "Name": "Stock Write Off  - Tearing",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1317,
+            "Name": "Stock Write Off - Aquatics (Mortality)",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1318,
+            "Name": "Stock Write Off - Broken",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1319,
+            "Name": "Stock Write Off - Expired Items",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1320,
+            "Name": "Stock Write Off - Mould",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1321,
+            "Name": "Stock Write Off - Rain Damage",
+            "ParentID": 1089,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1322,
+            "Name": "Gross Sales",
+            "ParentID": 1323,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1323,
+            "Name": "Net Sales",
+            "ParentID": 1324,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1324,
+            "Name": "Product Margin",
+            "ParentID": 1325,
             "Valuation": "positive"
           },
           {
@@ -569,6 +1496,12 @@
             "ID": 1338,
             "Name": "Listing Fees",
             "ParentID": 1336,
+            "Valuation": "positive"
+          },
+          {
+            "ID": 1339,
+            "Name": "Other Income from Petsville Luxury",
+            "ParentID": 1081,
             "Valuation": "positive"
           }
         ]

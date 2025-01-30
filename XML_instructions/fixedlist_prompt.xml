@@ -21,6 +21,7 @@
 				The first child element of each list must be a dimensions array, which should contain at least one dimension but can include more.
 			</dimensions>
 			<items>
+				<description>The second child element contains the items array. Each item in this array represents an individual configuration.</description>
 				<eachItemMustInclude>
 					<name>A unique identifier typically used within the configuration.</name>
 					<displayName>
@@ -59,6 +60,45 @@
 								}
 							</code>
 						</multipleDimensionsExample>
+						<offsetBasedDynamicMembers>
+							<description>
+								It is possible to define a dimension's "member" property as a dynamic offset from the current period or year.
+								This allows you to configure items such as "Last Month", "Next Month", or "Last Year" without hardcoding a specific member.
+								You do this by specifying:
+								- "type": "dynamic"
+								- "base": "CURRENT"
+								- "offset": (integer)
+								A negative offset indicates a past offset (e.g., -1 is last month/year), while a positive offset indicates a future offset (e.g., +1 is next month/year).
+							</description>
+							<example>
+								Below is an example item definition for "Last Month" using an offset of -1 from the current period:
+								<code>
+									{
+									"name": "LM",
+									"dimensions": {
+									"Year": {
+									"member": "",
+									"alias": ""
+									},
+									"Category": {
+									"member": ""
+									},
+									"Period": {
+									"member": {
+									"type": "dynamic",
+									"base": "CURRENT",
+									"offset": -1
+									},
+									"alias": "LM"
+									}
+									},
+									"attributes": {
+									"minWidth": 50
+									}
+									}
+								</code>
+							</example>
+						</offsetBasedDynamicMembers>
 						<additionalAttributes>
 							Dimension members can now include additional attributes, such as aliases, to control their display or behavior. For example:
 							<code>
