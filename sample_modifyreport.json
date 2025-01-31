@@ -1,0 +1,496 @@
+{
+    "reportTitle": "Profit and Loss Report",
+    "numberFormat": {
+      "currency": "USD",
+      "scale": "thousands",
+      "decimals": 0
+    },
+    "layout": {
+      "gridColumns": {
+        "sm": 1,
+        "md": 1,
+        "lg": 8
+      },
+      "rows": [
+        {
+          "columns": [
+            {
+              "colSpan": {
+                "sm": 1,
+                "md": 1,
+                "lg": 8
+              },
+              "components": [
+                {
+                  "id": "C1",
+                  "type": "ReportTable",
+                  "title": "Profit and Loss Statement",
+                  "AI_Generation_Description": "A table showing the profit and loss statement on the rows with actuals, forecast, last month and last year on the columns.",
+                  "noborder": null,
+                  "height": null,
+                  "numberFormat": null,
+                  "config": {
+                    "selectRow": true,
+                    "firstColumnWidth": 250,
+                    "lists": [
+                      {
+                        "listReference": "rowsList",
+                        "list": "ProfitAndLossAccounts",
+                        "createDescription": "A formatted profit and loss statement to be used on table rows, including drill-downs where applicable."
+                      },
+                      {
+                        "listReference": "columnsList",
+                        "list": "ActualsForecastLastMonthLastYear",
+                        "createDescription": "A list with Actuals, Forecast, Last Month, and Last Year to be used on table columns."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "columns": [
+            {
+              "colSpan": {
+                "sm": "full",
+                "md": "full",
+                "lg": "full"
+              },
+              "components": [
+                {
+                  "id": "S1",
+                  "type": "ScaleSelectors",
+                  "title": null,
+                  "AI_Generation_Description": null,
+                  "noborder": true,
+                  "height": null,
+                  "numberFormat": null,
+                  "config": null
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "columns": [
+            {
+              "colSpan": {
+                "sm": "full",
+                "md": "full",
+                "lg": "full"
+              },
+              "components": [
+                {
+                  "id": "Co1",
+                  "type": "Comments",
+                  "title": null,
+                  "AI_Generation_Description": null,
+                  "noborder": null,
+                  "height": null,
+                  "numberFormat": null,
+                  "config": null
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "POV": [
+      {
+        "Top": null,
+        "Name": "Entity",
+        "Alias": "Entity",
+        "InUse": "True",
+        "Order": "0",
+        "Default": "The Petshop",
+        "Visible": "True"
+      },
+      {
+        "Top": null,
+        "Name": "Category",
+        "Alias": "Category",
+        "InUse": "True",
+        "Order": "2",
+        "Default": "Actual",
+        "Visible": "False"
+      },
+      {
+        "Top": null,
+        "Name": "Year",
+        "Alias": "Year",
+        "InUse": "True",
+        "Order": "3",
+        "Default": "2024",
+        "Visible": "True"
+      },
+      {
+        "Top": null,
+        "Name": "Period",
+        "Alias": "Period",
+        "InUse": "True",
+        "Order": "4",
+        "Default": "Dec",
+        "Visible": "True"
+      },
+      {
+        "Top": null,
+        "Name": "View",
+        "Alias": "View",
+        "InUse": "True",
+        "Order": "5",
+        "Default": "periodic",
+        "Visible": "True"
+      },
+      {
+        "Top": null,
+        "Name": "Account",
+        "Alias": "Account",
+        "InUse": "True",
+        "Order": "6",
+        "Default": "Other - Sales",
+        "Visible": "False"
+      },
+      {
+        "Top": null,
+        "Name": "AnalyticalDim1",
+        "Alias": "Fund",
+        "InUse": "True",
+        "Order": "7",
+        "Default": "Top",
+        "Visible": "False"
+      },
+      {
+        "Top": null,
+        "Name": "AnalyticalDim2",
+        "Alias": "Investment",
+        "InUse": "True",
+        "Order": "8",
+        "Default": "Top",
+        "Visible": "False"
+      },
+      {
+        "Top": null,
+        "Name": "AnalyticalDim3",
+        "Alias": "Region",
+        "InUse": "True",
+        "Order": "9",
+        "Default": "Top",
+        "Visible": "False"
+      },
+      {
+        "Top": null,
+        "Name": "AnalyticalDim4",
+        "Alias": "Normilization",
+        "InUse": "True",
+        "Order": "11",
+        "Default": "Top",
+        "Visible": "False"
+      },
+      {
+        "Top": null,
+        "Name": "AnalyticalDim5",
+        "Alias": "AnalyticalDim5",
+        "InUse": "False",
+        "Order": "12",
+        "Default": "AnalyticalDim5_total",
+        "Visible": "False"
+      },
+      {
+        "Top": null,
+        "Name": "AnalyticalDim6",
+        "Alias": "AnalyticalDim6",
+        "InUse": "False",
+        "Order": "13",
+        "Default": "AnalyticalDim6_total",
+        "Visible": "False"
+      },
+      {
+        "Top": null,
+        "Name": "AnalyticalDim7",
+        "Alias": "AnalyticalDim7",
+        "InUse": "False",
+        "Order": "14",
+        "Default": "AnalyticalDim7_total",
+        "Visible": "False"
+      },
+      {
+        "Top": null,
+        "Name": "AnalyticalDim8",
+        "Alias": "AnalyticalDim8",
+        "InUse": "False",
+        "Order": "15",
+        "Default": "AnalyticalDim8_total",
+        "Visible": "False"
+      },
+      {
+        "name": "Entity",
+        "alias": "Entity",
+        "order": 0,
+        "default": "The Petshop",
+        "visible": true
+      },
+      {
+        "name": "Category",
+        "alias": "Category",
+        "order": 2,
+        "default": "Actual",
+        "visible": false
+      },
+      {
+        "name": "Year",
+        "alias": "Year",
+        "order": 3,
+        "default": "2024",
+        "visible": true
+      },
+      {
+        "name": "Period",
+        "alias": "Period",
+        "order": 4,
+        "default": "Dec",
+        "visible": true
+      },
+      {
+        "name": "View",
+        "alias": "View",
+        "order": 5,
+        "default": "periodic",
+        "visible": true
+      },
+      {
+        "name": "Account",
+        "alias": "Account",
+        "order": 6,
+        "default": "Other - Sales",
+        "visible": false
+      },
+      {
+        "name": "AnalyticalDim1",
+        "alias": "Fund",
+        "order": 7,
+        "default": "Top",
+        "visible": false
+      },
+      {
+        "name": "AnalyticalDim2",
+        "alias": "Investment",
+        "order": 8,
+        "default": "Top",
+        "visible": false
+      },
+      {
+        "name": "AnalyticalDim3",
+        "alias": "Region",
+        "order": 9,
+        "default": "Top",
+        "visible": false
+      },
+      {
+        "name": "AnalyticalDim4",
+        "alias": "Normilization",
+        "order": 11,
+        "default": "Top",
+        "visible": false
+      }
+    ],
+    "lists": {
+      "ProfitAndLossAccounts": {
+        "dimensions": [
+          "Account"
+        ],
+        "items": [
+          {
+            "name": "R1",
+            "dimensions": {
+              "Account": {
+                "member": "Gross Sales"
+              }
+            },
+            "displayName": "[Account]",
+            "format": "",
+            "drilldown": "Account.[Account].descendants"
+          },
+          {
+            "name": "R2",
+            "dimensions": {
+              "Account": {
+                "member": "Net Sales"
+              }
+            },
+            "displayName": "[Account]",
+            "format": "bold_lineabove_skip"
+          },
+          {
+            "name": "R3",
+            "dimensions": {
+              "Account": {
+                "member": "Cost of goods sold"
+              }
+            },
+            "displayName": "[Account]",
+            "format": ""
+          },
+          {
+            "name": "R4",
+            "dimensions": {
+              "Account": {
+                "member": "Direct Staff costs salaries and wages"
+              }
+            },
+            "displayName": "[Account]",
+            "format": ""
+          },
+          {
+            "name": "R5",
+            "dimensions": {
+              "Account": {
+                "member": "Direct Staff costs others"
+              }
+            },
+            "displayName": "[Account]",
+            "format": ""
+          },
+          {
+            "name": "R6",
+            "dimensions": {
+              "Account": {
+                "member": "Gross Margin"
+              }
+            },
+            "displayName": "[Account]",
+            "format": "bold_skip_lineabove"
+          },
+          {
+            "name": "R7",
+            "dimensions": {
+              "Account": {
+                "member": "Staff costs salaries and wages"
+              }
+            },
+            "displayName": "[Account]",
+            "format": ""
+          },
+          {
+            "name": "R8",
+            "dimensions": {
+              "Account": {
+                "member": "Staff costs others"
+              }
+            },
+            "displayName": "[Account]",
+            "format": ""
+          },
+          {
+            "name": "R9",
+            "dimensions": {
+              "Account": {
+                "member": "Rent & Utilities"
+              }
+            },
+            "displayName": "[Account]",
+            "format": "",
+            "drilldown": "Account.[Account].descendants"
+          },
+          {
+            "name": "R10",
+            "dimensions": {
+              "Account": {
+                "member": "EBITDA"
+              }
+            },
+            "displayName": "[Account]",
+            "format": "bold_skip_lineabove"
+          },
+          {
+            "name": "R11",
+            "dimensions": {
+              "Account": {
+                "member": "Net Profit"
+              }
+            },
+            "displayName": "[Account]",
+            "format": "bold_skip_lineabove"
+          }
+        ]
+      },
+      "ActualsForecastLastMonthLastYear": {
+        "dimensions": [
+          "Category",
+          "Period"
+        ],
+        "items": [
+          {
+            "name": "Actual",
+            "dimensions": {
+              "Category": {
+                "member": "Actual"
+              },
+              "Period": {
+                "member": ""
+              }
+            },
+            "displayName": "Actual",
+            "attributes": {
+              "minWidth": 75
+            }
+          },
+          {
+            "name": "Forecast",
+            "dimensions": {
+              "Category": {
+                "member": "Forecast"
+              },
+              "Period": {
+                "member": ""
+              }
+            },
+            "displayName": "Forecast",
+            "attributes": {
+              "minWidth": 75
+            }
+          },
+          {
+            "name": "LastMonth",
+            "dimensions": {
+              "Category": {
+                "member": "Actual"
+              },
+              "Period": {
+                "member": {
+                  "type": "dynamic",
+                  "base": "CURRENT",
+                  "offset": -1
+                }
+              }
+            },
+            "displayName": "Last Month",
+            "attributes": {
+              "minWidth": 75
+            }
+          },
+          {
+            "name": "LastYear",
+            "dimensions": {
+              "Category": {
+                "member": "Actual"
+              },
+              "Period": {
+                "member": {
+                  "type": "dynamic",
+                  "base": "CURRENT",
+                  "offset": -12
+                }
+              }
+            },
+            "displayName": "Last Year",
+            "attributes": {
+              "minWidth": 75
+            }
+          }
+        ]
+      }
+    }
+  }

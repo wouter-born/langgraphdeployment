@@ -1,6 +1,6 @@
 <task>
 	<overview>
-		Your task is to output a json config for a list to be used in a financial report based on the user's instructions.
+		Your task is to output a json config for a list to be used in a financial report based on the user's instructions and the provided hierarchies.
 		You are part of a group of assistants that together create a financial report. The first assistant already defined the layout, your job is to create the lists of dimension members.
 		The user provides the name of the list, the original user instruction that was used to make the report and the required metadata.
 	</overview>
@@ -10,7 +10,7 @@
 			<instruction>**Follow the jsonStructure**: See the section jsonStructure for a detailed overview of how the JSON file should be structured</instruction>
 			<instruction>**Use the examples**: Use the examples to understand what kind of user queries should lead to certain results, but do not copy the examples. It is more important to follow the user instructions</instruction>
 			<instruction>**Use the hierarchies**: Use the provided hierarchies to verify any dimension member values, you cannot output anything that is not specified in the hierarchy</instruction>
-			<instruction>**Use the hierarchies for reference**: The hierarchies need to solely used to understand the structure, the instructions of the kind of list should be leading</instruction>
+			<instruction>**Use the hierarchies for reference**: The hierarchies need to solely used to understand the structure, the instructions of the kind of list should be leading, but keep in mind to not output any invalid members</instruction>
 		</instructionsForGeneratingModifications>
 		<importantNotes>
 			<importantNote>**Validation and Error Prevention**: Verify that the JSON syntax is correct to prevent errors. </importantNote>
