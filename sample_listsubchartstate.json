@@ -2,14 +2,12 @@
   "List": {
     "listReference": "rowsList",
     "list": "ProfitAndLossAccounts",
-    "createDescription": "A column list containing Actuals, Forecast, Last Month and Last Year"
+    "createDescription": "A formatted profit and loss statement to be used on table rows"
   },
   "listExists": false,
   "listType": "Fixed",
   "dimensions": [
-    "Year",
-    "Period",
-    "Category"
+    "Account"
   ],
   "ReportMetadata": [
     {
