@@ -1,103 +1,33 @@
 from langgraph.graph import StateGraph, START, END
 
+from Nodes.clarify_instructions import clarify_instructions
 from Nodes.generate_layout import *
 from Nodes.generate_component import *
 
 
-##########################################
-# Build the specialized component subgraph
-##########################################
-component_subgraph = StateGraph(SpecializedComponentState)
 
-component_subgraph.add_node("component_selector", component_selector)
-component_subgraph.add_node("generate_chart_component", generate_chart_component)
-component_subgraph.add_node("generate_table_component", generate_table_component)
-component_subgraph.add_node("generate_waterfall_component", generate_waterfall_component)
-component_subgraph.add_node("generate_tile_component", generate_tile_component)
-component_subgraph.add_node("generate_generic_component", generate_generic_component)
-
-component_subgraph.add_edge(START, "component_selector")
-
-component_subgraph.add_conditional_edges(
-    "component_selector",
-    selector_routing,
-    [
-        "generate_chart_component",
-        "generate_table_component",
-        "generate_waterfall_component",
-        "generate_tile_component",
-        "generate_generic_component"
-    ]
-)
-
-# Each specialized node ends immediately
-component_subgraph.add_edge("generate_chart_component", END)
-component_subgraph.add_edge("generate_table_component", END)
-component_subgraph.add_edge("generate_waterfall_component", END)
-component_subgraph.add_edge("generate_tile_component", END)
-component_subgraph.add_edge("generate_generic_component", END)
-
-# Compile subgraph
-generate_specialized_subchart = component_subgraph.compile()
-
-from Nodes.mainchart_helper_functions import *
-
-
-from Classes.state_classes import ListSubchartState
-from Nodes.generate_list import *
-
-
-subgraph = StateGraph(ListSubchartState)
-
-subgraph.add_node("check_if_list_exists", check_if_list_exists)
-subgraph.add_node("return_existing_list", return_existing_list)
-subgraph.add_node("check_dynamic_or_fixed", check_dynamic_or_fixed)
-subgraph.add_node("create_fixed_list", create_fixed_list)
-subgraph.add_node("create_dynamic_list", create_dynamic_list)
-
-subgraph.add_edge(START, "check_if_list_exists")
-
-
-subgraph.add_conditional_edges("check_if_list_exists", list_exists_routing,
-                               ["return_existing_list", "check_dynamic_or_fixed"])
-subgraph.add_edge("return_existing_list", END)
-
-
-subgraph.add_conditional_edges("check_dynamic_or_fixed", dynamic_or_fixed_routing,
-                               ["create_dynamic_list", "create_fixed_list"])
-subgraph.add_edge("create_dynamic_list", END)
-subgraph.add_edge("create_fixed_list", END)
-
-# Compile the subchart
-generate_list_subchart = subgraph.compile()
+def should_continue(state):
+    if state['instruction_correct'] == True:
+        return END
+    else:
+        return "clarify_instructions"
 
 ##########################
 # MAIN GRAPH
 ##########################
 graph = StateGraph(OverallState)
 
-graph.add_node("generate_layout", generate_layout)
-graph.add_node("generate_specialized_subchart", generate_specialized_subchart)
-graph.add_node("update_json_layout", update_json_layout)
-graph.add_node("gatheruniquelists", gatheruniquelists)
-graph.add_node("generate_list_subchart", generate_list_subchart)  # Subchart for lists
-graph.add_node("consolidate_lists_to_layout", consolidate_lists_to_layout)
+graph.add_node("clarify_instructions", clarify_instructions)
+#graph.add_node("generate_json_patches", generate_json_patches)
+#graph.add_node("apply_json_patches", generate_json_patches)
 
-graph.add_edge(START, "generate_layout")
+graph.add_edge(START, "clarify_instructions")
+graph.add_conditional_edges("clarify_instructions",should_continue)
 
-# After we have the base layout and extracted all 'Components',
-# route each component to the specialized subchart
-graph.add_conditional_edges("generate_layout", continue_to_components, ["generate_specialized_subchart"])
 
-# Then from the specialized subchart, we go to update_json_layout
-graph.add_edge("generate_specialized_subchart", "update_json_layout")
-
-graph.add_edge("update_json_layout", "gatheruniquelists")
-
-graph.add_conditional_edges("gatheruniquelists", continue_to_lists, ["generate_list_subchart"])
-
-graph.add_edge("generate_list_subchart", "consolidate_lists_to_layout")
-graph.add_edge("consolidate_lists_to_layout", END)
+#graph.add_edge("generate_layout","generate_json_patches")
+#graph.add_edge("generate_json_patches","apply_json_patches")
+#graph.add_edge("apply_json_patches", END)
 
 # Compile the main graph
 app = graph.compile()

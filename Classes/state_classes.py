@@ -38,3 +38,15 @@ class ListSubchartState(TypedDict):
     ReportMetadata: Annotated[List[Dict[str, Any]], operator.add]
     JsonLists: List[dict]   # The final generated JSON list(s)
     FinalList: dict         # The actual final list data (if you want it separate from JsonLists)
+
+
+
+
+#########################################################
+# EDIT REPORT STATE CLASSES
+#########################################################
+class ModifyReportState(TypedDict):
+    instruction: str
+    input_json: dict
+    instruction_correct: bool
+    output_json: dict

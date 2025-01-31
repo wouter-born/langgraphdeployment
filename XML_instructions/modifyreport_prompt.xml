@@ -10,9 +10,9 @@
 			<code>
 				"numberFormat":
 				{
-				"currency": "USD",
-				"scale": "unchanged",
-				"decimals": 0
+					"currency": "USD",
+					"scale": "unchanged",
+					"decimals": 0
 				}
 			</code>
 		</numberFormat>
@@ -83,6 +83,469 @@
 				</code>
 			</examplePOV>
 		</POV>
+		<layout>
+			<gridColumns>
+				<description>
+					Starts with the gridColumns property, which typically looks like:
+				</description>
+				<example>
+					<code>
+						"gridColumns": {
+						"sm": 1,
+						"md": 1,
+						"lg": 8
+						}
+					</code>
+				</example>
+				<details>
+					This property defines how many columns the screen should be split into for small (sm), medium (md), and large (lg) screens.
+				</details>
+			</gridColumns>
+			<rows>
+				<description>
+					Layout is structured as a collection of rows. Each row contains one or more columns.
+				</description>
+				<columns>
+					<colSpan>
+						Defines how many columns the column should stretch. It can be set specifically for different screen sizes, e.g.:
+						<code>
+							"colSpan": {
+							"sm": 1,
+							"md": 1,
+							"lg": 3
+							}
+						</code>
+						For full-width objects, use:
+						<code>
+							"colSpan": {
+							"sm": "full",
+							"md": "full",
+							"lg": "full"
+							}
+						</code>
+					</colSpan>
+					<components>
+						Each column should contain only one component. Each component must have:
+						<id>
+							Unique Identifier, must be always unique. Use C1, C2, etc., for normal components and S1, Co1 for scale selectors and comments components.
+						</id>
+						<type>
+							Defines the type of the component. Current supported types are:
+							<ReportTable>Tabular representation of financial data.</ReportTable>
+							<Chart>A chart object, can be different types.</Chart>
+							<Tile>Used to visualize a single KPI including a micro-chart.</Tile>
+							<GrowthTile>Used to visualize a single KPI including a micro-chart showing both historical and future data.</GrowthTile>
+							<NestedRow>
+								Special type allowing another collection of rows with the same layout structure. This is used to create nested structures like one row with a main table and two vertically aligned charts on the side.
+							</NestedRow>
+							<ScaleSelectors>This component should always be used and displays the currency, scale selector (unchanged, thousands, millions), and a decimal selector.</ScaleSelectors>
+							<Comments>An object with the ability to show and edit comments that are saved with the report.</Comments>
+						</type>
+						<title>
+							The title of the component, typically used as a label. Dynamic placeholders for dimensions are allowed. For example:
+							<code>"title": "Variance analysis for [Account]"</code>
+						</title>
+						<noborder>Boolean value (true or false) indicating whether the object should have a visual placeholder with border and padding.</noborder>
+						<maxheight>Defines the maximum pixel height of the placeholder. If empty, the object can grow indefinitely.</maxheight>
+						<minheight>Defines the minimum pixel height of the placeholder. If empty the obejct will take the minimum amount of height needed.</minheight>
+						<numberFormat>
+							The number format of a component overrides the report number format for one specific component. Example:
+							<code>
+								"numberFormat": {
+								"scale": "millions",
+								"decimals": 1
+								}
+							</code>
+						</numberFormat>
+						<config>
+							Component-specific configuration settings.
+							<lists>
+								In this configuration, lists used by components are defined within the `config.lists` array as objects. Each list object must contain:
+								<listReference>
+									The reference name used within the component to refer to the list (e.g., "rowsList", "columnsList", "trendList").
+								</listReference>
+								<list>
+									The name of the actual list defined elsewhere in the configuration that this component should use.
+								</list>
+							</lists>
+							<KPI>
+								<description>
+									Defines the KPI by specifying dimension members.
+									This dictates which data the component retrieves and overrides the selected POV.
+									This setting is valid for all numeric data retrieving components like tables, charts, tiles, etc.
+								</description>
+								<exampleConfiguration>
+									<code>
+										"KPI": {
+										"Account": "Income",
+										"Entity": "HQ"
+										}
+									</code>
+								</exampleConfiguration>
+							</KPI>
+							<componentConfigurations>
+								<Comments>
+									<description>
+										The Comments component provides the ability to display, edit, and save comments associated with a specific report and its dimensional context.
+										It supports linking comments to a report, configuring dimensional settings, custom titles, child comment roll-ups, and integration with AI-generated narratives.
+									</description>
+									<config>
+										<title>
+											<description>
+												Optional. Specifies a custom title for the comments section.
+												If not provided, defaults to "POV Comments".
+												This title can be dynamically generated using placeholders for dimensions.
+											</description>
+											<example>"title": "Comments for [Entity] - [Year]"</example>
+										</title>
+										<linkToReport>
+											<description>
+												A boolean value indicating whether the comments are linked to a specific report.
+												If true, the comments will be saved and retrieved based on the configured `reportId` (or current reportId if not specified) and `dimensions`.
+												If false, the comments will only be saved and retrieved using the dimension values. This would allow to use some global non report related comments.
+											</description>
+										</linkToReport>
+										<reportId>
+											<description>
+												The unique identifier of the report the comments are linked to. Can be empty if comments should be tied to the current report.
+												If this field is specified it allows to specify another report where the comments should come from.
+												With this setting it is allowed to share comments between reports.
+											</description>
+											<example>"reportId": "Report123"</example>
+										</reportId>
+										<dimensions>
+											<description>
+												Specifies the dimensional context for the comments. This is a dictionary of dimension names and their values.
+												If a value is empty, it will be filled in automatically using the `selectedPOV` from the frontend.
+												The comments retrieved or saved will be filtered by these dimension values.
+											</description>
+											<example>
+												"dimensions": {
+												"Year": "",
+												"Period": "Q1",
+												"Entity": "Total HQ"
+												}
+											</example>
+										</dimensions>
+										<rollupDimension>
+											<description>
+												Optional. Defines the dimension for rolling up comments from child entities.
+												If provided, the component will show a tab with "Descendant Comments" that aggregates comments from members below the specified dimension value.
+												For example, if `rollupDimension` is "Entity", and the current `Entity` POV is "Total HQ", child comments for all sub-entities under "Total HQ" can be viewed.
+											</description>
+											<example>"rollupDimension": "Entity"</example>
+										</rollupDimension>
+										<enableAINarrativesForTable>
+											<description>
+												Optional. When set, this links the Comments component to a specific ReportTable by referencing the table's `id`.
+												By providing a table `id` here, any AI-generated narratives (e.g., anomaly detection explanations) will be routed specifically to this Comments component.
+												If not set, AI-generated comments will not automatically integrate with this comments field.
+											</description>
+											<example>"enableAINarrativesForTable": "C1"</example>
+										</enableAINarrativesForTable>
+										<exampleConfiguration>
+											This example shows a comments field that is linked to a table with ID C2. This comments field will support AI comments generation and will not support child comments rollup
+											The comments will be stored using the current report id and the current POV values of Year, Period and Entity
+											<code>
+												{
+												"id": "Co1",
+												"type": "Comments",
+												"config": {
+												"linkToReport": true,
+												"reportId": "",
+												"dimensions": {
+												"Year": "",
+												"Period": "",
+												"Entity": ""
+												},
+												"rollupDimension": "",
+												"enableAINarrativesForTable": "C2"
+												}
+												}
+											</code>
+										</exampleConfiguration>
+									</config>
+								</Comments>
+								<Chart>
+									<description>
+										The Chart component displays various chart types (Column, Bar, Line, Waterfall, Label).
+										It requires two lists:
+										- categoryList: defines categories (e.g., periods)
+										- seriesList: defines metrics (e.g., Actuals, Budget)
+										Orientation (Vertical/Horizontal) applies only to Waterfall charts.
+										For other charts, "Column" implies vertical and "Bar" implies horizontal.
+										Legend names are derived from the seriesList.
+									</description>
+									<exampleConfigurationWaterfall>
+										<code>
+											{
+											"id": "C2",
+											"type": "Chart",
+											"title": "EVA vs Forecast",
+											"maxheight": 400,
+											"config": {
+											"orientation": "Horizontal",
+											"KPI": {
+											"Account": "EBITDA"
+											},
+											"lists": [
+											{
+											"listReference": "seriesList",
+											"list": "WaterfallElements"
+											},
+											{
+											"listReference": "categoryList",
+											"list": "WaterfallComparison"
+											}
+											],
+											"axis": {
+											"categoryAxis": {
+											"display": true,
+											"labelRotation": 0,
+											"labelSkipping": 0
+											},
+											"numericAxes": [
+											{
+											"display": false
+											}
+											]
+											},
+											"series": [
+											{
+											"dataKey": "WaterfallSeries",
+											"listReference": "elements",
+											"type": "Waterfall",
+											"axisProperties": {
+											"format": "{value}",
+											"label": "EBITDA Value"
+											},
+											"dataLabels": {
+											"display": true,
+											"format": "{value}",
+											"position": "inside"
+											}
+											}
+											],
+											"legend": {
+											"display": false
+											}
+											}
+											}
+										</code>
+									</exampleConfigurationWaterfall>
+									<attributes>
+										<lists>
+											<description>
+												Must define:
+												- categoryList: categories (e.g., periods)
+												- seriesList: metrics
+											</description>
+										</lists>
+										<chartType>
+											<description>
+												Supported: "Column", "Bar", "Line", "Label", "Waterfall".
+												"Waterfall" uses orientation to determine layout.
+											</description>
+										</chartType>
+										<orientation>
+											<description>
+												For Waterfall only:
+												- "Horizontal": categories on y-axis
+												- "Vertical": categories on x-axis
+												For Column/Bar, orientation is implied by type.
+											</description>
+										</orientation>
+										<axis>
+											<description>
+												Configures category and numeric axes.
+											</description>
+											<categoryAxis>
+												<display>
+													<description>Boolean. Hide/show category axis.</description>
+												</display>
+												<labelRotation>
+													<description>Integer rotation angle in degrees.</description>
+												</labelRotation>
+												<labelSkipping>
+													<description>Integer skipping factor (0=none,1=every 2nd,...).</description>
+												</labelSkipping>
+											</categoryAxis>
+											<numericAxes>
+												<description>
+													Array of numeric axis definitions. Each can be shown/hidden.
+												</description>
+												<display>
+													<description>Boolean. Hide/show numeric axis.</description>
+												</display>
+											</numericAxes>
+										</axis>
+										<series>
+											<description>
+												Array of series definitions:
+												- dataKey: metric from seriesList
+												- type: "Column", "Bar", "Line", "Label", or "Waterfall".
+												If a metric is a variance formula, the chart colors bars green/red automatically (no special type needed).
+												- axisProperties: format, label, and gridLines for numeric axis.
+												- dataLabels: display, format, position.
+											</description>
+											<dataKey>
+												<description>String referencing a seriesList item.</description>
+											</dataKey>
+											<type>
+												<description>
+													"Column" (vertical), "Bar" (horizontal), "Label" (text only),
+													"Waterfall" (cumulative steps).
+												</description>
+											</type>
+											<axisProperties>
+												<description>
+													- format: e.g., "{value} AED"
+													- label: e.g., "Value (AED)"
+													- gridLines: boolean
+												</description>
+											</axisProperties>
+											<dataLabels>
+												<description>
+													- display: boolean
+													- format: e.g., "{value} AED"
+													- position: "top"/"inside"
+												</description>
+											</dataLabels>
+										</series>
+										<legend>
+											<description>
+												- display: boolean. If true, shows legend using friendlyNames.
+											</description>
+											<display>
+												<description>Boolean. Hide/show legend.</description>
+											</display>
+										</legend>
+									</attributes>
+								</Chart>
+								<Tile>
+									<exampleConfiguration>
+										<code>
+											"config": {
+											"KPI": {
+											"Account": "Income"
+											},
+											"lists": [
+											{
+											"listReference": "trendList",
+											"list": "periods"
+											},
+											{
+											"listReference": "comparisonList",
+											"list": "actualBudget"
+											}
+											]
+											}
+										</code>
+									</exampleConfiguration>
+									<attributes>
+										<lists>
+											The `lists` array must include:
+											<listReference>
+												<trendList>
+													A list defined in the configuration that typically shows a number of periods to display a trend. This list is used for the micro-chart.
+												</trendList>
+												<comparisonList>
+													A list used to make a variance calculation. Examples are Actual and Budget or This Year and Previous Year.
+												</comparisonList>
+											</listReference>
+										</lists>
+									</attributes>
+								</Tile>
+								<GrowthTile>
+									<description>
+										The GrowthTile is similar to the Tile component but shows, next to a historical trend, an algorithmic forecast as a dotted line alongside any future Category like Budget.
+									</description>
+									<exampleConfiguration>
+										<code>
+											"config": {
+											"KPI": {
+											"Account": "Portfolio ARR",
+											"Investment": "Portco1"
+											},
+											"recalculateFromCumulative": true,
+											"years": [2022, 2023],
+											"futureCategory": {
+											"Year": 2024,
+											"Category": "Budget"
+											},
+											"lists": [
+											{
+											"listReference": "trendList",
+											"list": "trendList"
+											}
+											]
+											}
+										</code>
+									</exampleConfiguration>
+									<attributes>
+										<lists>
+											The `lists` array must include:
+											<listReference>
+												<trendList>
+													A list defined in the configuration that typically shows a number of periods to display a trend. This list is used for the micro-chart.
+												</trendList>
+											</listReference>
+										</lists>
+										<recalculateFromCumulative>
+											This value should be true for any cumulative KPIs like ARR, employee count, customer count, etc.
+										</recalculateFromCumulative>
+										<years>
+											The historical years. This chart needs at least two years of history to detect seasonal trends.
+										</years>
+										<futureCategory>
+											In addition to an algorithmic forecasted Category, it can also display a future Year Category from the database like Budget.
+										</futureCategory>
+									</attributes>
+								</GrowthTile>
+								<ReportTable>
+									<exampleConfiguration>
+										<code>
+											"config": {
+											"firstColumnWidth": 150,
+											"lists": [
+											{
+											"listReference": "rowsList",
+											"list": "rowDefinitions"
+											},
+											{
+											"listReference": "columnsList",
+											"list": "columnDefinitions"
+											}
+											]
+											}
+										</code>
+									</exampleConfiguration>
+									<attributes>
+										<lists>
+											The `lists` array must include:
+											<listReference>
+												<rowsList>
+													A list defining the rows of a table
+												</rowsList>
+												<columnsList>
+													A list defining the columns of a table
+												</columnsList>
+											</listReference>
+										</lists>
+										<firstColumnWidth>
+											Sets the width in pixels of the header column.
+										</firstColumnWidth>
+										<mergeColumnHeaders>When this value is set to true, the UI will combine similarly named column headers into a single cell. This is particularly useful when using multiple dimensions in the columns. For example, to create a block for each Year repeating multiple columns like Actuals, Budget, and Variance. In this scenario, the Year would show as a merged cell. The order of the dimensions in a list defines the order of merging; in this example, it's required to have Year first and then Category.</mergeColumnHeaders>
+										<selectRow>When this value is set to false, the table rows will be no longer selectable</selectRow>
+
+									</attributes>
+								</ReportTable>
+							</componentConfigurations>
+						</config>
+					</components>
+				</columns>
+			</rows>
+		</layout>
 		<lists>
 			<description>
 				Lists can have zero to many (0 to n) under the lists group. They are used in components (layout section) and might not always be used.
@@ -356,492 +819,6 @@
 				</items>
 			</structureOfLists>
 		</lists>
-		<layout>
-			<gridColumns>
-				<description>
-					Starts with the gridColumns property, which typically looks like:
-				</description>
-				<example>
-					<code>
-						"gridColumns": {
-						"sm": 1,
-						"md": 1,
-						"lg": 8
-						}
-					</code>
-				</example>
-				<details>
-					This property defines how many columns the screen should be split into for small (sm), medium (md), and large (lg) screens.
-				</details>
-			</gridColumns>
-			<rows>
-				<description>
-					Layout is structured as a collection of rows. Each row contains one or more columns.
-				</description>
-				<columns>
-					<colSpan>
-						Defines how many columns the column should stretch. It can be set specifically for different screen sizes, e.g.:
-						<code>
-							"colSpan": {
-							"sm": 1,
-							"md": 1,
-							"lg": 3
-							}
-						</code>
-						For full-width objects, use:
-						<code>
-							"colSpan": {
-							"sm": "full",
-							"md": "full",
-							"lg": "full"
-							}
-						</code>
-					</colSpan>
-					<components>
-						Each column should contain only one component. Each component must have:
-						<id>
-							Unique Identifier, must be always unique. Use C1, C2, etc., for normal components and S1, Co1 for scale selectors and comments components.
-						</id>
-						<type>
-							Defines the type of the component. Current supported types are:
-							<ReportTable>Tabular representation of financial data.</ReportTable>
-							<Chart>A chart object, can be different types.</Chart>
-							<Tile>Used to visualize a single KPI including a micro-chart.</Tile>
-							<GrowthTile>Used to visualize a single KPI including a micro-chart showing both historical and future data.</GrowthTile>
-							<NestedRow>
-								Special type allowing another collection of rows with the same layout structure. This is used to create nested structures like one row with a main table and two vertically aligned charts on the side.
-							</NestedRow>
-							<ScaleSelectors>This component should always be used and displays the currency, scale selector (unchanged, thousands, millions), and a decimal selector.</ScaleSelectors>
-							<Comments>An object with the ability to show and edit comments that are saved with the report.</Comments>
-						</type>
-						<title>
-							The title of the component, typically used as a label. Dynamic placeholders for dimensions are allowed. For example:
-							<code>"title": "Variance analysis for [Account]"</code>
-						</title>
-						<noborder>Boolean value (true or false) indicating whether the object should have a visual placeholder with border and padding.</noborder>
-						<maxheight>Defines the maximum pixel height of the placeholder. If empty, the object can grow indefinitely.</maxheight>
-						<minheight>Defines the minimum pixel height of the placeholder. If empty the obejct will take the minimum amount of height needed.</minheight>
-						<numberFormat>
-							The number format of a component overrides the report number format for one specific component. Example:
-							<code>
-								"numberFormat": {
-								"scale": "millions",
-								"decimals": 1
-								}
-							</code>
-						</numberFormat>
-						<config>
-							Component-specific configuration settings.
-							<lists>
-								In this configuration, lists used by components are defined within the `config.lists` array as objects. Each list object must contain:
-								<listReference>
-									The reference name used within the component to refer to the list (e.g., "rowsList", "columnsList", "trendList").
-								</listReference>
-								<list>
-									The name of the actual list defined elsewhere in the configuration that this component should use.
-								</list>
-							</lists>
-							<KPI>
-								<description>
-									Defines the KPI by specifying dimension members.
-									This dictates which data the component retrieves and overrides the selected POV.
-									This setting is valid for all numeric data retrieving components like tables, charts, tiles, etc.
-								</description>
-								<exampleConfiguration>
-									<code>
-										"KPI": {
-										"Account": "Income",
-										"Entity": "HQ"
-										}
-									</code>
-								</exampleConfiguration>
-							</KPI>
-							<componentConfigurations>
-								<Comments>
-									<description>
-										The Comments component provides the ability to display, edit, and save comments associated with a specific report and its dimensional context.
-										It supports linking comments to a report, configuring dimensional settings, custom titles, child comment roll-ups, and integration with AI-generated narratives.
-									</description>
-									<config>
-										<title>
-											<description>
-												Optional. Specifies a custom title for the comments section.
-												If not provided, defaults to "POV Comments".
-												This title can be dynamically generated using placeholders for dimensions.
-											</description>
-											<example>"title": "Comments for [Entity] - [Year]"</example>
-										</title>
-										<linkToReport>
-											<description>
-												A boolean value indicating whether the comments are linked to a specific report.
-												If true, the comments will be saved and retrieved based on the configured `reportId` (or current reportId if not specified) and `dimensions`.
-												If false, the comments will only be saved and retrieved using the dimension values. This would allow to use some global non report related comments.
-											</description>
-										</linkToReport>
-										<reportId>
-											<description>
-												The unique identifier of the report the comments are linked to. Can be empty if comments should be tied to the current report.
-												If this field is specified it allows to specify another report where the comments should come from.
-												With this setting it is allowed to share comments between reports.
-											</description>
-											<example>"reportId": "Report123"</example>
-										</reportId>
-										<dimensions>
-											<description>
-												Specifies the dimensional context for the comments. This is a dictionary of dimension names and their values.
-												If a value is empty, it will be filled in automatically using the `selectedPOV` from the frontend.
-												The comments retrieved or saved will be filtered by these dimension values.
-											</description>
-											<example>
-												"dimensions": {
-												"Year": "",
-												"Period": "Q1",
-												"Entity": "Total HQ"
-												}
-											</example>
-										</dimensions>
-										<rollupDimension>
-											<description>
-												Optional. Defines the dimension for rolling up comments from child entities.
-												If provided, the component will show a tab with "Descendant Comments" that aggregates comments from members below the specified dimension value.
-												For example, if `rollupDimension` is "Entity", and the current `Entity` POV is "Total HQ", child comments for all sub-entities under "Total HQ" can be viewed.
-											</description>
-											<example>"rollupDimension": "Entity"</example>
-										</rollupDimension>
-										<enableAINarrativesForTable>
-											<description>
-												Optional. When set, this links the Comments component to a specific ReportTable by referencing the table's `id`.
-												By providing a table `id` here, any AI-generated narratives (e.g., anomaly detection explanations) will be routed specifically to this Comments component.
-												If not set, AI-generated comments will not automatically integrate with this comments field.
-											</description>
-											<example>"enableAINarrativesForTable": "C1"</example>
-										</enableAINarrativesForTable>
-										<exampleConfiguration>
-											This example shows a comments field that is linked to a table with ID C2. This comments field will support AI comments generation and will not support child comments rollup
-											The comments will be stored using the current report id and the current POV values of Year, Period and Entity
-											<code>
-												{
-												"id": "Co1",
-												"type": "Comments",
-												"config": {
-												"linkToReport": true,
-												"reportId": "",
-												"dimensions": {
-												"Year": "",
-												"Period": "",
-												"Entity": ""
-												},
-												"rollupDimension": "",
-												"enableAINarrativesForTable": "C2"
-												}
-												}
-											</code>
-										</exampleConfiguration>
-									</config>
-								</Comments>
-								<Chart>
-									<description>
-										The Chart component displays various chart types (Column, Bar, Line, Waterfall, Label).
-										It requires two lists:
-										- categoryList: defines categories (e.g., periods)
-										- seriesList: defines metrics (e.g., Actuals, Budget)
-										Orientation (Vertical/Horizontal) applies only to Waterfall charts.
-										For other charts, "Column" implies vertical and "Bar" implies horizontal.
-										Legend names are derived from the seriesList.
-									</description>
-									<exampleConfiguration>
-										<code>
-											"config": {
-											"chartType": "Waterfall",
-											"orientation": "Vertical",
-											"KPI": {
-											"Account": "Portfolio ARR"
-											},
-											"lists": [
-											{
-											"listReference": "categoryList",
-											"list": "periods"
-											},
-											{
-											"listReference": "seriesList",
-											"list": "metrics"
-											}
-											],
-											"axis": {
-											"categoryAxis": {
-											"display": true,
-											"labelRotation": 0,
-											"labelSkipping": 2
-											},
-											"numericAxes": [
-											{
-											"display": false
-											}
-											]
-											},
-											"series": [
-											{
-											"dataKey": "NetSales",
-											"type": "Column",
-											"axisProperties": {
-											"format": "{value} AED",
-											"gridLines": false,
-											"label": "Value (AED)"
-											},
-											"dataLabels": {
-											"display": true,
-											"format": "{value} AED",
-											"position": "top"
-											}
-											},
-											{
-											"dataKey": "EBITDA",
-											"type": "Column",
-											"axisProperties": {
-											"format": "{value} AED",
-											"gridLines": false,
-											"label": "Value (AED)"
-											},
-											"dataLabels": {
-											"display": true,
-											"format": "{value} AED",
-											"position": "top"
-											}
-											},
-											{
-											"dataKey": "EBITDA_Margin",
-											"type": "Label",
-											"axisProperties": {
-											"format": "{value}%",
-											"gridLines": false,
-											"label": "EBITDA Margin (%)"
-											},
-											"dataLabels": {
-											"display": true,
-											"format": "{value}%",
-											"position": "top"
-											}
-											}
-											],
-											"legend": {
-											"display": false
-											}
-											}
-										</code>
-									</exampleConfiguration>
-									<attributes>
-										<lists>
-											<description>
-												Must define:
-												- categoryList: categories (e.g., periods)
-												- seriesList: metrics
-											</description>
-										</lists>
-										<chartType>
-											<description>
-												Supported: "Column", "Bar", "Line", "Label", "Waterfall".
-												"Waterfall" uses orientation to determine layout.
-											</description>
-										</chartType>
-										<orientation>
-											<description>
-												For Waterfall only:
-												- "Horizontal": categories on y-axis
-												- "Vertical": categories on x-axis
-												For Column/Bar, orientation is implied by type.
-											</description>
-										</orientation>
-										<axis>
-											<description>
-												Configures category and numeric axes.
-											</description>
-											<categoryAxis>
-												<display>
-													<description>Boolean. Hide/show category axis.</description>
-												</display>
-												<labelRotation>
-													<description>Integer rotation angle in degrees.</description>
-												</labelRotation>
-												<labelSkipping>
-													<description>Integer skipping factor (0=none,1=every 2nd,...).</description>
-												</labelSkipping>
-											</categoryAxis>
-											<numericAxes>
-												<description>
-													Array of numeric axis definitions. Each can be shown/hidden.
-												</description>
-												<display>
-													<description>Boolean. Hide/show numeric axis.</description>
-												</display>
-											</numericAxes>
-										</axis>
-										<series>
-											<description>
-												Array of series definitions:
-												- dataKey: metric from seriesList
-												- type: "Column", "Bar", "Line", "Label", or "Waterfall".
-												If a metric is a variance formula, the chart colors bars green/red automatically (no special type needed).
-												- axisProperties: format, label, and gridLines for numeric axis.
-												- dataLabels: display, format, position.
-											</description>
-											<dataKey>
-												<description>String referencing a seriesList item.</description>
-											</dataKey>
-											<type>
-												<description>
-													"Column" (vertical), "Bar" (horizontal), "Label" (text only),
-													"Waterfall" (cumulative steps).
-												</description>
-											</type>
-											<axisProperties>
-												<description>
-													- format: e.g., "{value} AED"
-													- label: e.g., "Value (AED)"
-													- gridLines: boolean
-												</description>
-											</axisProperties>
-											<dataLabels>
-												<description>
-													- display: boolean
-													- format: e.g., "{value} AED"
-													- position: "top"/"inside"
-												</description>
-											</dataLabels>
-										</series>
-										<legend>
-											<description>
-												- display: boolean. If true, shows legend using friendlyNames.
-											</description>
-											<display>
-												<description>Boolean. Hide/show legend.</description>
-											</display>
-										</legend>
-									</attributes>
-								</Chart>
-								<Tile>
-									<exampleConfiguration>
-										<code>
-											"config": {
-											"KPI": {
-											"Account": "Income"
-											},
-											"lists": [
-											{
-											"listReference": "trendList",
-											"list": "periods"
-											},
-											{
-											"listReference": "comparisonList",
-											"list": "actualBudget"
-											}
-											]
-											}
-										</code>
-									</exampleConfiguration>
-									<attributes>
-										<lists>
-											The `lists` array must include:
-											<listReference>
-												<trendList>
-													A list defined in the configuration that typically shows a number of periods to display a trend. This list is used for the micro-chart.
-												</trendList>
-												<comparisonList>
-													A list used to make a variance calculation. Examples are Actual and Budget or This Year and Previous Year.
-												</comparisonList>
-											</listReference>
-										</lists>
-									</attributes>
-								</Tile>
-								<GrowthTile>
-									<description>
-										The GrowthTile is similar to the Tile component but shows, next to a historical trend, an algorithmic forecast as a dotted line alongside any future Category like Budget.
-									</description>
-									<exampleConfiguration>
-										<code>
-											"config": {
-											"KPI": {
-											"Account": "Portfolio ARR",
-											"Investment": "Portco1"
-											},
-											"recalculateFromCumulative": true,
-											"years": [2022, 2023],
-											"futureCategory": {
-											"Year": 2024,
-											"Category": "Budget"
-											},
-											"lists": [
-											{
-											"listReference": "trendList",
-											"list": "trendList"
-											}
-											]
-											}
-										</code>
-									</exampleConfiguration>
-									<attributes>
-										<lists>
-											The `lists` array must include:
-											<listReference>
-												<trendList>
-													A list defined in the configuration that typically shows a number of periods to display a trend. This list is used for the micro-chart.
-												</trendList>
-											</listReference>
-										</lists>
-										<recalculateFromCumulative>
-											This value should be true for any cumulative KPIs like ARR, employee count, customer count, etc.
-										</recalculateFromCumulative>
-										<years>
-											The historical years. This chart needs at least two years of history to detect seasonal trends.
-										</years>
-										<futureCategory>
-											In addition to an algorithmic forecasted Category, it can also display a future Year Category from the database like Budget.
-										</futureCategory>
-									</attributes>
-								</GrowthTile>
-								<ReportTable>
-									<exampleConfiguration>
-										<code>
-											"config": {
-											"firstColumnWidth": 150,
-											"lists": [
-											{
-											"listReference": "rowsList",
-											"list": "rowDefinitions"
-											},
-											{
-											"listReference": "columnsList",
-											"list": "columnDefinitions"
-											}
-											]
-											}
-										</code>
-									</exampleConfiguration>
-									<attributes>
-										<lists>
-											The `lists` array must include:
-											<listReference>
-												<rowsList>
-													A list defining the rows of a table
-												</rowsList>
-												<columnsList>
-													A list defining the columns of a table
-												</columnsList>
-											</listReference>
-										</lists>
-										<firstColumnWidth>
-											Sets the width in pixels of the header column.
-										</firstColumnWidth>
-										<mergeColumnHeaders>When this value is set to true, the UI will combine similarly named column headers into a single cell. This is particularly useful when using multiple dimensions in the columns. For example, to create a block for each Year repeating multiple columns like Actuals, Budget, and Variance. In this scenario, the Year would show as a merged cell. The order of the dimensions in a list defines the order of merging; in this example, it's required to have Year first and then Category.</mergeColumnHeaders>
-										<selectRow>When this value is set to false, the table rows will be no longer selectable</selectRow>
-
-									</attributes>
-								</ReportTable>
-							</componentConfigurations>
-						</config>
-					</components>
-				</columns>
-			</rows>
-		</layout>
 	</jsonStructure>
 	<guidelines>
 		<instructionsForGeneratingModifications>

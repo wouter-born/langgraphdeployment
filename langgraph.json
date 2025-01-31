@@ -1,7 +1,8 @@
 {
   "dockerfile_lines": [],
   "graphs": {
-    "CFOLytics_reportgenerator": "./CFOLytics_reportgenerator.py:graph"
+    "CFOLytics_reportgenerator": "./CFOLytics_reportgenerator.py:graph",
+    "CFOLytics_reporteditor": "./CFOLytics_reporteditor.py:graph"
   },
   "env": "./.env",
   "python_version": "3.11",
