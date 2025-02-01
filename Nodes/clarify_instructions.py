@@ -32,7 +32,7 @@ def clarify_instructions(state: ModifyReportState):
     
     user_msg = HumanMessage(content=json.dumps(inputMessage))
     
-    structured_llm = modelSpec.with_structured_output(
+    structured_llm = modelVers.with_structured_output(
         Instructions,
         method="json_mode",
         include_raw=True
