@@ -1,3 +1,4 @@
+import os
 from typing import Literal
 from langgraph.types import interrupt
 from langgraph.checkpoint.memory import MemorySaver
@@ -8,6 +9,10 @@ from Nodes.clarify_instructions import *
 from Nodes.generate_json_patches import *
 from Nodes.generate_layout import *
 from Nodes.generate_component import *
+
+os.environ["LANGCHAIN_TRACING_V2"] = os.getenv("CUSTOM_TRACING_V2", "true")
+os.environ["LANGCHAIN_ENDPOINT"] = os.getenv("CUSTOM_ENDPOINT", "https://api.smith.langchain.com")
+os.environ["LANGCHAIN_PROJECT"] = os.getenv("CUSTOM_PROJECT", "CFOLytics_reporteditor")
 
 def should_continue(state) -> Literal["generate_json_patches", "human_clarify_instructions"]:
     print(state['instruction_correct'])
