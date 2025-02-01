@@ -48,7 +48,7 @@ def modify_json(json_str: Dict, operation_str: Dict):
         patch = jsonpatch.JsonPatch(patch_operation)
         modified_json = patch.apply(modified_json)
 
-    return json.dumps(modified_json, indent=4)
+    return modified_json
 
 ###### GENERATE JSON PATCHES #########
 
@@ -94,5 +94,5 @@ def generate_json_patches(state: ModifyReportState):
     state["output_json"] = modify_json(state["input_json"],operation_output)
 
     #return state
-    return { "output_json": json.dumps(state["output_json"], indents=2) }
+    return { "output_json": state["output_json"] }
 
