@@ -1,3 +1,4 @@
 .env
 *.ipynb
 *.pyc
+*.cpython-311.pyc
