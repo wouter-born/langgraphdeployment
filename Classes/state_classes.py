@@ -50,3 +50,4 @@ class ModifyReportState(TypedDict):
     instruction_correct: bool
     output_json: dict
     clarification_questions: Optional[str]
+    json_patches: Optional[List[dict]]

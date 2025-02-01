@@ -31,13 +31,14 @@ graph = StateGraph(ModifyReportState)
 graph.add_node("clarify_instructions", clarify_instructions)
 graph.add_node("human_clarify_instructions", human_clarify_instructions)
 graph.add_node("generate_json_patches", generate_json_patches)
-
+graph.add_node("modify_json", modify_json)
 
 # Edges
 graph.add_edge(START, "clarify_instructions")
 graph.add_conditional_edges("clarify_instructions",should_continue)
 graph.add_edge("human_clarify_instructions","clarify_instructions")
-graph.add_edge("generate_json_patches",END)
+graph.add_edge("generate_json_patches","modify_json")
+graph.add_edge("modify_json",END)
 
 checkpointer = MemorySaver()
 

@@ -14,7 +14,12 @@ from Classes.state_classes import ModifyReportState
 from Nodes.load_xml_instructions import load_xml_instructions
 from Classes.llm_classes import modelVers
 
-def modify_json(json_str: Dict, operation_str: Dict):
+#def modify_json(json_str: Dict, operation_str: Dict):
+def modify_json(state: ModifyReportState):
+    
+    json_str = state["input_json"]
+    operation_str = state["json_patches"]
+
     modified_json = json_str
 
     for item in operation_str["items"]:
@@ -47,8 +52,8 @@ def modify_json(json_str: Dict, operation_str: Dict):
 
         patch = jsonpatch.JsonPatch(patch_operation)
         modified_json = patch.apply(modified_json)
-
-    return modified_json
+        
+    return { "output_json": modified_json }
 
 ###### GENERATE JSON PATCHES #########
 
@@ -91,8 +96,11 @@ def generate_json_patches(state: ModifyReportState):
     
     operation_output = output["parsed"]
 
-    state["output_json"] = modify_json(state["input_json"],operation_output)
+    # state["output_json"] = modify_json(state["input_json"],operation_output)
+    
+    state["json_patches"] = operation_output
 
     #return state
-    return { "output_json": state["output_json"] }
+    return { "json_patches": operation_output }
+
 
