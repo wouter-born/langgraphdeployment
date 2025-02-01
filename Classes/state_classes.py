@@ -41,7 +41,6 @@ class ListSubchartState(TypedDict):
 
 
 
-
 #########################################################
 # EDIT REPORT STATE CLASSES
 #########################################################
@@ -50,3 +49,4 @@ class ModifyReportState(TypedDict):
     input_json: dict
     instruction_correct: bool
     output_json: dict
+    clarification_questions: Optional[str]
