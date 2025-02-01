@@ -94,5 +94,5 @@ def generate_json_patches(state: ModifyReportState):
     state["output_json"] = modify_json(state["input_json"],operation_output)
 
     #return state
-    return { "output_json": state["output_json"] }
+    return { "output_json": json.dumps(state["output_json"], indents=2) }
 

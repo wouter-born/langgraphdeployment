@@ -1,9 +1,8 @@
 ##### CLARIFY_INSTRUCTIONS #######
 import json
-from typing import Optional, TypedDict, Literal
+from typing import Optional, TypedDict
 from pydantic import BaseModel, Field
 from langgraph.types import interrupt, Command
-
 from langchain_core.messages import (
     AIMessage, 
     HumanMessage,
@@ -12,9 +11,10 @@ from langchain_core.messages import (
 )
 
 # Custom Libraries
+from Classes.state_classes import ModifyReportState
 from Nodes.load_xml_instructions import load_xml_instructions
 from Classes.llm_classes import *
-from Classes.state_classes import ModifyReportState
+#from Classes.state_classes import ModifyReportState
 
 # Pydantic Class
 class Instructions(BaseModel):
@@ -47,7 +47,6 @@ def clarify_instructions(state: ModifyReportState):
     parsed_output = output["parsed"]
 
     return parsed_output
-
 
 ##### HUMAN_CLARIFY_INSTRUCTIONS #########
 def human_clarify_instructions(state: ModifyReportState):
