@@ -89,9 +89,8 @@ def generate_json_patches(state: ModifyReportState):
        )
        raise Exception(error_message)
     
-    print(output)
-    parsed_output = output["parsed"]
+    operation_output = output["parsed"]
 
-    print(parsed_output)
-    
+    state["output_json"] = modify_json(state["input_json"],operation_output)
+
     return state
