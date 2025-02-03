@@ -9,8 +9,6 @@ from langchain_core.messages import (
     BaseMessage
 )
 
-from Nodes.helper_functions import *
-
 from Nodes.load_xml_instructions import load_xml_instructions
 
 from Classes.llm_classes import *
@@ -137,6 +135,7 @@ def generate_layout(state: OverallState):
         )
         raise Exception(error_message)
     parsed_output = output["parsed"].model_dump()
+    parsed_output = parsed_output.dict(exclude_none=True, by_alias=True)
 
     # Find components
     components = []
@@ -155,4 +154,4 @@ def generate_layout(state: OverallState):
     parsed_output["POV"] = state["POV"]
 
     # Output both JsonLayout and Components
-    return {"JsonLayout": remove_null_entries(parsed_output), "Components": components, "ReportMetadata": report_metadata}
+    return {"JsonLayout": parsed_output, "Components": components, "ReportMetadata": report_metadata}
