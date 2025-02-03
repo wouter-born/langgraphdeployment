@@ -9,6 +9,7 @@ from langchain_core.messages import (
     BaseMessage
 )
 
+from Nodes.helper_functions import *
 
 from Nodes.load_xml_instructions import load_xml_instructions
 
@@ -154,4 +155,4 @@ def generate_layout(state: OverallState):
     parsed_output["POV"] = state["POV"]
 
     # Output both JsonLayout and Components
-    return {"JsonLayout": parsed_output, "Components": components, "ReportMetadata": report_metadata}
+    return {"JsonLayout": remove_null_entries(parsed_output), "Components": components, "ReportMetadata": report_metadata}
