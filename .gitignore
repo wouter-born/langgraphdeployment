@@ -3,3 +3,4 @@
 *.ipynb
 *.pyc
 *.cpython-311.pyc
+*.cpython-312.pyc

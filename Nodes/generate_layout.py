@@ -134,8 +134,8 @@ def generate_layout(state: OverallState):
             "Please check the raw output for errors or unexpected formatting."
         )
         raise Exception(error_message)
-    parsed_output = output["parsed"].model_dump()
-    parsed_output = parsed_output.dict(exclude_none=True, by_alias=True)
+    parsed_output = output["parsed"].model_dump(exclude_none=True, by_alias=True)
+
 
     # Find components
     components = []
