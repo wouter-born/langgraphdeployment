@@ -21,11 +21,11 @@ def should_continue(state) -> Literal["generate_json_patches", "human_clarify_in
     # Default to human clarification to prevent invalid transitions
     return "human_clarify_instructions"  
 
-def should_finish(state) -> Literal["human_clarify_instructions", END]:
-    if state.get('instruction_correct') is True:
-        return END
-    # Default to human clarification to prevent invalid transitions
-    return "human_clarify_instructions"  
+# def should_finish(state) -> Literal["human_clarify_instructions", END]:
+#     if state.get('instruction_correct') is True:
+#         return END
+#     # Default to human clarification to prevent invalid transitions
+#     return "human_clarify_instructions"  
 
 
 ##########################
@@ -36,14 +36,17 @@ graph = StateGraph(ModifyReportState)
 
 # Nodes
 graph.add_node("clarify_instructions", clarify_instructions)
-graph.add_node("human_clarify_instructions", human_clarify_instructions)
+#graph.add_node("human_clarify_instructions", human_clarify_instructions)
 graph.add_node("generate_json_patches", generate_json_patches)
 graph.add_node("modify_json", modify_json)
 
 # Edges
 graph.add_edge(START, "clarify_instructions")
-graph.add_conditional_edges("clarify_instructions",should_continue)
-graph.add_edge("human_clarify_instructions","clarify_instructions")
+#graph.add_conditional_edges("clarify_instructions",should_continue)
+#graph.add_edge("human_clarify_instructions","clarify_instructions")
+
+graph.add_edge("clarify_instructions", "generate_json_patches")
+
 graph.add_edge("generate_json_patches","modify_json")
 
 graph.add_edge("modify_json",END)
