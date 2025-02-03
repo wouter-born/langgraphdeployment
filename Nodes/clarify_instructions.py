@@ -52,7 +52,7 @@ def clarify_instructions(state: ModifyReportState):
 def human_clarify_instructions(state: ModifyReportState):
     result = interrupt(
         {
-            "task": "Las instrucciones no son correctas. Por favor, proporcione una versión corregida.",
+            "task": "Instructions are not correct. Please clarify.",
             "current_instruction": state["instruction"],
             "clarification_needed": state["clarification_questions"]
         }

@@ -15,11 +15,18 @@ os.environ["LANGCHAIN_ENDPOINT"] = os.getenv("CUSTOM_ENDPOINT", "https://api.smi
 os.environ["LANGCHAIN_PROJECT"] = os.getenv("CUSTOM_PROJECT", "CFOLytics_reporteditor")
 
 def should_continue(state) -> Literal["generate_json_patches", "human_clarify_instructions"]:
-    print(state['instruction_correct'])
+    #print(state['instruction_correct'])
     if state.get('instruction_correct') is True:
         return "generate_json_patches"
     # Default to human clarification to prevent invalid transitions
     return "human_clarify_instructions"  
+
+def should_finish(state) -> Literal["human_clarify_instructions", END]:
+    if state.get('instruction_correct') is True:
+        return END
+    # Default to human clarification to prevent invalid transitions
+    return "human_clarify_instructions"  
+
 
 ##########################
 # MAIN GRAPH
@@ -38,7 +45,9 @@ graph.add_edge(START, "clarify_instructions")
 graph.add_conditional_edges("clarify_instructions",should_continue)
 graph.add_edge("human_clarify_instructions","clarify_instructions")
 graph.add_edge("generate_json_patches","modify_json")
+
 graph.add_edge("modify_json",END)
+#graph.add_conditional_edges("modify_json", should_finish)
 
 checkpointer = MemorySaver()
 

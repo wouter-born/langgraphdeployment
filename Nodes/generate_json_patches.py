@@ -50,10 +50,17 @@ def modify_json(state: ModifyReportState):
         else:
             raise ValueError(f"Unsupported operation type: {operation_type}")
 
-        patch = jsonpatch.JsonPatch(patch_operation)
-        modified_json = patch.apply(modified_json)
-        
-    return { "output_json": modified_json }
+        try:
+            patch = jsonpatch.JsonPatch(patch_operation)
+            modified_json = patch.apply(modified_json)
+            state["output_json"] = modified_json
+        except Exception as e:
+            state["instruction_correct"] = False
+            state["clarification_questions"] = e
+
+
+    #return { "output_json": modified_json }
+    return state
 
 ###### GENERATE JSON PATCHES #########
 
