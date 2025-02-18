@@ -110,7 +110,25 @@ class ReportConfig(BaseModel):
 def generate_layout(state: OverallState):
     system_instructions = load_xml_instructions("render_layout.xml")
     system_msg = SystemMessage(content=system_instructions)
-    user_msg = HumanMessage(content=state["ReportQuery"])
+
+    # Extract and clean POV dimensions
+    pov_dimensions = [
+        {"Name": dim["Name"], "Alias": dim["Alias"]}
+        for dim in state["POV"]
+        if dim["InUse"] == "True"
+    ]
+
+    # Format the dimensions into a string for the prompt
+    pov_string = "\n".join([f"- {dim['Name']} (Alias: {dim['Alias']})" for dim in pov_dimensions])
+    
+    # Update the user message with dimensions
+    user_prompt = (
+        f"{state['ReportQuery']}\n\n"
+        "The following dimensions are available in the model:\n"
+        f"{pov_string}"
+    )
+
+    user_msg = HumanMessage(content=user_prompt)
     report_metadata = state["ReportMetadata"]
 
     structured_llm = modelSpec.with_structured_output(
