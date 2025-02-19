@@ -153,6 +153,7 @@ def generate_layout(state: OverallState):
         )
         raise Exception(error_message)
     parsed_output = output["parsed"].model_dump(exclude_none=True)
+    
 
 
     # Find components
