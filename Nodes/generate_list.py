@@ -72,19 +72,21 @@ def check_dynamic_or_fixed(state: ListSubchartState):
         "dimensions": parsed_output["dimensions"]
     }
 
-def build_hierarchy_string(filtered_metadata, parent_id=None, indent=0):
+def build_hierarchy_string(filtered_metadata, parent_id=None, indent=0): 
     """
     Convert multiple dimensions of `filtered_metadata` into a hierarchical string representation
     with parents below their children.
     """
     result = ""
     for metadata in filtered_metadata:
-        dim = metadata.get("dimensionContent", [])
-        header = f"Dimension: {dim['name']}"
-        if dim.get("alias"):
-            header += f" ({dim['alias']})"
+        # Use metadata for header since it contains the dimension name and alias
+        header = f"Dimension: {metadata['name']}"
+        if metadata.get("alias"):
+            header += f" ({metadata['alias']})"
         result += header + "\n"
-        for item in dim:
+        
+        # Iterate over the items in the dimensionContent list
+        for item in metadata.get("dimensionContent", []):
             item_parent_id = item.get("ParentID")
             if item_parent_id == {}:
                 item_parent_id = None
@@ -95,6 +97,7 @@ def build_hierarchy_string(filtered_metadata, parent_id=None, indent=0):
                 # Then, add the current item's name with indentation
                 result += "\t" * indent + f"{item['Name']}\n"
     return result
+
 
 class FixedListReply(BaseModel):
     dimensions: list
