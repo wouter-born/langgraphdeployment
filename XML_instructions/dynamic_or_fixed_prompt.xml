@@ -7,6 +7,11 @@
       "dimensions": ["DimA", "DimB", ...]
     }
   </description>
+  <instructions>
+    <instruction>Dynamic lists can only follow the hierarchy of 1 single dimension. When there are multiple dimensions the result should always be fixed</instruction>
+    <instruction>Try to understand carefully what dimensions to return and do not miss any, use the topLevelDimensions to understand all available dimensions</instruction>
+
+  </instructions>
 
   <examples>
     <example>
