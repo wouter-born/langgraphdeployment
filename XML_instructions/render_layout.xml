@@ -13,9 +13,6 @@
 			<importantNote>**Validation and Error Prevention**: Verify that the JSON syntax is correct to prevent errors. </importantNote>
 			<importantNote>**Recognize Synonyms and Handle Ambiguity**: Be aware that users may use different words to express the same intent. Treat these terms equivalently when interpreting instructions. If the user's instructions are ambiguous, use context from the JSON configuration and overall structure to infer their intent and choose the most logical output JSON.</importantNote>
 		</importantNotes>
-    <SpecificCases>
-      <TableSelectRows>For tables you need to specify whether the rows should be selectable or not. Only specify that rows should be selectable when the table is used to change the filters for other components on the same report like for a trend chart or drilldown table.</TableSelectRows>
-    </SpecificCases>
 		<jsonStructure>
 			<reportTitle>The title of the report</reportTitle>
 			<numberFormat>
