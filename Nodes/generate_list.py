@@ -114,7 +114,7 @@ class FixedListReply(BaseModel):
 def create_fixed_list(state: ListSubchartState):
     current_list = state["List"]
     all_metadata = state["ReportMetadata"]
-    chosen_dims = state.get("dimensions", [])
+    chosen_dims = list(set(state.get("dimensions", [])))
 
     filtered_metadata = []
     dims = []
