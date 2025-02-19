@@ -72,40 +72,25 @@ def check_dynamic_or_fixed(state: ListSubchartState):
         "dimensions": parsed_output["dimensions"]
     }
 
-def build_hierarchy_string(filtered_metadata):
+def build_hierarchy_string(filtered_metadata, parent_id=None, indent=0):
     """
-    Build a readable tree structure from filtered metadata.
-    Each dimension starts with a header and then its items are printed as a tree.
-    """
-    result = ""
-    for dim in filtered_metadata:
-        # Print the dimension header clearly (no indent)
-        header = f"Dimension: {dim['name']}"
-        if dim.get("alias"):
-            header += f" ({dim['alias']})"
-        result += header + "\n"
-        # Print the tree of items for this dimension
-        result += build_items(dim.get("dimensionContent", []), parent_id=None, indent=1)
-    return result
-
-def build_items(items: list, parent_id: Optional[Any], indent: int) -> str:
-    """
-    Recursively build the tree structure for items.
-    Items whose 'ParentID' matches the provided parent_id are printed with the current indentation.
-    Then, their children are printed recursively with an increased indent.
+    Convert multiple dimensions of `filtered_metadata` into a hierarchical string representation
+    with parents below their children.
     """
     result = ""
-    for item in items:
-        # Normalize the ParentID value (treat {} or falsy as None)
-        item_parent_id = item.get("ParentID") or None
+    for metadata in filtered_metadata:
+        dimension_content = metadata.get("dimensionContent", [])
+        for item in dimension_content:
+            item_parent_id = item.get("ParentID")
+            if item_parent_id == {}:
+                item_parent_id = None
 
-        if item_parent_id == parent_id:
-            # First print the current item (with proper indent)
-            result += "\t" * indent + f"{item['Name']}\n"
-            # Then recursively add its children
-            result += build_items(items, parent_id=item["ID"], indent=indent + 1)
+            if item_parent_id == parent_id:
+                # First, recursively add children
+                result += build_hierarchy_string([metadata], parent_id=item["ID"], indent=indent + 1)
+                # Then, add the current item's name with indentation
+                result += "\t" * indent + f"{item['Name']}\n"
     return result
-
 
 class FixedListReply(BaseModel):
     dimensions: list
@@ -114,7 +99,7 @@ class FixedListReply(BaseModel):
 def create_fixed_list(state: ListSubchartState):
     current_list = state["List"]
     all_metadata = state["ReportMetadata"]
-    chosen_dims = list(set(state.get("dimensions", [])))
+    chosen_dims = state.get("dimensions", [])
 
     filtered_metadata = []
     dims = []
