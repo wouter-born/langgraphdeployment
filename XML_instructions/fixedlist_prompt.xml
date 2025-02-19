@@ -30,7 +30,8 @@
 					</displayName>
 					<dimensionMemberDefinitions>
 						<description>
-							The dimension member definitions in the items depend on the dimensions set at the list level. These definitions must now be structured under the `dimensions` key.
+							The dimension member definitions in the items depend on the dimensions set at the list level. These definitions must be structured under the `dimensions` key.
+							By leaving a dimension member empty, it will take autmaitcally the central report dimension member.
 						</description>
 						<example>
 							If a list specifies:
@@ -437,6 +438,89 @@
 			}
 			]]>
 			</output>
-		</ActualsBudgetVariancePercVarianceBar>		
+		</ActualsBudgetVariancePercVarianceBar>
+		<PandLStatmentWithCostCenterDrillDown>
+			<userInstruction>
+			<![CDATA[
+				{
+					"listObject": {
+						"listReference": "rowsList",
+						"list": "OpexStatementWithCostCenterDrillDown",
+						"createDescription": "An operating expenses statement with drilldowns to cost centers"
+					},
+					"hierarchy": "Dimension: Account (Account)\nNet Income\n\tProfit Before Taxes\n\t\tEBITDA\n\t\t\tGross Margin\n\t\t\t\tIncome\n\t\t\t\t\tOnline Sales\n\t\t\t\t\tOther Sales\n\t\t\t\tCost of Goods Sold (COGS)\n\t\t\t\t\tCOGS - Other Sales\n\t\t\t\t\tCOGS - Trade Sales & Services\n\t\tOperating Expenses\n\t\t\tAdvertising & Marketing\n\t\t\t\tData Subscriptions\n\t\t\t\tMarketing Contractors\n\t\t\tGeneral & Administrative\n\t\t\t\tLegal & Professional Services\n\t\t\t\tOffice Supplies & Software\n\t\t\tPayroll Expenses\n\t\t\t\tSalaries & Wages\n\t\t\t\tEmployee Benefits\n\t\t\tRent & Utilities\n\t\t\t\tRent\n\t\t\t\tElectricity and Cooling\n\t\t\tDepreciation & Amortization\n\t\t\t\tDepreciation\n\t\t\t\tAmortization - Software Cost\n\t\t\tExtraordinary Expenses\n\t\t\t\tExtraordinary Loss\n\t\t\t\tExtraordinary Income\n\tNet Sales\n\t\tDiscounts\n\t\t\tTrade Discounts\n\t\t\tLoyalty Discounts\n\t\tGross Sales\nDimension: AnalyticalDim1 (Cost Center)\n\tTop\n\t\tTotal Cost Center\n"
+				}
+			]]>
+			</userInstruction>
+			<output>
+			<![CDATA[
+			{
+				"dimensions": [ "Account" ],
+				"items": [
+					{
+					"name": "R1",
+					"drilldown": "AnalyticalDim1.[AnalyticalDim1].descendants",
+					"dimensions": {
+						"Account": {
+						"member": "Advertising & Marketing"
+						}
+					},
+					"displayName": "[Account]"
+					},
+					{
+					"name": "R2",
+					"drilldown": "AnalyticalDim1.[AnalyticalDim1].descendants",
+					"dimensions": {
+						"Account": {
+						"member": "General & Administrative"
+						}
+					},
+					"displayName": "[Account]"
+					},
+					{
+					"name": "R3",
+					"drilldown": "AnalyticalDim1.[AnalyticalDim1].descendants",
+					"dimensions": {
+						"Account": {
+						"member": "Payroll Expenses"
+						}
+					},
+					"displayName": "[Account]"
+					},
+					{
+					"name": "R4",
+					"drilldown": "AnalyticalDim1.[AnalyticalDim1].descendants",
+					"dimensions": {
+						"Account": {
+						"member": "Rent & Utilities"
+						}
+					},
+					"displayName": "[Account]"
+					},
+					{
+					"name": "R5",
+					"displayName": "[Account]",
+					"format": "bold_lineabove",
+					"dimensions": {
+						"Account": {
+						"member": "Total Operating Expenses"
+						}
+					},
+					"formula": {
+						"type": "sum",
+						"parameters": [
+						"R1",
+						"R2",
+						"R3",
+						"R4"
+						]
+					}
+					}
+				]
+				}
+			]]>
+			</output>
+		</PandLStatmentWithCostCenterDrillDown>
+
 	</examples>
 </task>
