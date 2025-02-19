@@ -79,8 +79,12 @@ def build_hierarchy_string(filtered_metadata, parent_id=None, indent=0):
     """
     result = ""
     for metadata in filtered_metadata:
-        dimension_content = metadata.get("dimensionContent", [])
-        for item in dimension_content:
+        dim = metadata.get("dimensionContent", [])
+        header = f"Dimension: {dim['name']}"
+        if dim.get("alias"):
+            header += f" ({dim['alias']})"
+        result += header + "\n"
+        for item in dim:
             item_parent_id = item.get("ParentID")
             if item_parent_id == {}:
                 item_parent_id = None
