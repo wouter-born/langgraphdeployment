@@ -16,28 +16,31 @@
   <examples>
     <example>
       <input>
+        <![CDATA[
         {
           "list": "ProfitAndLossAccounts",
-          "createDescription": "Create a list named ProfitAndLossAccounts that includes all the accounts related to the profit and loss statement, such as revenues, costs of goods sold, operating expenses, and net income."
+          "createDescription": "Create a list named ProfitAndLossAccounts that includes all the accounts related to the profit and loss statement, such as revenues, costs of goods sold, operating expenses, and net income.",
+          "topLevelDimensions": [{"name":"Entity","alias":"Entity","members":["Petsville","TPS","TPS Café"]},{"name":"Category","alias":"Category","members":["Actual","Budget","Forecast Jun"]},{"name":"Year","alias":"Year","members":["2023","2024","2025"]},{"name":"Period","alias":"Period","members":["Jan","Feb","Mar"]},{"name":"View","alias":"View","members":["Periodic","YTD"]},{"name":"Account","alias":"Account","members":["Depreciation IFRS16","Interest on term loan","Foreign exchange gain/loss"]},{"name":"AnalyticalDim1","alias":"Cost Center","members":["Top","Total Cost Center","Total Profit Center"]},{"name":"AnalyticalDim2","alias":"Channel","members":["Top","P&M","#N/A"]},{"name":"AnalyticalDim3","alias":"Location","members":["Top","UMSQ","HQW2"]},{"name":"AnalyticalDim4","alias":"Normilization","members":["Top","Normilization","Pre-OPEX"]},{"name":"Entity","alias":"Entity","members":["Petsville","TPS","TPS Café"]},{"name":"Category","alias":"Category","members":["Actual","Budget","Forecast Jun"]},{"name":"Year","alias":"Year","members":["2023","2024","2025"]},{"name":"Period","alias":"Period","members":["Jan","Feb","Mar"]},{"name":"View","alias":"View","members":["Periodic","YTD"]},{"name":"Account","alias":"Account","members":["Depreciation IFRS16","Interest on term loan","Foreign exchange gain/loss"]},{"name":"AnalyticalDim1","alias":"Cost Center","members":["Top","Total Cost Center","Total Profit Center"]},{"name":"AnalyticalDim2","alias":"Channel","members":["Top","P&M","#N/A"]},{"name":"AnalyticalDim3","alias":"Location","members":["Top","UMSQ","HQW2"]},{"name":"AnalyticalDim4","alias":"Normilization","members":["Top","Normilization","Pre-OPEX"]}]
         }
-        [{'name': 'Category', 'alias': 'Category', 'members': ['Actuals', 'Budget']}, {'name': 'Year', 'alias': 'Year', 'members': [2022, 2023, 2024]}, {'name': 'Period', 'alias': 'Period', 'members': ['p01 - january', 'p02 - february', 'p03 - march']}, {'name': 'View', 'alias': 'View', 'members': ['Periodic', 'YTD']}, {'name': 'Account', 'alias': 'Account', 'members': ['Net Profit', 'Profit before taxes', 'EBITDA']}, {'name': 'AnalyticalDim1', 'alias': 'Product', 'members': ['TotalProduct', 'CFOTech Fund', 'OnPLan SPV']}, {'name': 'AnalyticalDim2', 'alias': 'Investment', 'members': ['FinTechCore', 'CFO Insights', 'ProfitWave']}, {'name': 'Entity', 'alias': 'Entity', 'members': ['Total Born Capital']}]
+        ]]>
       </input>
       <output>
+        <![CDATA[
         {
           "type": "Fixed",
           "dimensions": ["Account"]
         }
+        ]]>
       </output>
     </example>
-
     <example>
       <input>
       <![CDATA[
         {
           "list": "ActualsBudgetVariance%VarianceBar",
-          "createDescription": "Create a list named ActualsBudgetVariance%VarianceBar that includes the actual values, budget values, variance, and variance bar for comparison."
+          "createDescription": "Create a list named ActualsBudgetVariance%VarianceBar that includes the actual values, budget values, variance, and variance bar for comparison.",
+          "topLevelDimensions": [{"name":"Entity","alias":"Entity","members":["Petsville","TPS","TPS Café"]},{"name":"Category","alias":"Category","members":["Actual","Budget","Forecast Jun"]},{"name":"Year","alias":"Year","members":["2023","2024","2025"]},{"name":"Period","alias":"Period","members":["Jan","Feb","Mar"]},{"name":"View","alias":"View","members":["Periodic","YTD"]},{"name":"Account","alias":"Account","members":["Depreciation IFRS16","Interest on term loan","Foreign exchange gain/loss"]},{"name":"AnalyticalDim1","alias":"Cost Center","members":["Top","Total Cost Center","Total Profit Center"]},{"name":"AnalyticalDim2","alias":"Channel","members":["Top","P&M","#N/A"]},{"name":"AnalyticalDim3","alias":"Location","members":["Top","UMSQ","HQW2"]},{"name":"AnalyticalDim4","alias":"Normilization","members":["Top","Normilization","Pre-OPEX"]},{"name":"Entity","alias":"Entity","members":["Petsville","TPS","TPS Café"]},{"name":"Category","alias":"Category","members":["Actual","Budget","Forecast Jun"]},{"name":"Year","alias":"Year","members":["2023","2024","2025"]},{"name":"Period","alias":"Period","members":["Jan","Feb","Mar"]},{"name":"View","alias":"View","members":["Periodic","YTD"]},{"name":"Account","alias":"Account","members":["Depreciation IFRS16","Interest on term loan","Foreign exchange gain/loss"]},{"name":"AnalyticalDim1","alias":"Cost Center","members":["Top","Total Cost Center","Total Profit Center"]},{"name":"AnalyticalDim2","alias":"Channel","members":["Top","P&M","#N/A"]},{"name":"AnalyticalDim3","alias":"Location","members":["Top","UMSQ","HQW2"]},{"name":"AnalyticalDim4","alias":"Normilization","members":["Top","Normilization","Pre-OPEX"]}]
         }
-        [{'name': 'Category', 'alias': 'Category', 'members': ['Actuals', 'Budget']}, {'name': 'Year', 'alias': 'Year', 'members': [2022, 2023, 2024]}, {'name': 'Period', 'alias': 'Period', 'members': ['p01 - january', 'p02 - february', 'p03 - march']}, {'name': 'View', 'alias': 'View', 'members': ['Periodic', 'YTD']}, {'name': 'Account', 'alias': 'Account', 'members': ['Net Profit', 'Profit before taxes', 'EBITDA']}, {'name': 'AnalyticalDim1', 'alias': 'Product', 'members': ['TotalProduct', 'CFOTech Fund', 'OnPLan SPV']}, {'name': 'AnalyticalDim2', 'alias': 'Investment', 'members': ['FinTechCore', 'CFO Insights', 'ProfitWave']}, {'name': 'Entity', 'alias': 'Entity', 'members': ['Total Born Capital']}]
       ]]>
       </input>
       <output>
@@ -55,9 +58,9 @@
         <![CDATA[
         {
           "list": "12periods",
-          "createDescription": "Create a list named '12periods' with 12 consecutive time periods, for example 'Jan' to 'Dec', and assign it to the categoryList""
+          "createDescription": "Create a list named '12periods' with 12 consecutive time periods, for example 'Jan' to 'Dec', and assign it to the categoryList",
+          "topLevelDimensions": [{"name":"Entity","alias":"Entity","members":["Petsville","TPS","TPS Café"]},{"name":"Category","alias":"Category","members":["Actual","Budget","Forecast Jun"]},{"name":"Year","alias":"Year","members":["2023","2024","2025"]},{"name":"Period","alias":"Period","members":["Jan","Feb","Mar"]},{"name":"View","alias":"View","members":["Periodic","YTD"]},{"name":"Account","alias":"Account","members":["Depreciation IFRS16","Interest on term loan","Foreign exchange gain/loss"]},{"name":"AnalyticalDim1","alias":"Cost Center","members":["Top","Total Cost Center","Total Profit Center"]},{"name":"AnalyticalDim2","alias":"Channel","members":["Top","P&M","#N/A"]},{"name":"AnalyticalDim3","alias":"Location","members":["Top","UMSQ","HQW2"]},{"name":"AnalyticalDim4","alias":"Normilization","members":["Top","Normilization","Pre-OPEX"]},{"name":"Entity","alias":"Entity","members":["Petsville","TPS","TPS Café"]},{"name":"Category","alias":"Category","members":["Actual","Budget","Forecast Jun"]},{"name":"Year","alias":"Year","members":["2023","2024","2025"]},{"name":"Period","alias":"Period","members":["Jan","Feb","Mar"]},{"name":"View","alias":"View","members":["Periodic","YTD"]},{"name":"Account","alias":"Account","members":["Depreciation IFRS16","Interest on term loan","Foreign exchange gain/loss"]},{"name":"AnalyticalDim1","alias":"Cost Center","members":["Top","Total Cost Center","Total Profit Center"]},{"name":"AnalyticalDim2","alias":"Channel","members":["Top","P&M","#N/A"]},{"name":"AnalyticalDim3","alias":"Location","members":["Top","UMSQ","HQW2"]},{"name":"AnalyticalDim4","alias":"Normilization","members":["Top","Normilization","Pre-OPEX"]}]
         }
-        [{'name': 'Category', 'alias': 'Category', 'members': ['Actuals', 'Budget']}, {'name': 'Year', 'alias': 'Year', 'members': [2022, 2023, 2024]}, {'name': 'Period', 'alias': 'Period', 'members': ['p01 - january', 'p02 - february', 'p03 - march']}, {'name': 'View', 'alias': 'View', 'members': ['Periodic', 'YTD']}, {'name': 'Account', 'alias': 'Account', 'members': ['Net Profit', 'Profit before taxes', 'EBITDA']}, {'name': 'AnalyticalDim1', 'alias': 'Product', 'members': ['TotalProduct', 'CFOTech Fund', 'OnPLan SPV']}, {'name': 'AnalyticalDim2', 'alias': 'Investment', 'members': ['FinTechCore', 'CFO Insights', 'ProfitWave']}, {'name': 'Entity', 'alias': 'Entity', 'members': ['Total Born Capital']}]
         ]]>
       </input>
       <output>
@@ -75,9 +78,9 @@
         <![CDATA[
         {
           "list": "products",
-          "createDescription": "This list should contain all the product members, and should be used to break down the current selected line into the product dimension."
+          "createDescription": "This list should contain all the product members, and should be used to break down the current selected line into the product dimension.",
+          "topLevelDimensions": [{"name":"Entity","alias":"Entity","members":["Petsville","TPS","TPS Café"]},{"name":"Category","alias":"Category","members":["Actual","Budget","Forecast Jun"]},{"name":"Year","alias":"Year","members":["2023","2024","2025"]},{"name":"Period","alias":"Period","members":["Jan","Feb","Mar"]},{"name":"View","alias":"View","members":["Periodic","YTD"]},{"name":"Account","alias":"Account","members":["Depreciation IFRS16","Interest on term loan","Foreign exchange gain/loss"]},{"name":"AnalyticalDim1","alias":"Cost Center","members":["Top","Total Cost Center","Total Profit Center"]},{"name":"AnalyticalDim2","alias":"Channel","members":["Top","P&M","#N/A"]},{"name":"AnalyticalDim3","alias":"Location","members":["Top","UMSQ","HQW2"]},{"name":"AnalyticalDim4","alias":"Normilization","members":["Top","Normilization","Pre-OPEX"]},{"name":"Entity","alias":"Entity","members":["Petsville","TPS","TPS Café"]},{"name":"Category","alias":"Category","members":["Actual","Budget","Forecast Jun"]},{"name":"Year","alias":"Year","members":["2023","2024","2025"]},{"name":"Period","alias":"Period","members":["Jan","Feb","Mar"]},{"name":"View","alias":"View","members":["Periodic","YTD"]},{"name":"Account","alias":"Account","members":["Depreciation IFRS16","Interest on term loan","Foreign exchange gain/loss"]},{"name":"AnalyticalDim1","alias":"Cost Center","members":["Top","Total Cost Center","Total Profit Center"]},{"name":"AnalyticalDim2","alias":"Channel","members":["Top","P&M","#N/A"]},{"name":"AnalyticalDim3","alias":"Location","members":["Top","UMSQ","HQW2"]},{"name":"AnalyticalDim4","alias":"Normilization","members":["Top","Normilization","Pre-OPEX"]}]
         }
-        [{'name': 'Category', 'alias': 'Category', 'members': ['Actuals', 'Budget']}, {'name': 'Year', 'alias': 'Year', 'members': [2022, 2023, 2024]}, {'name': 'Period', 'alias': 'Period', 'members': ['p01 - january', 'p02 - february', 'p03 - march']}, {'name': 'View', 'alias': 'View', 'members': ['Periodic', 'YTD']}, {'name': 'Account', 'alias': 'Account', 'members': ['Net Profit', 'Profit before taxes', 'EBITDA']}, {'name': 'AnalyticalDim1', 'alias': 'Product', 'members': ['TotalProduct', 'CFOTech Fund', 'OnPLan SPV']}, {'name': 'AnalyticalDim2', 'alias': 'Investment', 'members': ['FinTechCore', 'CFO Insights', 'ProfitWave']}, {'name': 'Entity', 'alias': 'Entity', 'members': ['Total Born Capital']}]
         ]]>
       </input>
       <output>
@@ -97,6 +100,5 @@
          "dimensions": ["..."]
        }
     2. Only include dimensions from the top-level dimension list provided.
-    3. If no match is found, default to Dynamic with an empty dimensions list.
   </formatNotes>
 </LLMInstructions>
