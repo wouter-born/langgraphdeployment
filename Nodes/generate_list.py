@@ -72,30 +72,40 @@ def check_dynamic_or_fixed(state: ListSubchartState):
         "dimensions": parsed_output["dimensions"]
     }
 
-def build_hierarchy_string(filtered_metadata, parent_id=None, indent=0): 
+def build_hierarchy_string(filtered_metadata):
     """
-    Convert multiple dimensions of `filtered_metadata` into a hierarchical string representation
-    with parents below their children.
+    Build a readable tree structure for each dimension.
+    Each dimension starts with a header, and then its items are printed as a tree.
     """
     result = ""
     for metadata in filtered_metadata:
-        # Use metadata for header since it contains the dimension name and alias
+        # Print the dimension header once
         header = f"Dimension: {metadata['name']}"
         if metadata.get("alias"):
             header += f" ({metadata['alias']})"
         result += header + "\n"
-        
-        # Iterate over the items in the dimensionContent list
-        for item in metadata.get("dimensionContent", []):
-            item_parent_id = item.get("ParentID")
-            if item_parent_id == {}:
-                item_parent_id = None
+        # Build the tree for this dimension's items
+        result += build_items(metadata.get("dimensionContent", []), parent_id=None, indent=1)
+    return result
 
-            if item_parent_id == parent_id:
-                # First, recursively add children
-                result += build_hierarchy_string([metadata], parent_id=item["ID"], indent=indent + 1)
-                # Then, add the current item's name with indentation
-                result += "\t" * indent + f"{item['Name']}\n"
+def build_items(items, parent_id, indent):
+    """
+    Recursively build the tree structure for items.
+    Items whose 'ParentID' matches the provided parent_id are printed with the current indentation.
+    Then, their children are printed recursively with an increased indent.
+    """
+    result = ""
+    for item in items:
+        # Normalize ParentID (treat {} as None)
+        item_parent_id = item.get("ParentID")
+        if item_parent_id == {}:
+            item_parent_id = None
+
+        if item_parent_id == parent_id:
+            # Print the current item with the correct indentation
+            result += "\t" * indent + f"{item['Name']}\n"
+            # Recursively add its children
+            result += build_items(items, parent_id=item["ID"], indent=indent + 1)
     return result
 
 
