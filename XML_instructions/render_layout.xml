@@ -322,6 +322,25 @@
 
 			</output>
 		</12monthrolling>
+    <locatinsOnColumns>
+        <userInstruction>I want a profit and loss report broken down with locations on the columns.
+
+        The following dimensions are available in the model:
+        - Entity (Alias: Entity)
+        - Category (Alias: Category)
+        - Year (Alias: Year)
+        - Period (Alias: Period)
+        - View (Alias: View)
+        - Account (Alias: Account)
+        - AnalyticalDim1 (Alias: Cost Center)
+        - AnalyticalDim2 (Alias: Channel)
+        - AnalyticalDim3 (Alias: Location)
+        - AnalyticalDim4 (Alias: Normilization)
+        </userInstruction>
+			<output>
+        { "reportTitle":"Profit and Loss by Location", "numberFormat":{ "currency":"USD", "scale":"thousands", "decimals":0 }, "layout":{ "gridColumns":{ "sm":1, "md":1, "lg":8 }, "rows":[ { "columns":[ { "colSpan":{ "sm":1, "md":1, "lg":8 }, "components":[ { "id":"C1", "type":"ReportTable", "title":"Profit and Loss by Location", "AI_Generation_Description":"A table showing the profit and loss statement on the rows and locations on the columns. The rows should not be selectable." } ] } ] }, { "columns":[ { "colSpan":{ "sm":"full", "md":"full", "lg":"full" }, "components":[ { "id":"S1", "type":"ScaleSelectors", "noborder":true } ] } ] }, { "columns":[ { "colSpan":{ "sm":"full", "md":"full", "lg":"full" }, "components":[ { "id":"Co1", "type":"Comments" } ] } ] } ] } }
+      </output>
+    </locatinsOnColumns
 	</examples>
 </task>
 

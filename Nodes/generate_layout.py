@@ -114,8 +114,8 @@ def generate_layout(state: OverallState):
     # Extract and clean POV dimensions
     pov_dimensions = [
         {"Name": dim["Name"], "Alias": dim["Alias"]}
-        for dim in state["POV"]
-        if dim["InUse"] == "True"
+        for dim in state.get("POV", [])
+        if dim.get("InUse", "True") == "True"
     ]
 
     # Format the dimensions into a string for the prompt
