@@ -7,7 +7,7 @@ class OverallState(TypedDict):
     ReportQuery: str
     POV: list
     ReportMetadata: Annotated[List[Dict[str, Any]], operator.add]
-    ExistingLists: list
+    ExistingLists: Annotated[List[dict], operator.add]
     JsonLayout: dict
     Components: list
     JsonLayoutWithComponentConfig: Annotated[list, operator.add]
@@ -32,13 +32,15 @@ class ListSubchartState(TypedDict):
     Extend your state to include any fields needed
     for checking, creating, or returning a list.
     """
-    List: dict              # The raw definition of a list or instructions for how to create it
-    listExists: bool        # Whether the list already exists
-    listType: str           # 'dynamic' or 'fixed'
-    dimensions: List        # Top-level dimensions for the list 
+    List: dict  # The raw definition of a list or instructions for how to create it
+    listExists: bool  # Whether the list already exists
+    foundListName: str  # Capture the matched list name if found
+    listType: str  # 'dynamic' or 'fixed'
+    dimensions: List  # Top-level dimensions for the list
     ReportMetadata: Annotated[List[Dict[str, Any]], operator.add]
-    JsonLists: List[dict]   # The final generated JSON list(s)
-    FinalList: dict         # The actual final list data (if you want it separate from JsonLists)
+    JsonLists: List[dict]  # The final generated JSON list(s)
+    FinalList: dict  # The actual final list data (if you want it separate from JsonLists)
+    ExistingLists: Annotated[List[dict], operator.add]  # Any existing lists that could be used as a base
 
 
 

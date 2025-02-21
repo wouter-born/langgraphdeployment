@@ -20,18 +20,87 @@ from Nodes.load_xml_instructions import load_xml_instructions
 # List Subchart
 ##########################
 
-def check_if_list_exists(state: ListSubchartState):
-    # Example logic (replace with real check):
-    list_exists_flag = False  # always assume it doesn't exist
-    return {"listExists": list_exists_flag}
+class FoundListReply(BaseModel):
+    found: bool
+    foundListName: str
 
-def return_existing_list(state: ListSubchartState):
-    existing_list_data = {"someExistingList": True}  # Placeholder
+def check_if_list_exists(state: ListSubchartState):
+    # Prepare the system instructions (XML). See below for the file contents.
+    check_if_list_exists_xml = load_xml_instructions("check_if_list_exists_prompt.xml")
+
+    system_msg = SystemMessage(content=check_if_list_exists_xml)
+
+    # Prepare the user message
+    print(state["List"])
+    candidate_list_name = state["List"].get("list", "")
+    candidate_create_desc = state["List"].get("createDescription", "")
+    existing_lists_stripped = [
+        {
+            "ListName": lst["ListName"],
+            "CreateDescription": lst.get("CreateDescription", "")
+        }
+        for lst in state["ExistingLists"]
+    ]
+
+    user_input = {
+        "existingLists": existing_lists_stripped,
+        "candidateList": {
+            "ListName": candidate_list_name,
+            "CreateDescription": candidate_create_desc
+        }
+    }
+    user_msg = HumanMessage(content=json.dumps(user_input, indent=2))
+
+    # Call your structured LLM
+    # Adjust `modelSpec` or `structured_llm` to match your environment
+    structured_llm = modelSpec.with_structured_output(
+        FoundListReply,
+        method="json_mode",
+        include_raw=True
+    )
+
+    conversation = [system_msg, user_msg]
+    output = structured_llm.invoke(conversation, stream=False, response_format="json")
+    parsed_output = output["parsed"].model_dump()
+
+    # Update the state
     return {
-        "FinalList": existing_list_data,
-        "JsonLists": [existing_list_data]
+        "listExists": parsed_output["found"],
+        "foundListName": parsed_output["foundListName"]
     }
 
+def return_existing_list(state: ListSubchartState):
+    if not state["listExists"]:
+        # If not found, just return empty
+        return {
+            "FinalList": {},
+            "JsonLists": []
+        }
+    
+    found_list_name = state.get("foundListName", "")
+    existing_lists = state["ExistingLists"]
+
+    # Find the matching list object
+    matched_list = next(
+        (lst for lst in existing_lists if lst["ListName"] == found_list_name),
+        None
+    )
+    if matched_list is None:
+        # If for some reason no match is found, return empty
+        return {
+            "FinalList": {},
+            "JsonLists": []
+        }
+
+    # Parse the JSON string from "ListContents"
+    list_contents_str = matched_list["ListContents"]
+    list_contents = json.loads(list_contents_str)
+
+    return {
+        "FinalList": list_contents,
+        "JsonLists": [list_contents]
+    }
+    
 class DynamicOrFixedReply(BaseModel):
     type: str
     dimensions: list
@@ -214,4 +283,4 @@ def dynamic_or_fixed_routing(state: ListSubchartState):
 
 # Then route each gathered list to the list subchart
 def continue_to_lists(state: OverallState):
-    return [Send("generate_list_subchart",{"List": l, "ReportMetadata": state["ReportMetadata"] }) for l in state["Lists"]]
+    return [Send("generate_list_subchart",{"List": l, "ReportMetadata": state["ReportMetadata"], "ExistingLists": state["ExistingLists"] }) for l in state["Lists"]]

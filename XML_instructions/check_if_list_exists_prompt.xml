@@ -1,0 +1,97 @@
+<LLMInstructions>
+  <description>
+    You are given:
+    1. A list of existing lists, each with a "ListName" and "CreateDescription".
+    2. A candidate list with a "ListName" and "CreateDescription".
+    
+    Your job is to decide if the candidate list already exists among the existing lists.
+    - If it exists, return:
+      {
+        "found": true,
+        "foundListName": "The matching list's name"
+      }
+    - Otherwise return:
+      {
+        "found": false,
+        "foundListName": ""
+      }
+  </description>
+
+  <instructions>
+    <instruction>
+      You may decide if it "exists" based on an exact match of ListName, or you can also consider a match based on the CreateDescription if it covers similar content. 
+      If you find a suitable match, set "found"=true and "foundListName" to the matched name.
+      If you find no match, set "found"=false and "foundListName"="".
+    </instruction>
+  </instructions>
+
+  <examples>
+    <example>
+      <input>
+        <![CDATA[
+        {
+          "existingLists": [
+            {
+              "ListName": "12Months",
+              "CreateDescription": "A list of the last 12 months to be used on the x-axis of the chart."
+            },
+            {
+              "ListName": "ActualAndForecastJun",
+              "CreateDescription": "Create a list including two series: one for Actuals and one for 'Forecast Jun'"
+            }
+          ],
+          "candidateList": {
+            "ListName": "12Months",
+            "CreateDescription": "We want a rolling 12-month period"
+          }
+        }
+        ]]>
+      </input>
+      <output>
+        <![CDATA[
+        {
+          "found": true,
+          "foundListName": "12Months"
+        }
+        ]]>
+      </output>
+    </example>
+
+    <example>
+      <input>
+        <![CDATA[
+        {
+          "existingLists": [
+            {
+              "ListName": "12Months",
+              "CreateDescription": "A list of the last 12 months to be used on the x-axis of the chart."
+            },
+            {
+              "ListName": "ActualAndForecastJun",
+              "CreateDescription": "Create a list including two series: one for Actuals and one for 'Forecast Jun'"
+            }
+          ],
+          "candidateList": {
+            "ListName": "12periods",
+            "CreateDescription": "We want 12 consecutive periods from Jan to Dec"
+          }
+        }
+        ]]>
+      </input>
+      <output>
+        <![CDATA[
+        {
+          "found": false,
+          "foundListName": ""
+        }
+        ]]>
+      </output>
+    </example>
+  </examples>
+
+  <formatNotes>
+    1. Your final output must be valid JSON.
+    2. The required keys are: "found" (boolean) and "foundListName" (string).
+    3. No extra keys or text is allowed.
+  </formatNotes>
+</LLMInstructions>
