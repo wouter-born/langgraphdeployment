@@ -114,6 +114,29 @@
                 ]]>
             </output>
         </maintable>
+        <tablePandLWithSpecificAccounts>            
+            <userInstruction>A table showing the profit and loss statement including revenue, cost of goods sold, and net income on the rows and all months of the current year on the columns. The rows should be selectable.</userInstruction>
+            <output>
+                <![CDATA[
+                "config": {
+                    "selectRow": true,
+                    "firstColumnWidth": 250,
+                    "lists": [
+                        {
+                            "listReference": "rowsList",
+                            "list": "ProfitAndLossAccounts",
+                            "createDescription": "A formatted profit and loss statement to be used on table rows with at least the accounts Revenue, Cost of Goods Sold, and Net Income. Include drill-downs where applicable."
+                        },
+                        {
+                            "listReference": "columnsList",
+                            "list": "AllMonths",
+                            "createDescription": "A list with all months"
+                        }
+                    ]
+                }           
+                ]]>
+            </output>
+        </tablePandLWithSpecificAccounts>
         <drilldowntable>
             <userInstruction>A table breaking down the current selected line into 4 different dimensions (Entity, Cost Center, Product, and Region) using a list selector. On the columns actuals, budget, and a variance column.</userInstruction>
             <output>
