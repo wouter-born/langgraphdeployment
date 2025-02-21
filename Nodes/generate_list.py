@@ -22,20 +22,25 @@ from Nodes.load_xml_instructions import load_xml_instructions
 
 class FoundListReply(BaseModel):
     found: bool
-    foundListName: str
+    foundListID: str
 
 def check_if_list_exists(state: ListSubchartState):
-    # Prepare the system instructions (XML). See below for the file contents.
+    # Load the system instructions (with new ID-based logic)
     check_if_list_exists_xml = load_xml_instructions("check_if_list_exists_prompt.xml")
-
     system_msg = SystemMessage(content=check_if_list_exists_xml)
 
     # Prepare the user message
-    print(state["List"])
     candidate_list_name = state["List"].get("list", "")
     candidate_create_desc = state["List"].get("createDescription", "")
+
+    for idx, lst in enumerate(state["ExistingLists"], start=1):
+        if "ListID" not in lst:
+            lst["ListID"] = f"list_{idx}"
+
+    # IMPORTANT: include ListID in the "existingLists" data
     existing_lists_stripped = [
         {
+            "ListID": lst["ListID"],
             "ListName": lst["ListName"],
             "CreateDescription": lst.get("CreateDescription", "")
         }
@@ -51,44 +56,38 @@ def check_if_list_exists(state: ListSubchartState):
     }
     user_msg = HumanMessage(content=json.dumps(user_input, indent=2))
 
-    # Call your structured LLM
-    # Adjust `modelSpec` or `structured_llm` to match your environment
+    # Call your structured LLM with the new FoundListReply model
     structured_llm = modelSpec.with_structured_output(
         FoundListReply,
         method="json_mode",
         include_raw=True
     )
-
     conversation = [system_msg, user_msg]
     output = structured_llm.invoke(conversation, stream=False, response_format="json")
     parsed_output = output["parsed"].model_dump()
 
-    # Update the state
     return {
         "listExists": parsed_output["found"],
-        "foundListName": parsed_output["foundListName"]
+        "foundListID": parsed_output["foundListID"]
     }
 
 def return_existing_list(state: ListSubchartState):
     if not state["listExists"]:
-        # If not found, just return empty
         return {
-            "FinalList": {},
             "JsonLists": []
         }
-    
-    found_list_name = state.get("foundListName", "")
+
+    found_list_id = state.get("foundListID", "")
     existing_lists = state["ExistingLists"]
 
-    # Find the matching list object
+    # Find the matching list by ID
     matched_list = next(
-        (lst for lst in existing_lists if lst["ListName"] == found_list_name),
+        (lst for lst in existing_lists if lst["ListID"] == found_list_id),
         None
     )
     if matched_list is None:
-        # If for some reason no match is found, return empty
+        # If no match found, return empty
         return {
-            "FinalList": {},
             "JsonLists": []
         }
 
@@ -96,9 +95,11 @@ def return_existing_list(state: ListSubchartState):
     list_contents_str = matched_list["ListContents"]
     list_contents = json.loads(list_contents_str)
 
+    # "Add the name in front of the list" means use matched_list["ListName"] as the key
+    named_list = {matched_list["ListName"]: list_contents}
+
     return {
-        "FinalList": list_contents,
-        "JsonLists": [list_contents]
+        "JsonLists": [named_list]
     }
     
 class DynamicOrFixedReply(BaseModel):
