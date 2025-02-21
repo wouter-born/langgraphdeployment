@@ -275,7 +275,7 @@
             ]]>
             </output>
         </trendchart>
-        <waterfallchart>
+        <waterfallchartChannel>
             <userInstruction>A waterfall from Budget to Actual showing the current selected row by channel.</userInstruction>
             <output>
             <![CDATA[
@@ -293,7 +293,7 @@
                     {
                         "listReference": "seriesList",
                         "list": "Channels",
-                        "createDescription": "A with all channels using zero suppresion be used as series in the waterfall chart."
+                        "createDescription": "A list with all channels using zero suppresion be used as series in the waterfall chart."
                     }
                 ],
                 "axis": {
@@ -330,6 +330,62 @@
             }            
             ]]>
             </output>
-        </waterfallchart>
+        </waterfallchartChannel>
+        <waterfallchartLocation>
+            <userInstruction>A waterfall from Budget to Actual showing the current selected row by location.</userInstruction>
+            <output>
+            <![CDATA[
+            "config": {
+                "orientation": "Horizontal",
+                "KPI": {
+                    "Account": ""
+                },
+                "lists": [
+                    {
+                        "listReference": "categoryList",
+                        "list": "ActualBudget",
+                        "createDescription": "A list with Actual and Budget to be displayed on the y-axis of the horizontal waterfall chart."
+                    },
+                    {
+                        "listReference": "seriesList",
+                        "list": "Channels",
+                        "createDescription": "A list with all locations using zero suppresion be used as series in the waterfall chart."
+                    }
+                ],
+                "axis": {
+                    "categoryAxis": {
+                        "display": true,
+                        "labelRotation": 0,
+                        "labelSkipping": 0
+                    },
+                    "numericAxes": [
+                        {
+                            "display": true
+                        }
+                    ]
+                },
+                "series": [
+                    {
+                        "dataKey": "WaterfallSeries",
+                        "type": "Waterfall",
+                        "axisProperties": {
+                            "format": "{value} USD",
+                            "label": "[Account] Change",
+                            "gridLines": true
+                        },
+                        "dataLabels": {
+                            "display": true,
+                            "format": "{value} USD",
+                            "position": "inside"
+                        }
+                    }
+                ],
+                "legend": {
+                    "display": true
+                }
+            }            
+            ]]>
+            </output>
+        </waterfallchartLocation>
     </examples>
 </task>
