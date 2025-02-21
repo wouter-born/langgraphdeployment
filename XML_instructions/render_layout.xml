@@ -384,7 +384,7 @@
                         "id": "C1",
                         "type": "ReportTable",
                         "title": "Profit and Loss - Current Fiscal Year",
-                        "AI_Generation_Description": "A table showing the profit and loss statement including revenue, cost of goods sold, and net income on the rows. The rows should be selectable."
+                        "AI_Generation_Description": "A table showing the profit and loss statement including revenue, cost of goods sold, and net income on the rows and all months of the current year on the columns. The rows should be selectable."
                       }
                     ]
                   },
@@ -431,7 +431,7 @@
                                   "components": [
                                     {
                                       "id": "C3",
-                                      "type": "ReportTable",
+                                      "type": "Chart",
                                       "title": "[Account] by Location",
                                       "height": 300,
                                       "AI_Generation_Description": "A waterfall from Budget to Actual showing the current selected row by location"
