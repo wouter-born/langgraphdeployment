@@ -488,5 +488,75 @@
         </output>
 
     </PandLWithChannelAndLocationDrilldown>
+    <NetSalesAndEbitdaWaterFallByChannel>
+  		<userInstruction>
+        Breakdown our Budget to Actual performance by channel for net Sales and EBITDA.
+        The following dimensions are available in the model:
+        - Entity (Alias: Entity)
+        - Category (Alias: Category)
+        - Year (Alias: Year)
+        - Period (Alias: Period)
+        - View (Alias: View)
+        - Account (Alias: Account)
+        - AnalyticalDim1 (Alias: Cost Center)
+        - AnalyticalDim2 (Alias: Channel)
+        - AnalyticalDim3 (Alias: Location)
+        - AnalyticalDim4 (Alias: Normilization)
+      </userInstruction>
+      <AlternativeInstruction>
+        Create a report with 2 waterfall charts, each chart analyzes Budget to Actual using the main channels. The first chart is for net sales, the second chart for EBITDA.
+      </AlternativeInstruction>
+      <output>
+      {
+        "gridColumns": {
+          "sm": "1",
+          "md": "1",
+          "lg": "8"
+        },
+        "rows": [
+          {
+            "columns": [
+              {
+                "colSpan": {
+                  "sm": "full",
+                  "md": "full",
+                  "lg": "full"
+                },
+                "components": [
+                  {
+                    "id": "WFC1",
+                    "type": "Chart",
+                    "title": "Net Sales Waterfall by Channels",
+                    "AI_Generation_Description": "A waterfall chart from Budget to Actual showing the main channels for the Net Sales Account",
+                    "height": 300
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "columns": [
+              {
+                "colSpan": {
+                  "sm": "full",
+                  "md": "full",
+                  "lg": "full"
+                },
+                "components": [
+                  {
+                    "id": "WFC2",
+                    "type": "Chart",
+                    "title": "EBITDA Waterfall by Channels",
+                    "AI_Generation_Description": "A waterfall chart from Budget to Actual showing the main channels for the EBITDA Account",
+                    "height": 300
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+      </output>
+    </NetSalesAndEbitdaWaterFallByChannel>
 	</examples>
 </task>
