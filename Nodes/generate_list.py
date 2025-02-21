@@ -74,39 +74,36 @@ def check_dynamic_or_fixed(state: ListSubchartState):
 
 def build_hierarchy_string(filtered_metadata):
     """
-    Build a readable tree structure for each dimension.
-    Each dimension starts with a header, and then its items are printed as a tree.
+    Build a tree structure for each dimension where each branch prints
+    its children first, then the parent (i.e. the parent appears below its children).
     """
     result = ""
     for metadata in filtered_metadata:
-        # Print the dimension header once
+        # Print the dimension header only once
         header = f"Dimension: {metadata['name']}"
         if metadata.get("alias"):
             header += f" ({metadata['alias']})"
         result += header + "\n"
-        # Build the tree for this dimension's items
-        result += build_items(metadata.get("dimensionContent", []), parent_id=None, indent=1)
+        # Process the dimension's items with children-first ordering
+        result += build_items_reversed(metadata.get("dimensionContent", []), parent_id=None, indent=1)
     return result
 
-def build_items(items, parent_id, indent):
+def build_items_reversed(items, parent_id, indent):
     """
-    Recursively build the tree structure for items.
-    Items whose 'ParentID' matches the provided parent_id are printed with the current indentation.
-    Then, their children are printed recursively with an increased indent.
+    Recursively process items such that for each item whose ParentID matches `parent_id`,
+    first process its children and then print the item.
     """
     result = ""
     for item in items:
-        # Normalize ParentID (treat {} as None)
-        item_parent_id = item.get("ParentID")
-        if item_parent_id == {}:
-            item_parent_id = None
-
+        # Normalize ParentID (treat empty dict as None)
+        item_parent_id = item.get("ParentID") or None
         if item_parent_id == parent_id:
-            # Print the current item with the correct indentation
+            # First, process children of this item (if any)
+            result += build_items_reversed(items, parent_id=item["ID"], indent=indent + 1)
+            # Then, print the current item with the current indentation
             result += "\t" * indent + f"{item['Name']}\n"
-            # Recursively add its children
-            result += build_items(items, parent_id=item["ID"], indent=indent + 1)
     return result
+
 
 
 class FixedListReply(BaseModel):

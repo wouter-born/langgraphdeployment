@@ -6,7 +6,3 @@
 *.cpython-312.pyc
 sample_working_capital_with_outliers.csv
 sample.json
-Classes/__pycache__/llm_classes.cpython-312.pyc
-Classes/__pycache__/state_classes.cpython-312.pyc
-Nodes/__pycache__/generate_layout.cpython-312.pyc
-Nodes/__pycache__/generate_list.cpython-312.pyc

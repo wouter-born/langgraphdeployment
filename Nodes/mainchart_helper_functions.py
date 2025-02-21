@@ -12,7 +12,7 @@ def continue_to_components(state: OverallState):
     """
     # We'll pass each component as 'component' into the subchart
     # and collect the returns
-    return [Send("generate_specialized_subchart", {"component": c}) for c in state["Components"]]
+    return [Send("generate_component_subchart", {"component": c}) for c in state["Components"]]
 
 
 def update_json_layout(state: OverallState):

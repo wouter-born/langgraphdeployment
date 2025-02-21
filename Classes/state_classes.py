@@ -7,6 +7,7 @@ class OverallState(TypedDict):
     ReportQuery: str
     POV: list
     ReportMetadata: Annotated[List[Dict[str, Any]], operator.add]
+    ExistingLists: list
     JsonLayout: dict
     Components: list
     JsonLayoutWithComponentConfig: Annotated[list, operator.add]
