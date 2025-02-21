@@ -43,7 +43,7 @@ component_subgraph.add_edge("generate_tile_component", END)
 component_subgraph.add_edge("generate_generic_component", END)
 
 # Compile subgraph
-generate_specialized_subchart = component_subgraph.compile()
+generate_component_subchart = component_subgraph.compile()
 
 from Nodes.mainchart_helper_functions import *
 
@@ -82,7 +82,7 @@ generate_list_subchart = subgraph.compile()
 graph = StateGraph(OverallState)
 
 graph.add_node("generate_layout", generate_layout)
-graph.add_node("generate_specialized_subchart", generate_specialized_subchart)
+graph.add_node("generate_component_subchart", generate_component_subchart)
 graph.add_node("update_json_layout", update_json_layout)
 graph.add_node("gatheruniquelists", gatheruniquelists)
 graph.add_node("generate_list_subchart", generate_list_subchart)  # Subchart for lists
@@ -92,10 +92,10 @@ graph.add_edge(START, "generate_layout")
 
 # After we have the base layout and extracted all 'Components',
 # route each component to the specialized subchart
-graph.add_conditional_edges("generate_layout", continue_to_components, ["generate_specialized_subchart"])
+graph.add_conditional_edges("generate_layout", continue_to_components, ["generate_component_subchart"])
 
 # Then from the specialized subchart, we go to update_json_layout
-graph.add_edge("generate_specialized_subchart", "update_json_layout")
+graph.add_edge("generate_component_subchart", "update_json_layout")
 
 graph.add_edge("update_json_layout", "gatheruniquelists")
 
