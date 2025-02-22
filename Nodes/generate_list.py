@@ -96,7 +96,7 @@ def return_existing_list(state: ListSubchartState):
     list_contents = json.loads(list_contents_str)
 
     # "Add the name in front of the list" means use matched_list["ListName"] as the key
-    named_list = {matched_list["ListName"]: list_contents}
+    named_list = {state["List"]: list_contents}
 
     return {
         "JsonLists": [named_list]
