@@ -2,8 +2,9 @@ import os
 
 from langgraph.graph import StateGraph, START, END
 
-from Nodes.generate_layout import *
+
 from Nodes.generate_component import *
+from Nodes.generate_layout import *
 
 # os.environ["LANGCHAIN_TRACING_V2"] = os.getenv("CUSTOM_TRACING_V2", "true")
 # os.environ["LANGCHAIN_ENDPOINT"] = os.getenv("CUSTOM_ENDPOINT", "https://api.smith.langchain.com")
@@ -81,6 +82,7 @@ generate_list_subchart = subgraph.compile()
 ##########################
 graph = StateGraph(OverallState)
 
+graph.add_node("generate_conceptualdesign", generate_conceptualdesign)
 graph.add_node("generate_layout", generate_layout)
 graph.add_node("generate_component_subchart", generate_component_subchart)
 graph.add_node("update_json_layout", update_json_layout)
@@ -88,7 +90,8 @@ graph.add_node("gatheruniquelists", gatheruniquelists)
 graph.add_node("generate_list_subchart", generate_list_subchart)  # Subchart for lists
 graph.add_node("consolidate_lists_to_layout", consolidate_lists_to_layout)
 
-graph.add_edge(START, "generate_layout")
+graph.add_edge(START, "generate_conceptualdesign")
+graph.add_edge("generate_conceptualdesign", "generate_layout")
 
 # After we have the base layout and extracted all 'Components',
 # route each component to the specialized subchart

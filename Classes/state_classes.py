@@ -5,6 +5,7 @@ import operator
 
 class OverallState(TypedDict):
     ReportQuery: str
+    ConceptualDesign: str
     POV: list
     ReportMetadata: Annotated[List[Dict[str, Any]], operator.add]
     ExistingLists: Annotated[List[dict], operator.add]

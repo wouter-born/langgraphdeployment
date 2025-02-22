@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, TypedDict, List, Dict, Any, Union
 from typing import Annotated
 import operator
+import json
 from langchain_core.messages import (
     AIMessage, 
     HumanMessage,
@@ -59,6 +60,8 @@ class Component(BaseModel):
     )
     noborder: Optional[bool] = None
     height: Optional[int] = None
+    maxheight: Optional[int] = None
+    minheight: Optional[int] = None
     numberFormat: Optional[NestedNumberFormat] = None
     config: Optional["Layout"] = None  # Use forward reference for recursive Layout
 
@@ -103,27 +106,56 @@ class ReportConfig(BaseModel):
 
     class Config:
         extra = "forbid"
+class conceptualdesign_reply(BaseModel):
+    conceptualDesign: str
 
-################################################################
-# LAYOUT GENERATION (unchanged from your original structure)
-################################################################
-def generate_layout(state: OverallState):
-    system_instructions = load_xml_instructions("render_layout.xml")
-    system_msg = SystemMessage(content=system_instructions)
-
+def generate_dimensions_string(state: OverallState) -> str:
     # Extract and clean POV dimensions
     pov_dimensions = [
         {"Name": dim["Name"], "Alias": dim["Alias"]}
         for dim in state.get("POV", [])
         if dim.get("InUse", "True") == "True"
     ]
-
     # Format the dimensions into a string for the prompt
     pov_string = "\n".join([f"- {dim['Name']} (Alias: {dim['Alias']})" for dim in pov_dimensions])
+    return pov_string
+
+def generate_conceptualdesign(state: OverallState):
+    system_instructions = load_xml_instructions("conceptualdesign_prompt.xml")
+    system_msg = SystemMessage(content=system_instructions)
     
+    pov_string = generate_dimensions_string(state)
+
+    prompt = {"userInstructions": state["ReportQuery"]}
+    user_prompt = (
+        f"{prompt}\n\n"
+        "The following dimensions are available in the model:\n"
+        f"{pov_string}"
+    )
+    user_msg = HumanMessage(content=json.dumps(user_prompt)) 
+
+    structured_llm = modelSpec.with_structured_output(
+        conceptualdesign_reply,
+        method="json_mode",
+        include_raw=True
+    )
+    conversation = [system_msg] + [user_msg]
+    output = structured_llm.invoke(conversation, stream=False, response_format="json")
+    parsed_output = output["parsed"].model_dump()
+    return {"ConceptualDesign": parsed_output["conceptualDesign"]}
+
+
+
+def generate_layout(state: OverallState):
+    system_instructions = load_xml_instructions("render_layout.xml")
+    system_msg = SystemMessage(content=system_instructions)
+
+    # Format the dimensions into a string for the prompt
+    pov_string = generate_dimensions_string(state)
+
     # Update the user message with dimensions
     user_prompt = (
-        f"{state['ReportQuery']}\n\n"
+        f"{state['ConceptualDesign']}\n\n"
         "The following dimensions are available in the model:\n"
         f"{pov_string}"
     )

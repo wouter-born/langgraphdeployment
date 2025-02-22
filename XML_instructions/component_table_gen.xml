@@ -97,7 +97,7 @@
                 <![CDATA[
                 "config": {
                     "selectRow": true,
-                    "firstColumnWidth": 250,
+                    "firstColumnWidth": 200,
                     "lists": [
                         {
                             "listReference": "rowsList",
@@ -120,7 +120,7 @@
                 <![CDATA[
                 "config": {
                     "selectRow": true,
-                    "firstColumnWidth": 250,
+                    "firstColumnWidth": 200,
                     "lists": [
                         {
                             "listReference": "rowsList",
@@ -182,5 +182,31 @@
                 ]]>
             </output>
         </drilldowntable>
+        <ChannelBVA>
+            <userInstruction>A table showing net sales on the columns with the main channels on the rows and descendent drilldowns, including Actual, Budget, Variance, and a Variance Bar. The rows should be selectable.</userInstruction>
+            <output>
+                <![CDATA[
+                "config": {
+                    "selectRow": true,
+                    "firstColumnWidth": 150,
+                    "lists": [
+                        {
+                            "listReference": "rowsList",
+                            "list": "MainChannels",
+                            "createDescription": "A list with the main channels to be used on the table rows, including descendent drilldowns. Add a total row at the end."
+                        },
+                        {
+                            "listReference": "columnsList",
+                            "list": "ActualBudgetVariance%VarianceBar",
+                            "createDescription": "A list with Actuals, Budget, Variance, and a Variance Bar to be used on table columns."
+                        }
+                    ]
+                    "kpi": {
+                        "Account": "Net Sales"
+                    }
+                }           
+                ]]>
+            </output>
+        </ChannelBVA>
     </examples>
 </task>

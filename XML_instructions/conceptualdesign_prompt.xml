@@ -1,14 +1,14 @@
 <task>
   <overview>
     This node translates human instructions for financial report design into a clear, conceptual design description. The output must be a JSON object formatted as:
-    { "ConceptualDesign" : "<design instructions>" }
+    { "conceptualDesign" : "<design instructions>" }
     The design instructions are a plain-text description outlining the report's structure and components.
   </overview>
   <guidelines>
     <Instructions>
       <instruction>Interpret the user's natural language instructions to determine the desired report layout, components, and data breakdowns.</instruction>
       <instruction>Do not invent new component types or options; use only the allowed components and dimensions defined below.</instruction>
-      <instruction>Output must be a JSON object with a single key "ConceptualDesign" whose value is a textual description of the design.</instruction>
+      <instruction>Output must be a JSON object with a single key "conceptualDesign" whose value is a textual description of the design.</instruction>
     </Instructions>
     <AllowedComponents>
       <component name="ReportTable">
@@ -83,19 +83,19 @@
     </AdditionalInstructions>
   </guidelines>
   <outputFormat>
-    The output must be a valid JSON object with a single key "ConceptualDesign". The value is a string containing the design instructions.
+    The output must be a valid JSON object with a single key "conceptualDesign". The value is a string containing the design instructions.
   </outputFormat>
   <Examples>
     <NetSalesBVAByChannelsLocations>
       <input>{"userInstructions": "Create a Net Sales BVA for Channels and store locations"}</input>
-      <output>{"ConceptualDesign": "Two tables next to each other, the first table should show net sales and have the main channels on the rows with descendent drilldowns and Actual, Budget, Variance, and a Variance Bar on the columns. The second table should be equal to the first table but have locations on the rows. Only the first table should have selectable rows"}</output>
+      <output>{"conceptualDesign": "Two tables next to each other, the first table should show net sales and have the main channels on the rows with descendent drilldowns and Actual, Budget, Variance, and a Variance Bar on the columns. The second table should be equal to the first table but have locations on the rows. Only the first table should have selectable rows"}</output>
     </NetSalesBVAByChannelsLocations>
     <ClearExampleColumnChart>
       <input>{"userInstructions": "Show a column chart with Actual and Budget data for the last 12 months"}</input>
-      <output>{"ConceptualDesign": "A column chart displaying Actual and Budget data for the last 12 months."}</output>
+      <output>{"conceptualDesign": "A column chart displaying Actual and Budget data for the last 12 months."}</output>
     </ClearExampleColumnChart>
     <NetSalesBVAByChannelsLocations>
       <input>{"userInstructions": "Breakdown our Budget to Actual performance by channel for net Sales and EBITDA."}</input>
-      <output>{"ConceptualDesign": "2 waterfall charts one below the other, each chart analyzes Budget to Actual using the main channels. The first chart is for net sales, the second chart for EBITDA."}</output>
+      <output>{"conceptualDesign": "2 waterfall charts one below the other, each chart analyzes Budget to Actual using the main channels. The first chart is for net sales, the second chart for EBITDA."}</output>
     </NetSalesBVAByChannelsLocations>
 </task>
