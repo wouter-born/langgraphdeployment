@@ -100,6 +100,10 @@
       <input>{"userInstructions": "I want to analyse the profit and loss and compare with forecast including trends and channels"}</input>
       <output>{"conceptualDesign": "A main table showing profit and loss statement on the rows, actual, forecast, Variance and Variance bar on the columns. Next to the main table a nested row with two components. The first component is a column chart showing actual and forecast for the past 12 months. The second component is a small table showing the main channels on the rows with drilldowns and actual, forecast and a small variance bar on the columns"}</output>
     </NetSalesBVAByChannelsLocations>
+    <ProfitAndLossWithDepartmentDrilldown>
+      <input>{"userInstructions": "Profit and Loss report with drilldown on expenses by departments"}</input>
+      <output>{"conceptualDesign": "A main table showing profit and loss with actual, budget, variance and a variance bar on the columns. Next to the main table a nested row component containing a table with cost centers on the rows and Actual, Budget and Small variance bar on the columns"}</output>
+    </ProfitAndLossWithDepartmentDrilldown>
   </Examples>
 </task>
 
