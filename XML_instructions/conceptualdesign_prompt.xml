@@ -33,7 +33,8 @@
       </component>
       <component name="NestedRow">
         <description>
-          A container for grouping rows and columns in a nested layout.
+          A container for grouping rows and columns in a nested layout. 
+          This is specifically used for displaying multiple components in a vertical layout next to a main table. The nested components align vertically with the selected row in the main table.
         </description>
       </component>
       <component name="ScaleSelectors">
@@ -72,9 +73,6 @@
         Describe what data each component should display and, when applicable, mention the dimensions involved.
       </instruction>
       <instruction>
-        Do not include details about JSON formatting or layout grids; simply provide a clear textual description that the next node will use to create the final JSON configuration.
-      </instruction>
-      <instruction>
         If the user instructions are unclear or ambiguous, provide a general design that fits the instructions as best as possible.
       </instruction>
       <instruction>
@@ -98,4 +96,11 @@
       <input>{"userInstructions": "Breakdown our Budget to Actual performance by channel for net Sales and EBITDA."}</input>
       <output>{"conceptualDesign": "2 waterfall charts one below the other, each chart analyzes Budget to Actual using the main channels. The first chart is for net sales, the second chart for EBITDA."}</output>
     </NetSalesBVAByChannelsLocations>
+    <ProfitAndLossAnalsysis>
+      <input>{"userInstructions": "I want to analyse the profit and loss and compare with forecast including trends and channels"}</input>
+      <output>{"conceptualDesign": "A main table showing profit and loss statement on the rows, actual, forecast, Variance and Variance bar on the columns. Next to the main table a nested row with two components. The first component is a column chart showing actual and forecast for the past 12 months. The second component is a small table showing the main channels on the rows with drilldowns and actual, forecast and a small variance bar on the columns"}</output>
+    </NetSalesBVAByChannelsLocations>
+
+
 </task>
+

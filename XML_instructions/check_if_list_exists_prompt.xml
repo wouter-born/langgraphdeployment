@@ -6,23 +6,36 @@
 
     Your job is to decide if the candidate list already exists among the existing lists.
     - If it exists, return:
+    <![CDATA[
       {
         "found": true,
         "foundListID": "<The matching list's ID>"
       }
+    ]]>
     - Otherwise return:
+    <![CDATA[
       {
         "found": false,
         "foundListID": ""
       }
+    ]]>
   </description>
 
   <instructions>
     <instruction>
-      You may decide if it "exists" based on an exact match of ListName, or you can also
-      consider a match based on the CreateDescription if it covers similar content.
+      You may decide if it "exists" based on an exact match of ListName, or you can also consider a match based on the CreateDescription if it covers similar content.
+    </instruction>
+    <instruction>
       If you find a suitable match, set "found"=true and "foundListID" to the matched list's ID.
       If you find no match, set "found"=false and "foundListID"="".
+    </instruction>
+    <instruction>
+      If there are multiple matches to chose from look carefully at the use case. If a list is to be used on table columns then pick the match where the createDescription mentions it should be used on columns.
+    </instruction>
+    <instruction>
+      Make sure the list qualifies as a match based. 
+      For example, when the user asks for Actual, Budget, Variance and Variance Bar, a list with only Actual and Budget should not be considered a match. 
+      Also a list specifying more dimensions should not qualify. ("A list with  Net Sales including Actual, Budget, Variance, and a Variance bar to be used on table columns." also contains Account and should not qualify)
     </instruction>
   </instructions>
 
