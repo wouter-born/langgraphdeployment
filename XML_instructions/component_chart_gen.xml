@@ -301,7 +301,7 @@
                     },
                     "numericAxes": [
                         {
-                            "display": true
+                            "display": false
                         }
                     ]
                 },
@@ -322,7 +322,7 @@
                     }
                 ],
                 "legend": {
-                    "display": true
+                    "display": false
                 }
             }            
             ]]>
@@ -354,7 +354,7 @@
                     },
                     "numericAxes": [
                         {
-                            "display": true
+                            "display": false
                         }
                     ]
                 },
@@ -375,7 +375,7 @@
                     }
                 ],
                 "legend": {
-                    "display": true
+                    "display": false
                 }
             }            
             ]]>

@@ -204,41 +204,6 @@
                   ]
                 }
               ]
-            },
-            {
-              "columns": [
-                {
-                  "colSpan": {
-                    "sm": "full",
-                    "md": "full",
-                    "lg": "full"
-                  },
-                  "components": [
-                    {
-                      "id": "S1",
-                      "type": "ScaleSelectors",
-                      "noborder": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "columns": [
-                {
-                  "colSpan": {
-                    "sm": "full",
-                    "md": "full",
-                    "lg": "full"
-                  },
-                  "components": [
-                    {
-                      "id": "Co1",
-                      "type": "Comments"
-                    }
-                  ]
-                }
-              ]
             }
           ]
         }
