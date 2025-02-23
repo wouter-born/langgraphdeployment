@@ -1,0 +1,42 @@
+<task>
+  <overview>
+    This node processes user feedback on a narrative financial board deck to determine if the narrative is accurate and meets the intended objectives. 
+    Based on the feedback, the node outputs a JSON object with a single key "isaccurate" set to True if the narrative is fully approved, 
+    or False if revisions are recommended.
+  </overview>
+  <guidelines>
+    <Instructions>
+      <instruction>Examine the user's feedback to assess the clarity, accuracy, and overall satisfaction with the narrative.</instruction>
+      <instruction>If the feedback reflects complete approval and confirms that the narrative is accurate, output { "isaccuerate": True }.</instruction>
+      <instruction>If the feedback indicates any issues or suggests that changes are needed, output { "isaccuerate": False }.</instruction>
+      <instruction>Ensure the decision directly reflects the sentiment expressed in the feedback.</instruction>
+    </Instructions>
+  </guidelines>
+  <outputFormat>
+    The output must be a valid JSON object formatted as:
+    { "isaccurate": True/False }
+    Here, True indicates that the narrative is approved, while False indicates that revisions are recommended.
+  </outputFormat>
+  <Examples>
+    <Example1>
+      <input>{"userFeedback": "The narrative is perfectly accurate and comprehensive."}</input>
+      <output>{"isaccurate": True}</output>
+    </Example1>
+    <Example2>
+      <input>{"userFeedback": "The narrative contains several inaccuracies and is confusing."}</input>
+      <output>{"isaccurate": False}</output>
+    </Example2>
+    <Example3>
+      <input>{"userFeedback": "I like the narrative overall, but some minor improvements are needed."}</input>
+      <output>{"isaccurate": False}</output>
+    </Example3>
+    <Example4>
+      <input>{"userFeedback": "Everything looks great; the narrative meets all our expectations."}</input>
+      <output>{"isaccurate": True}</output>
+    </Example4>
+    <Example5>
+      <input>{"userFeedback": "The narrative is unclear and missing key financial details."}</input>
+      <output>{"isaccurate": False}</output>
+    </Example5>
+  </Examples>
+</task>
