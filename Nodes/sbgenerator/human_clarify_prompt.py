@@ -24,7 +24,7 @@ def human_clarify_prompt(state: StoryboardState):
     narrative = state["narrative"]
     user_feedback = state['narrative_modif']
 
-    if user_feedback is None:
+    if user_feedback is None or user_feedback == '':
         # Enable the following snipet to have user interruption
         # With interrupt
         feedback_response = interrupt({
