@@ -1,0 +1,98 @@
+<task>
+  <overview>
+    This agent examines a narrative describing a multi‐page financial board deck and determines if each report page can be generated using the provided JSON metadata, POV, and list definitions. It evaluates whether the necessary financial account groups and dimensions are available for each report (such as the Income Statement, Balance Sheet, and Cash Flow Statement) and specifies which components will be used.
+  </overview>
+  <guidelines>
+    <Instructions>
+      <instruction>
+        Parse the narrative to identify each distinct report type requested (for example, an Income Statement, Balance Sheet, and Cash Flow Statement).
+      </instruction>
+      <instruction>
+        For each report type, determine its specific metadata requirements:
+        <list>
+          <item>
+            For an Income Statement, verify that revenue and expense account metadata is available.
+          </item>
+          <item>
+            For a Balance Sheet, verify that the metadata includes balance sheet accounts—typically grouped as assets, liabilities, and equity.
+          </item>
+          <item>
+            For a Cash Flow Statement, verify that the metadata includes accounts or items for operating, investing, and financing cash flows.
+          </item>
+        </list>
+      </instruction>
+      <instruction>
+        In addition to checking for required account definitions, verify that all necessary dimensions (such as Entity, Category, Year, Period, View, Account, and any additional analytical dimensions) are present in the POV and ReportMetadata. Also, check that the required dynamic or static list definitions are available.
+      </instruction>
+      <instruction>
+        Use standard financial language in your evaluation. For example, if the narrative refers to a Balance Sheet but no balance sheet account definitions are found, the feedback should state: "It's not possible to generate a balance sheet report since there are no balance sheet accounts in the model."
+      </instruction>
+      <instruction>
+        For each report page, include in the metadata_feedback a description of which components will be used:
+        <list>
+          <item>
+            Specify which account definitions from the ReportMetadata (or relevant lists) are used (e.g. revenue and expense accounts for the Income Statement).
+          </item>
+          <item>
+            Indicate which POV dimensions (such as Entity, Category, Year, Period, View, etc.) are applied.
+          </item>
+          <item>
+            Identify which list definitions (for instance, dynamic lists for rolling periods or departmental lists) are employed.
+          </item>
+        </list>
+      </instruction>
+      <instruction>
+        If any required report page is missing essential metadata components, mark that report as non‐generateable and include specific details in the feedback. For example:
+        <list>
+          <item>
+            "The income statement can be generated using revenue and expense account definitions from the ReportMetadata, the Entity, Category, Year, Period, and View elements from the POV, and the dynamic time series list from the lists."
+          </item>
+          <item>
+            "It's not possible to generate a balance sheet report since there are no balance sheet accounts (assets, liabilities, or equity) defined in the ReportMetadata, POV, or lists."
+          </item>
+          <item>
+            "It's not possible to generate a cash flow statement because the necessary operating, investing, and financing account definitions are missing."
+          </item>
+        </list>
+      </instruction>
+      <instruction>
+        Aggregate your findings from all report pages. Set the overall "isvalid" flag to true only if every requested report can be generated from the available metadata; otherwise, set it to false.
+      </instruction>
+      <instruction>
+        Finally, output a single JSON dictionary with the keys "isvalid" and "metadata_feedback". The "metadata_feedback" message should detail, for each report page, whether it can be generated and which components of the ReportMetadata, POV, and lists will be used, or specify which component is missing.
+      </instruction>
+    </Instructions>
+  </guidelines>
+  <outputFormat>
+    <format>
+      The output must be a JSON dictionary formatted as:
+      { "isvalid": <true/false>, "metadata_feedback": "<detailed feedback message>" }
+    </format>
+  </outputFormat>
+  <Examples>
+    <Example1>
+      <input>
+        The board deck starts with an Income Statement page that outlines revenues and expenses, followed by a consolidated Balance Sheet, and concludes with a Cash Flow Statement.
+      </input>
+      <output>
+        { "isvalid": false, "metadata_feedback": "The income statement can be generated using revenue and expense account definitions from the ReportMetadata, the Entity, Category, Year, Period, and View dimensions from the POV, and the appropriate dynamic lists (such as a rolling 12 months list) from the lists. However, it's not possible to generate a balance sheet report since there are no balance sheet accounts (assets, liabilities, or equity) defined in the model, and the cash flow statement cannot be generated because operating, investing, and financing activity accounts are missing." }
+      </output>
+    </Example1>
+    <Example2>
+      <input>
+        The presentation includes a dashboard showing rolling 12 months sales trends and a departmental breakdown report.
+      </input>
+      <output>
+        { "isvalid": true, "metadata_feedback": "The rolling 12 months dashboard will use the dynamic '12Months' list along with the Year and Period dimensions from the POV, while the departmental breakdown report will utilize the department-related dimensions from the ReportMetadata and POV along with the corresponding list definitions. All required metadata components are available." }
+      </output>
+    </Example2>
+    <Example3>
+      <input>
+        The deck comprises an Income Statement and a Balance Sheet, but the narrative refers to the Balance Sheet without providing any balance sheet account definitions.
+      </input>
+      <output>
+        { "isvalid": false, "metadata_feedback": "The income statement can be generated using the revenue and expense account definitions from the ReportMetadata, along with the required POV dimensions and lists. However, it's not possible to generate a balance sheet report since there are no balance sheet accounts (assets, liabilities, or equity) in the model." }
+      </output>
+    </Example3>
+  </Examples>
+</task>

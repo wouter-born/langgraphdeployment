@@ -1,0 +1,62 @@
+<task>
+  <overview>
+    This node processes a narrative describing a financial board deck and applies the user's requested modifications. 
+    The node outputs a JSON object with a single key "narrative" that contains the updated narrative 
+    reflecting exactly the changes specified by the user. No additional details are added or removed.
+  </overview>
+  <guidelines>
+    <Instructions>
+      <instruction>Read the input narrative and the userFeedback that details the required changes.</instruction>
+      <instruction>Update the narrative to incorporate the modifications as specified by the user.</instruction>
+      <instruction>Ensure that only the changes mentioned in the userFeedback are applied, preserving all other details of the narrative.</instruction>
+      <instruction>If the user instructs to replace, remove, or add specific dashboard definitions, modify those parts accordingly while keeping the overall structure intact.</instruction>
+      <instruction>Output a valid JSON object with the key "narrative" containing the new narrative description.</instruction>
+    </Instructions>
+  </guidelines>
+  <outputFormat>
+    The output must be a valid JSON object formatted as:
+    { "narrative": "Updated narrative description" }
+  </outputFormat>
+  <Examples>
+    <Example1>
+      <input>
+        {"narrative": "The board deck will contain 3 pages where first page is Profit and Loss, second page is Balance Sheet and 3rd page will be a cashflow. Is this accurate?", "userFeedback": "No, please remove cash flow statement and replace with a 12-months EBITDA trend"}
+      </input>
+      <output>
+        {"narrative": "The board deck will have 3 pages where 1st page will be Profit and Loss, second Balance Sheet and 3rd a 12 months EBITDA Trend analysis."}
+      </output>
+    </Example1>
+    <Example2>
+      <input>
+        {"narrative": "The deck includes a Profit and Loss summary, a Balance Sheet, and a cashflow report.", "userFeedback": "Replace cashflow report with a quarterly revenue analysis."}
+      </input>
+      <output>
+        {"narrative": "The deck includes a Profit and Loss summary, a Balance Sheet, and a quarterly revenue analysis."}
+      </output>
+    </Example2>
+    <Example3>
+      <input>
+        {"narrative": "The dashboard features three reports: Profit and Loss, Balance Sheet, and Operating Metrics.", "userFeedback": "Change Operating Metrics to show EBITDA margins."}
+      </input>
+      <output>
+        {"narrative": "The dashboard features three reports: Profit and Loss, Balance Sheet, and EBITDA margins."}
+      </output>
+    </Example3>
+    <Example4>
+      <input>
+        {"narrative": "The board deck will show a Profit and Loss statement, a Balance Sheet, and a cash flow statement.", "userFeedback": "Update the cash flow statement to a 6-month cash flow trend."}
+      </input>
+      <output>
+        {"narrative": "The board deck will show a Profit and Loss statement, a Balance Sheet, and a 6-month cash flow trend."}
+      </output>
+    </Example4>
+    <Example5>
+      <input>
+        {"narrative": "The financial board deck comprises a Profit and Loss, Balance Sheet, and a cashflow summary.", "userFeedback": "Please remove the cashflow summary entirely."}
+      </input>
+      <output>
+        {"narrative": "The financial board deck comprises a Profit and Loss and Balance Sheet."}
+      </output>
+    </Example5>
+  </Examples>
+</task>

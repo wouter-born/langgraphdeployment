@@ -55,3 +55,23 @@ class ModifyReportState(TypedDict):
     output_json: dict
     clarification_questions: Optional[str]
     json_patches: Optional[List[dict]]
+
+
+
+#########################################################
+# STORYBOARD STATE CLASSES
+#########################################################
+
+thread_config = {"configurable": {"thread_id": "2"}}
+
+class StoryboardState(TypedDict):
+    input_prompt: str
+    narrative: Optional[str]
+    narrative_modif: Optional[str]
+    isaccurate: Optional[bool]
+    metadata_feedback: Optional[str]
+    POV: Optional[list]
+    ReportMetadata: Optional[Annotated[List[Dict[str, Any]], operator.add]]
+    ExistingLists: Optional[Annotated[List[dict], operator.add]]
+    isvalid: Optional[bool]
+    pages: Optional[dict]

@@ -6,3 +6,5 @@
 *.cpython-312.pyc
 sample_working_capital_with_outliers.csv
 sample.json
+.DS_Store
+Classes/__pycache__/state_classes.cpython-311.pyc
