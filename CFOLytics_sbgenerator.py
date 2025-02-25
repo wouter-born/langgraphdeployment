@@ -45,7 +45,7 @@ graph.add_edge(START, "interpreter")
 graph.add_edge("interpreter", "human_check_prompt")
 
 graph.add_conditional_edges("human_check_prompt", ispromptaccurate)
-graph.add_edge("human_clarify_prompt", "interpreter")
+graph.add_edge("human_clarify_prompt", "human_check_prompt")
 
 graph.add_conditional_edges("check_metadata", ismetadatacorrect)
 graph.add_edge("human_clarify_details", "update_prompt")

@@ -66,6 +66,7 @@ thread_config = {"configurable": {"thread_id": "2"}}
 class StoryboardState(TypedDict):
     input_prompt: str
     narrative: Optional[str]
+    narrative_modif: Optional[str]
     isaccurate: Optional[bool]
     metadata_feedback: Optional[str]
     POV: Optional[list]

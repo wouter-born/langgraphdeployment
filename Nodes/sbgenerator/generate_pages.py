@@ -25,6 +25,4 @@ def generate_pages(state: StoryboardState):
     conversation = [system_msg] + [user_msg]
     output = structured_llm.invoke(conversation, stream=False, response_format="json", config=thread_config)
 
-    print(output['parsed'])
-
     return { "pages": output['parsed']['pages'] }

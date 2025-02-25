@@ -7,6 +7,7 @@ from Classes.llm_classes import modelSpec
 
 class NarrativeAccuracy(BaseModel):
     isaccurate: bool
+    narrative_modif: Optional[str]
 
 def human_check_prompt(state: StoryboardState):
     # Load XML instructions
@@ -17,17 +18,16 @@ def human_check_prompt(state: StoryboardState):
     
     # Enable the following snipet to have user interruption
     # With interrupt
-    # feedback_response = interrupt({
-    #     "comment": "Please provide your detailed feedback on the narrative:",
-    #     "narrative": narrative
-    # })
-    # user_feedback = feedback_response.get("feedback")
+    feedback_response = interrupt({
+        "comment": "Please provide your detailed feedback on the narrative:",
+        "narrative": narrative
+    })
+    user_feedback = feedback_response.get("feedback")
     
 
     # Enable the following snipet to pass thru a positive feedback.
     # Without interrupt
-    user_feedback = "Yes! I like it"
-    
+    # user_feedback = "Yes! I like it."
     
     if not user_feedback:
         raise ValueError("No feedback provided.")
@@ -46,4 +46,9 @@ def human_check_prompt(state: StoryboardState):
     
     conversation = [system_msg, state_msg, feedback_msg]
     output = structured_llm.invoke(conversation, stream=False, response_format="json", config=thread_config)
-    return { 'isaccurate': output['parsed'].isaccurate }
+
+    parsed_output = output.get('parsed')
+    if parsed_output is None:
+       raise ValueError("LLM output could not be parsed. Check the response format and prompt instructions. This is node human_check_prompt. ")
+
+    return { 'isaccurate': output['parsed'].isaccurate, 'narrative_modif': output['parsed'].narrative_modif }
