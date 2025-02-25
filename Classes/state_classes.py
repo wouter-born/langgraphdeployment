@@ -10,6 +10,7 @@ class OverallState(TypedDict):
     ReportMetadata: Annotated[List[Dict[str, Any]], operator.add]
     ExistingLists: Annotated[List[dict], operator.add]
     JsonLayout: dict
+    JsonLayoutList: List[dict]
     Components: list
     JsonLayoutWithComponentConfig: Annotated[list, operator.add]
     Lists: list

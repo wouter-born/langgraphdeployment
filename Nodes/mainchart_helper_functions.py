@@ -84,5 +84,5 @@ def consolidate_lists_to_layout(state: OverallState):
     for generated_list in generated_lists:
         if isinstance(generated_list, dict):
             state["JsonLayout"]["lists"].update(generated_list)
-
-    return {"JsonLayout": state["JsonLayout"]}
+    
+    return {"JsonLayout": state["JsonLayout"], "JsonLayoutList": [state["JsonLayout"]]}

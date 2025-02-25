@@ -102,7 +102,7 @@
     </NetSalesBVAByChannelsLocations>
     <ProfitAndLossWithDepartmentDrilldown>
       <input>{"userInstructions": "Profit and Loss report with drilldown on expenses by departments"}</input>
-      <output>{"conceptualDesign": "A main table showing profit and loss with actual, budget, variance and a variance bar on the columns. Next to the main table a nested row component containing a table with cost centers on the rows and Actual, Budget and Small variance bar on the columns"}</output>
+      <output>{"conceptualDesign": "A main table showing profit and loss with actual, budget, variance and a variance bar on the columns. Next to the main table a nested row component containing a table with the leaves of the on the rows and Actual, Budget and Small variance bar on the columns"}</output>
     </ProfitAndLossWithDepartmentDrilldown>
   </Examples>
 </task>
