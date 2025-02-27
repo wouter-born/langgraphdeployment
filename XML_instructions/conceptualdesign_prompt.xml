@@ -104,6 +104,10 @@
       <input>{"userInstructions": "Profit and Loss report with drilldown on expenses by departments"}</input>
       <output>{"conceptualDesign": "A main table showing profit and loss with actual, budget, variance and a variance bar on the columns. Next to the main table a nested row component containing a table with the leaves of the on the rows and Actual, Budget and Small variance bar on the columns"}</output>
     </ProfitAndLossWithDepartmentDrilldown>
+    <CostAnalysisVsPreviousYear>
+      <input>{"userInstructions": "I want to analyze mys costs and see if I am doing better than last year"}</input>
+      <output>{"conceptualDesign": "A main table using the full width showing the cost accounts on the rows using formatting and drilldowns where applicable and currfent year, previous year, variance, variance bar on the columns"}</output>
+    </CostAnalysisVsPreviousYear>
   </Examples>
 </task>
 

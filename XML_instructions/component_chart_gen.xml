@@ -15,194 +15,207 @@
             <importantNote>**Validation and Error Prevention**: Verify that the JSON syntax is correct to prevent errors.</importantNote>
             <importantNote>**Recognize Synonyms and Handle Ambiguity**: Be aware that users may use different words to express the same intent. Treat these terms equivalently when interpreting instructions. If the user's instructions are ambiguous, use context from the JSON configuration and overall structure to infer their intent and choose the most logical output JSON.</importantNote>
         </importantNotes>
-        <jsonStructure>
-            <config>
-                Component-specific configuration settings.
-                <lists>
-                    In this configuration, lists used by components are defined within the `config.lists` array as objects. Each list object must contain:
-                    <listReference>
-                        The reference name used within the component to refer to the list (e.g., "categoryList", "seriesList").
-                    </listReference>
-                    <list>
-                        The name of the actual list defined elsewhere in the configuration that this component should use.
-                    </list>
-                </lists>
-                <KPI>
-                    <description>
-                        Defines the KPI by specifying dimension members.
-                        This dictates which data the component retrieves and overrides the selected POV.
-                        This setting is valid for all numeric data retrieving components like tables, charts, tiles, etc.
-                    </description>
-                    <exampleConfiguration>
-                        <code>
-                            "KPI": {
-                                "Account": "Income",
-                                "Entity": "HQ"
-                            }
-                        </code>
-                    </exampleConfiguration>
-                </KPI>
-                <componentConfigurations>
-                    <Chart>
+            <jsonStructure>
+                <description>
+                    The Chart component displays various chart types (Column, Bar, Line, Waterfall, Label, Pie).
+                    It requires two lists:
+                    - categoryList: defines categories (e.g., periods)
+                    - seriesList: defines metrics (e.g., Actuals, Budget)
+                    Orientation (Vertical/Horizontal) applies only to Waterfall charts.
+                    For other charts, "Column" implies vertical and "Bar" implies horizontal.
+                    Legend names are derived from the seriesList.
+                        For Pie charts, the seriesList defines the pie segments, and while the backend still requires a categoryList, it can be a single-member list as Pie charts are one-dimensional.
+                </description>
+                <exampleConfigurationWaterfall>
+                    <code>
+                        {
+                        "id": "C2",
+                        "type": "Chart",
+                        "title": "EVA vs Forecast",
+                        "maxheight": 400,
+                        "config": {
+                        "orientation": "Horizontal",
+                        "KPI": {
+                        "Account": "EBITDA"
+                        },
+                        "lists": [
+                        {
+                        "listReference": "seriesList",
+                        "list": "WaterfallElements"
+                        },
+                        {
+                        "listReference": "categoryList",
+                        "list": "WaterfallComparison"
+                        }
+                        ],
+                        "axis": {
+                        "categoryAxis": {
+                        "display": true,
+                        "labelRotation": 0,
+                        "labelSkipping": 0
+                        },
+                        "numericAxes": [
+                        {
+                        "display": false
+                        }
+                        ]
+                        },
+                        "series": [
+                        {
+                        "dataKey": "WaterfallSeries",
+                        "listReference": "elements",
+                        "type": "Waterfall",
+                        "axisProperties": {
+                        "format": "{value}",
+                        "label": "EBITDA Value"
+                        },
+                        "dataLabels": {
+                        "display": true,
+                        "format": "{value}",
+                        "position": "inside"
+                        }
+                        }
+                        ],
+                        "legend": {
+                        "display": false
+                        }
+                        }
+                        }
+                    </code>
+                </exampleConfigurationWaterfall>
+                <exampleConfigurationPie>
+                    <code>
+                        {
+                        "id": "C3",
+                        "type": "Chart",
+                        "title": "Revenue Distribution by Product",
+                        "maxheight": 400,
+                        "config": {
+                        "KPI": {
+                        "Account": "Revenue"
+                        },
+                        "lists": [
+                        {
+                        "listReference": "seriesList",
+                        "list": "productCategories"
+                        },
+                        {
+                        "listReference": "categoryList",
+                        "list": "singlePeriod"
+                        }
+                        ],
+                        "series": [
+                        {
+                        "type": "Pie",
+                        "dataKey": "value",
+                        "nameKey": "dimension",
+                        "innerRadius": 0,
+                        "outerRadius": "80%",
+                        "paddingAngle": 2,
+                        "dataLabels": {
+                        "display": true,
+                        "format": "{value}",
+                        "position": "outside"
+                        }
+                        }
+                        ],
+                        "legend": {
+                        "display": true
+                        }
+                        }
+                        }
+                    </code>
+                </exampleConfigurationPie>
+                <attributes>
+                    <lists>
                         <description>
-                            The Chart component displays various chart types (Column, Bar, Line, Waterfall, Label).
-                            It requires two lists:
-                            - categoryList: defines categories (e.g., periods)
-                            - seriesList: defines metrics (e.g., Actuals, Budget)
-                            Orientation (Vertical/Horizontal) applies only to Waterfall charts.
-                            For other charts, "Column" implies vertical and "Bar" implies horizontal.
-                            Legend names are derived from the seriesList.
+                            Typically must define:
+                            - categoryList: categories (e.g., periods)
+                            - seriesList: metrics
                         </description>
-                        <exampleConfigurationWaterfall>
-                            <code>
-                                {
-                                    "id": "C2",
-                                    "type": "Chart",
-                                    "title": "EVA vs Forecast",
-                                    "maxheight": 400,
-                                    "config": {
-                                        "orientation": "Horizontal",
-                                        "KPI": {
-                                            "Account": "EBITDA"
-                                        },
-                                        "lists": [
-                                            {
-                                                "listReference": "seriesList",
-                                                "list": "WaterfallElements",
-                                                "createDescription": "A list defining the elements for the waterfall chart, including categories like Actuals, Budget, and Variance."
-                                            },
-                                            {
-                                                "listReference": "categoryList",
-                                                "list": "WaterfallComparison",
-                                                "createDescription": "A list with comparison categories for the waterfall chart, such as different time periods or scenarios."
-                                            }
-                                        ],
-                                        "axis": {
-                                            "categoryAxis": {
-                                                "display": true,
-                                                "labelRotation": 0,
-                                                "labelSkipping": 0
-                                            },
-                                            "numericAxes": [
-                                                {
-                                                    "display": false
-                                                }
-                                            ]
-                                        },
-                                        "series": [
-                                            {
-                                                "dataKey": "WaterfallSeries",
-                                                "type": "Waterfall",
-                                                "axisProperties": {
-                                                    "format": "{value}",
-                                                    "label": "EBITDA Value"
-                                                },
-                                                "dataLabels": {
-                                                    "display": true,
-                                                    "format": "{value}",
-                                                    "position": "inside"
-                                                }
-                                            }
-                                        ],
-                                        "legend": {
-                                            "display": false
-                                        }
-                                    }
-                                }
-                            </code>
-                        </exampleConfigurationWaterfall>
-                        <attributes>
-                            <lists>
-                                <description>
-                                    Must define:
-                                    - categoryList: categories (e.g., periods)
-                                    - seriesList: metrics
-                                </description>
-                            </lists>
-                            <chartType>
-                                <description>
-                                    Supported: "Column", "Bar", "Line", "Label", "Waterfall".
-                                    "Waterfall" uses orientation to determine layout.
-                                </description>
-                            </chartType>
-                            <orientation>
-                                <description>
-                                    For Waterfall only:
-                                    - "Horizontal": categories on y-axis
-                                    - "Vertical": categories on x-axis
-                                    For Column/Bar, orientation is implied by type.
-                                </description>
-                            </orientation>
-                            <axis>
-                                <description>
-                                    Configures category and numeric axes.
-                                </description>
-                                <categoryAxis>
-                                    <display>
-                                        <description>Boolean. Hide/show category axis.</description>
-                                    </display>
-                                    <labelRotation>
-                                        <description>Integer rotation angle in degrees.</description>
-                                    </labelRotation>
-                                    <labelSkipping>
-                                        <description>Integer skipping factor (0=none,1=every 2nd,...).</description>
-                                    </labelSkipping>
-                                </categoryAxis>
-                                <numericAxes>
-                                    <description>
-                                        Array of numeric axis definitions. Each can be shown/hidden.
-                                    </description>
-                                    <display>
-                                        <description>Boolean. Hide/show numeric axis.</description>
-                                    </display>
-                                </numericAxes>
-                            </axis>
-                            <series>
-                                <description>
-                                    Array of series definitions:
-                                    - dataKey: metric from seriesList
-                                    - type: "Column", "Bar", "Line", "Label", or "Waterfall".
-                                    If a metric is a variance formula, the chart colors bars green/red automatically (no special type needed).
-                                    - axisProperties: format, label, and gridLines for numeric axis.
-                                    - dataLabels: display, format, position.
-                                </description>
-                                <dataKey>
-                                    <description>String referencing a seriesList item.</description>
-                                </dataKey>
-                                <type>
-                                    <description>
-                                        "Column" (vertical), "Bar" (horizontal), "Label" (text only),
-                                        "Waterfall" (cumulative steps).
-                                    </description>
-                                </type>
-                                <axisProperties>
-                                    <description>
-                                        - format: e.g., "{value} AED"
-                                        - label: e.g., "Value (AED)"
-                                        - gridLines: boolean
-                                    </description>
-                                </axisProperties>
-                                <dataLabels>
-                                    <description>
-                                        - display: boolean
-                                        - format: e.g., "{value} AED"
-                                        - position: "top"/"inside"
-                                    </description>
-                                </dataLabels>
-                            </series>
-                            <legend>
-                                <description>
-                                    - display: boolean. If true, shows legend using friendlyNames.
-                                </description>
-                                <display>
-                                    <description>Boolean. Hide/show legend.</description>
-                                </display>
-                            </legend>
-                        </attributes>
-                    </Chart>
-                </componentConfigurations>
-            </config>
-        </jsonStructure>
+                    </lists>
+                    <chartType>
+                        <description>
+                            Supported: "Column", "Bar", "Line", "Label", "Waterfall", "Pie".
+                            "Waterfall" uses orientation to determine layout.
+                                For "Pie" charts, additional configuration options include innerRadius (for donut charts), outerRadius, and paddingAngle (space between segments).
+                        </description>
+                    </chartType>
+                    <orientation>
+                        <description>
+                            For Waterfall only:
+                            - "Horizontal": categories on y-axis
+                            - "Vertical": categories on x-axis
+                            For Column/Bar, orientation is implied by type.
+                        </description>
+                    </orientation>
+                    <axis>
+                        <description>
+                            Configures category and numeric axes.
+                        </description>
+                        <categoryAxis>
+                            <display>
+                                <description>Boolean. Hide/show category axis.</description>
+                            </display>
+                            <labelRotation>
+                                <description>Integer rotation angle in degrees.</description>
+                            </labelRotation>
+                            <labelSkipping>
+                                <description>Integer skipping factor (0=none,1=every 2nd,...).</description>
+                            </labelSkipping>
+                        </categoryAxis>
+                        <numericAxes>
+                            <description>
+                                Array of numeric axis definitions. Each can be shown/hidden.
+                            </description>
+                            <display>
+                                <description>Boolean. Hide/show numeric axis.</description>
+                            </display>
+                        </numericAxes>
+                    </axis>
+                    <series>
+                        <description>
+                            Array of series definitions:
+                            - dataKey: metric from seriesList
+                            - type: "Column", "Bar", "Line", "Label", or "Waterfall".
+                            If a metric is a variance formula, the chart colors bars green/red automatically (no special type needed).
+                            - axisProperties: format, label, and gridLines for numeric axis.
+                            - dataLabels: display, format, position.
+                        </description>
+                        <dataKey>
+                            <description>String referencing a seriesList item.</description>
+                        </dataKey>
+                        <type>
+                            <description>
+                                "Column" (vertical), "Bar" (horizontal), "Label" (text only), "Pie" (circular distribution),
+                                "Waterfall" (cumulative steps).
+                            </description>
+                        </type>
+                        <axisProperties>
+                            <description>
+                                - format: e.g., "{value} AED"
+                                - label: e.g., "Value (AED)"
+                                - gridLines: boolean
+                            </description>
+                        </axisProperties>
+                        <dataLabels>
+                            <description>
+                                - display: boolean
+                                - format: e.g., "{value} AED"
+                                - position: "top"/"inside"
+                            </description>
+                        </dataLabels>
+                    </series>
+                    <legend>
+                        <description>
+                            - display: boolean. If true, shows legend using friendlyNames.
+                        </description>
+                        <display>
+                            <description>Boolean. Hide/show legend.</description>
+                        </display>
+                    </legend>
+                </attributes>
+            </jsonStructure>
     </guidelines>
     <examples>
         <trendchart>

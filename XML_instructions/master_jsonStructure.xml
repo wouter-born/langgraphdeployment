@@ -264,13 +264,14 @@
 							</Comments>
 							<Chart>
 								<description>
-									The Chart component displays various chart types (Column, Bar, Line, Waterfall, Label).
+									The Chart component displays various chart types (Column, Bar, Line, Waterfall, Label, Pie).
 									It requires two lists:
 									- categoryList: defines categories (e.g., periods)
 									- seriesList: defines metrics (e.g., Actuals, Budget)
 									Orientation (Vertical/Horizontal) applies only to Waterfall charts.
 									For other charts, "Column" implies vertical and "Bar" implies horizontal.
 									Legend names are derived from the seriesList.
+										For Pie charts, the seriesList defines the pie segments, and while the backend still requires a categoryList, it can be a single-member list as Pie charts are one-dimensional.
 								</description>
 								<exampleConfigurationWaterfall>
 									<code>
@@ -329,18 +330,64 @@
 										}
 									</code>
 								</exampleConfigurationWaterfall>
+
+									<exampleConfigurationPie>
+										<code>
+											{
+											"id": "C3",
+											"type": "Chart",
+											"title": "Revenue Distribution by Product",
+											"maxheight": 400,
+											"config": {
+											"KPI": {
+											"Account": "Revenue"
+											},
+											"lists": [
+											{
+											"listReference": "seriesList",
+											"list": "productCategories"
+											},
+											{
+											"listReference": "categoryList",
+											"list": "singlePeriod"
+											}
+											],
+											"series": [
+											{
+											"type": "Pie",
+											"dataKey": "value",
+											"nameKey": "dimension",
+											"innerRadius": 0,
+											"outerRadius": "80%",
+											"paddingAngle": 2,
+											"dataLabels": {
+											"display": true,
+											"format": "{value}",
+											"position": "outside"
+											}
+											}
+											],
+											"legend": {
+											"display": true
+											}
+											}
+											}
+										</code>
+									</exampleConfigurationPie>
+
 								<attributes>
 									<lists>
 										<description>
-											Must define:
+											Typically must define:
 											- categoryList: categories (e.g., periods)
 											- seriesList: metrics
 										</description>
 									</lists>
 									<chartType>
 										<description>
-											Supported: "Column", "Bar", "Line", "Label", "Waterfall".
+											Supported: "Column", "Bar", "Line", "Label", "Waterfall", "Pie".
 											"Waterfall" uses orientation to determine layout.
+												For "Pie" charts, additional configuration options include innerRadius (for donut charts), outerRadius, and paddingAngle (space between segments).
 										</description>
 									</chartType>
 									<orientation>
@@ -389,7 +436,7 @@
 										</dataKey>
 										<type>
 											<description>
-												"Column" (vertical), "Bar" (horizontal), "Label" (text only),
+												"Column" (vertical), "Bar" (horizontal), "Label" (text only), "Pie" (circular distribution),
 												"Waterfall" (cumulative steps).
 											</description>
 										</type>
