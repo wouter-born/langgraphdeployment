@@ -12,7 +12,7 @@ from langchain_core.messages import (
 
 from Classes.state_classes import ModifyReportState
 from Nodes.load_xml_instructions import load_xml_instructions
-from Classes.llm_classes import modelVers
+from Classes.llm_classes import modelDeepSpec
 
 #def modify_json(json_str: Dict, operation_str: Dict):
 def modify_json(state: ModifyReportState):
@@ -77,7 +77,7 @@ def generate_json_patches(state: ModifyReportState):
     }
     user_msg = HumanMessage(content=json.dumps(inputMessage))
 
-    structured_llm = modelVers.with_structured_output(
+    structured_llm = modelDeepSpec.with_structured_output(
         json_patches,
         method="json_mode",
         include_raw=True

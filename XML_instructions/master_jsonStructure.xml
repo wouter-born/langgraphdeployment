@@ -813,7 +813,7 @@
 							<code>"drilldown": "AnalyticalDim2.[AnalyticalDim2].descendants"</code>
 						</descendants>
 					</drilldown>
-					<format>Specifies predefined formats such as "bold", "skip", "underline", "lineabove", or combinations like "bold_skip_lineabove".</format>
+					<format>Specifies predefined formats such as "bold", "skip", "underline", "lineabove", "background-lightgrey", "fontcolor-white" or combinations like "bold_skip_lineabove_backgroundcolor-lightgrey_fontcolor-white".</format>
 					<attributes>
 						<minWidth>The minimum number of pixels the column should be.</minWidth>
 						<visible>The default is that a list item is visible. If set to 0, the list item will be hidden but can be used as formula input.</visible>
