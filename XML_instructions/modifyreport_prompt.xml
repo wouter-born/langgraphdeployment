@@ -1791,7 +1791,7 @@
 				```
 			</currentConfig>
 			<reasoning>
-				The user is asking for a new row to be added to the `ProfitAndLossAccounts` list. Specifically, they want to add "Contribution Margin" with a bold line above and skip formatting. Since there are currently 9 rows, the new row will be the 10th item (index 9). The new row should follow the existing structure, ensuring that the `Account` dimension is properly nested and formatted.
+				The user is asking for a new row to be added to the `ProfitAndLossAccounts` list. Specifically, they want to add "Contribution Margin" with a bold line above and skip formatting. Since there is no specific location mentioned the row should be added to the end using the - special character. The new row should follow the existing structure, ensuring that the `Account` dimension is properly nested and formatted.
 			</reasoning>
 			<modificationInstructions>
 				```json
@@ -1799,7 +1799,7 @@
 				"items": [
 				{
 				"op": "add",
-				"path": "/lists/ProfitAndLossAccounts/items/",
+				"path": "/lists/ProfitAndLossAccounts/items/-",
 				"value": {
 				"name": "R10",
 				"displayName": "[Account]",
