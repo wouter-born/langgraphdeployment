@@ -12,6 +12,7 @@
 		<importantNotes>
 			<importantNote>**Validation and Error Prevention**: Verify that the JSON syntax is correct to prevent errors. </importantNote>
 			<importantNote>**Recognize Synonyms and Handle Ambiguity**: Be aware that users may use different words to express the same intent. Treat these terms equivalently when interpreting instructions. If the user's instructions are ambiguous, use context from the JSON configuration and overall structure to infer their intent and choose the most logical output JSON.</importantNote>
+      <importantNote>**Always use maxheight for charts**: Without a maxheight the charts just keep growing and growing, we need to always specify a maxheight.</importantNote>
 		</importantNotes>
 		<jsonStructure>
 			<reportTitle>The title of the report</reportTitle>
@@ -493,7 +494,7 @@
                     "type": "Chart",
                     "title": "Net Sales Waterfall by Channels",
                     "AI_Generation_Description": "A waterfall chart from Budget to Actual showing the main channels for the Net Sales Account",
-                    "height": 300
+                    "maxheight": 300
                   }
                 ]
               }
@@ -513,7 +514,7 @@
                     "type": "Chart",
                     "title": "EBITDA Waterfall by Channels",
                     "AI_Generation_Description": "A waterfall chart from Budget to Actual showing the main channels for the EBITDA Account",
-                    "height": 300
+                    "maxheight": 300
                   }
                 ]
               }
