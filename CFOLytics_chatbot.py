@@ -1,20 +1,19 @@
-import json
 import os
 import logging
-import re
 from typing import Dict, Any, Optional
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from langchain.chat_models import init_chat_model
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import START, END, MessagesState, StateGraph
 from langchain.output_parsers import PydanticOutputParser
-import uvicorn
-import xml.etree.ElementTree as ET
-from pathlib import Path
+
+from Nodes.load_xml_instructions import load_xml_instructions
+from Chatbot.chatbot_model_optimizer import model_optimizer
+from Chatbot.generate_pages import generate_pages as _generate_pages
+
 
 # Configure logging
 logging.basicConfig(
@@ -56,21 +55,19 @@ model = init_chat_model(
         "stream": False,
         "response_format": {"type": "json_object"},
         
-    }
+    },
+    disable_streaming=True
 )
 logger.info("Model initialized successfully")
 
-from load_xml_instructions import load_xml_instructions
-
-
-prompt = load_xml_instructions("prompt_template.xml")
+prompt = load_xml_instructions("chatbot/prompt_template.xml")
 
 # Generate format instructions for the model
 format_instructions = parser.get_format_instructions()
 
-from chatbot_model_optimizer import model_optimizer
 
-model_definition = model_optimizer("../requestwithbsdata.json")
+
+model_definition = model_optimizer("requestwithbsdata.json")
 
 prompt_template = ChatPromptTemplate.from_messages(
                 [( "system", f"{prompt} \n Use the following data: {model_definition} " ), MessagesPlaceholder(variable_name="messages"),]
@@ -94,7 +91,11 @@ def _call_model(state: MessagesState):
 
         logger.info(parsed_response.generate_pages)
 
-        return {"messages": parsed_response.answer, "generate_pages": parsed_response.generate_pages}
+        ai_answer = AIMessage(parsed_response.answer)
+
+        state["messages"].append(ai_answer)
+
+        return {"messages": state["messages"], "generate_pages": parsed_response.generate_pages}
     except Exception as e:
         logger.error(f"Error calling model: {str(e)}", exc_info=True)
         raise RuntimeError(f"Error calling model: {str(e)}")
@@ -107,11 +108,8 @@ def _should_continue(state: MessagesState):
         return END
 
 
-from generate_pages import generate_pages as _generate_pages
-
 workflow.add_node("model", _call_model)
 workflow.add_node("generate_pages", _generate_pages)
-
 
 workflow.add_edge(START, "model")       
 
@@ -126,7 +124,7 @@ workflow.add_edge("generate_pages", END)
 
 
 memory = MemorySaver()
-app = workflow.compile(checkpointer=memory)
+graph = workflow.compile(checkpointer=memory)
 
     
 # Chatbot function
@@ -140,7 +138,7 @@ def chatbot_loop():
         message = user_input
 
         input_messages = [HumanMessage(message)]
-        output = app.invoke(
+        output = graph.invoke(
                 {"messages": input_messages},
                 {"configurable": {"thread_id": "web_interface"}}
         )

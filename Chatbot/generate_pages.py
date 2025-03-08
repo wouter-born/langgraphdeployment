@@ -1,7 +1,7 @@
 from typing import List
 from langchain_core.messages import ( AIMessage, HumanMessage, SystemMessage, BaseMessage )
 from langchain_groq import ChatGroq
-from load_xml_instructions import load_xml_instructions
+from Nodes.load_xml_instructions import load_xml_instructions
 from langgraph.graph import MessagesState
 
 
@@ -25,7 +25,7 @@ def PagesClass(BaseModel):
 
 def generate_pages(state: MessagesState):
 
-    instructions = load_xml_instructions("generate_pages.xml")
+    instructions = load_xml_instructions("Chatbot/generate_pages.xml")
     system_msg = SystemMessage(content=instructions)
 
     msg = state["messages"]
