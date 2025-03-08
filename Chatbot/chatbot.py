@@ -70,7 +70,7 @@ format_instructions = parser.get_format_instructions()
 
 from chatbot_model_optimizer import model_optimizer
 
-model_definition = model_optimizer("/Users/map/Documents/langgraphdeployment/requestwithbsdata.json")
+model_definition = model_optimizer("../requestwithbsdata.json")
 
 prompt_template = ChatPromptTemplate.from_messages(
                 [( "system", f"{prompt} \n Use the following data: {model_definition} " ), MessagesPlaceholder(variable_name="messages"),]
