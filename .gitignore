@@ -1,9 +1,11 @@
 .env
 .env_wb
 *.pyc
-*.cpython-311.pyc
-*.cpython-312.pyc
+#*.cpython-311.pyc
+#*.cpython-312.pyc
 sample_working_capital_with_outliers.csv
 sample.json
 .DS_Store
+Classes/pycache/
 Classes/__pycache__/state_classes.cpython-311.pyc
+Classes/__pycache__/llm_classes.cpython-311.pyc
