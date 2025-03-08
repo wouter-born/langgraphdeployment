@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 model = ChatGroq(
     model="deepseek-r1-distill-llama-70b-specdec",
     temperature=0,
-    max_tokens=512,
+    max_tokens=2048,
     timeout=5,
     stop=None,
     model_kwargs={  # Explicitly pass additional parameters here
@@ -32,7 +32,7 @@ def PagesClass(BaseModel):
 
 def generate_pages(state: MessagesState):
 
-    instructions = load_xml_instructions("Chatbot/generate_pages.xml")
+    instructions = load_xml_instructions("chatbot/generate_pages.xml")
     system_msg = SystemMessage(content=instructions)
 
     msg = state["messages"][-1]
