@@ -12,7 +12,9 @@ from langchain.output_parsers import PydanticOutputParser
 
 from Nodes.load_xml_instructions import load_xml_instructions
 from Chatbot.chatbot_model_optimizer import model_optimizer
-from Chatbot.generate_pages import generate_pages as _generate_pages
+from Chatbot.generate_pages import _generate_pages
+
+from Classes.state_classes import ChatbotState
 
 
 # Configure logging
@@ -72,7 +74,7 @@ model_definition = model_optimizer("requestwithbsdata.json")
 prompt_template = ChatPromptTemplate.from_messages(
                 [( "system", f"{prompt} \n Use the following data: {model_definition} " ), MessagesPlaceholder(variable_name="messages"),]
             )
-workflow = StateGraph(state_schema=MessagesState)
+workflow = StateGraph(state_schema=ChatbotState)
 
 
 # def _generate_pages(state: MessagesState):
@@ -81,7 +83,7 @@ workflow = StateGraph(state_schema=MessagesState)
 
 
 
-def _call_model(state: MessagesState):
+def _call_model(state: ChatbotState):
     try:
         prompt = prompt_template.invoke(state)
         response = model.invoke(prompt)
@@ -101,23 +103,23 @@ def _call_model(state: MessagesState):
         raise RuntimeError(f"Error calling model: {str(e)}")
 
 
-def _should_continue(state: MessagesState):
+def _should_continue(state: ChatbotState):
     if "generate_pages" in state and state["generate_pages"]:
-        return "generate_pages"
+        return "genpages"
     else:
         return END
 
 
-workflow.add_node("model", _call_model)
-workflow.add_node("generate_pages", _generate_pages)
+workflow.add_node("chatbot", _call_model)
+workflow.add_node("genpages", _generate_pages)
 
-workflow.add_edge(START, "model")       
+workflow.add_edge(START, "chatbot")       
 
 #workflow.add_edge("model",END)
 
-workflow.add_conditional_edges("model",_should_continue)
+workflow.add_conditional_edges("chatbot",_should_continue)
 
-workflow.add_edge("generate_pages", END)
+workflow.add_edge("genpages", END)
 
 
 

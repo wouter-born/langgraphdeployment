@@ -3,6 +3,11 @@ from typing import Optional, TypedDict, List, Dict, Any, Union
 from typing import Annotated
 import operator
 
+from langchain_core.messages import (
+    AIMessage, 
+    HumanMessage
+)
+
 class OverallState(TypedDict):
     ReportQuery: str
     ConceptualDesign: str
@@ -75,3 +80,8 @@ class StoryboardState(TypedDict):
     ExistingLists: Optional[Annotated[List[dict], operator.add]]
     isvalid: Optional[bool]
     pages: Optional[dict]
+
+class ChatbotState(TypedDict):
+    messages: Annotated[list[HumanMessage | AIMessage], operator.add]
+    generate_pages: bool
+    pages: List[dict]

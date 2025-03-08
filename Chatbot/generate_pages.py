@@ -6,6 +6,8 @@ from langchain_groq import ChatGroq
 from Nodes.load_xml_instructions import load_xml_instructions
 from langgraph.graph import MessagesState
 
+from Classes.state_classes import ChatbotState
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -30,7 +32,7 @@ model = ChatGroq(
 def PagesClass(BaseModel):
     pages: List[dict]
 
-def generate_pages(state: MessagesState):
+def _generate_pages(state: ChatbotState):
 
     instructions = load_xml_instructions("chatbot/generate_pages.xml")
     system_msg = SystemMessage(content=instructions)
@@ -50,6 +52,8 @@ def generate_pages(state: MessagesState):
     )
     conversation = [system_msg] + [user_msg]
     output = structured_llm.invoke(conversation, stream=False, response_format="json")
+
+    logger.info(output)
 
     # print(output['parsed']['pages'])
 
