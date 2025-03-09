@@ -82,9 +82,10 @@ workflow = StateGraph(state_schema=ChatbotState)
 
 # Function to call the model and update the message history
 def _call_model(state: ChatbotState):
+    messages = state["messages"]
     try:
+        
         # Build prompt and invoke the model
-        messages = state["messages"]
         prompt_text = prompt_template.invoke(state["messages"])
         response = model.invoke(prompt_text)
         
@@ -98,7 +99,12 @@ def _call_model(state: ChatbotState):
         return {"messages": messages, "generate_pages": parsed_response.generate_pages}
     except Exception as e:
         logger.error(f"Error calling model: {str(e)}", exc_info=True)
-        raise RuntimeError(f"Error calling model: {str(e)}")
+        #raise RuntimeError(f"Error calling model: {str(e)}")
+        
+        # Add AI message to the messages
+        ai_answer = AIMessage(f"I couldn't reply to your last prompt. Can you try again? \n Error Message: {str(e)}")
+        messages = [ai_answer]
+        return {"messages": messages, "generate_pages": False}
 
 # Conditional edge to decide whether to generate pages or say goodbye
 def _should_continue(state: ChatbotState) -> Literal["genpages", "goodbye"]:
