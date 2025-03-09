@@ -88,7 +88,7 @@ class StoryboardState(TypedDict):
 class ChatbotState(TypedDict):
     #messages: Annotated[list[HumanMessage | AIMessage], operator.add]
     messages: Annotated[list[HumanMessage | AIMessage], operator.add]
-    generate_pages: bool
+    generate_pages: Optional[bool]
     pages: List[dict]
     POV: Optional[list]
     ReportMetadata: Optional[Annotated[List[Dict[str, Any]], operator.add]]

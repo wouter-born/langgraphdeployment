@@ -20,7 +20,7 @@
             <instructions>When you've identified that the user wants to generate the deck, include the description of each report in your answer.</instructions>
         </guidelines>
         <outputFormat> 
-            Your response MUST be valid JSON, without any extra text or comments.
+            Your response MUST be valid JSON ONLY, without any extra text or comments.
             {{ "answer": "<<answer generated>>", "generate_pages": true/false }}
         </outputFormat>
         <examples>
