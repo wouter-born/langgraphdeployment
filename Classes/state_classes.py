@@ -81,7 +81,17 @@ class StoryboardState(TypedDict):
     isvalid: Optional[bool]
     pages: Optional[dict]
 
+#########################################################
+# CHATBOT STATE CLASSES
+#########################################################
+
 class ChatbotState(TypedDict):
+    #messages: Annotated[list[HumanMessage | AIMessage], operator.add]
     messages: Annotated[list[HumanMessage | AIMessage], operator.add]
     generate_pages: bool
     pages: List[dict]
+    POV: Optional[list]
+    ReportMetadata: Optional[Annotated[List[Dict[str, Any]], operator.add]]
+    ExistingLists: Optional[Annotated[List[dict], operator.add]]
+    JsonLayoutList: Annotated[List[Dict[str, Any]], operator.add]
+    final_storyboard_json : List[Dict[str, Any]]
