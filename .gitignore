@@ -6,6 +6,11 @@
 sample_working_capital_with_outliers.csv
 sample.json
 .DS_Store
-Classes/pycache/
-Classes/__pycache__/state_classes.cpython-311.pyc
-Classes/__pycache__/llm_classes.cpython-311.pyc
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
+__pypackages__/
+# Byte-compiled / optimized / DLL files
+Nodes/__pycache__/
+Classes/__pycache__/
+__pycache__/
+*.py[cod]
+*$py.class

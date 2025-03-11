@@ -39,8 +39,8 @@ def _generate_pages(state: ChatbotState):
 
     msg = state["messages"][-1]
 
-    logger.info("--- Generate Pages --- ")
-    logger.info(msg.content)
+    #logger.info("--- Generate Pages --- ")
+    #logger.info(msg.content)
 
     user_msg = HumanMessage(content=msg.content)
 
@@ -53,7 +53,7 @@ def _generate_pages(state: ChatbotState):
     conversation = [system_msg] + [user_msg]
     output = structured_llm.invoke(conversation, stream=False, response_format="json")
 
-    logger.info(output)
+    #logger.info(output)
 
     # print(output['parsed']['pages'])
 
