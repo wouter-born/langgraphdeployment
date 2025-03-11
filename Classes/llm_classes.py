@@ -1,5 +1,5 @@
 from langchain_groq import ChatGroq
-from langchain_openai import ChatOpenAi
+from langchain.chat_models import ChatOpenAI
 ##################################
 # LLM Setup
 ##################################
@@ -25,10 +25,10 @@ modelDeepSpec = ChatGroq(
 #     disable_streaming=True
 #)
 
-modelVers = ChatOpenAi(
+modelVers = ChatOpenAI(
     temperature=0,
     model_name="gpt-4o-mini")
 
-modelSpec = ChatOpenAi(
+modelSpec = ChatOpenAI(
     temperature=0,
     model_name="gpt-4o-mini")
