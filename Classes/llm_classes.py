@@ -1,4 +1,5 @@
 from langchain_groq import ChatGroq
+from langchain_openai import ChatOpenAi
 ##################################
 # LLM Setup
 ##################################
