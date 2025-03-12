@@ -3,6 +3,8 @@
   "graphs": {
     "CFOLytics_reportgenerator": "./CFOLytics_reportgenerator.py:graph",
     "CFOLytics_reporteditor": "./CFOLytics_reporteditor.py:graph",
+    "CFOLytics_sbgenerator": "./CFOLytics_sbgenerator.py:graph",
+    "CFOLytics_sbpagesgenerator": "./CFOLytics_sbpagesgenerator.py:sbgraph",
     "Chatbot": "./CFOLytics_chatbot.py:graph"
   },
   "env": "./.env",
