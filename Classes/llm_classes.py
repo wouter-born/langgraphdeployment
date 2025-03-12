@@ -46,5 +46,7 @@ llm = init_chat_model(
     disable_streaming=True
 )
 
-modelSpec = llm
-modelVers = llm
+
+# Enabling these two lines will change models.
+# modelSpec = llm
+# modelVers = llm
