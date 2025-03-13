@@ -23,7 +23,7 @@ def component_selector(state: SpecializedComponentState):
     elif ctype == "waterfall":
         selected_node = "generate_waterfall_component"
     elif ctype == "tile":
-        selected_node = "generate_tile_component"
+        selected_node = "generate_generic_component"
     
     # Update the state with the selected node
     state["selected_node"] = selected_node
