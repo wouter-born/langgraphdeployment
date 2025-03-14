@@ -1,212 +1,214 @@
 <task>
-    <overview>
-        Your task is to output a JSON config for a financial report table component in JSON format based on the user's instructions.
-    </overview>
-    <guidelines>
-        <instructionsForGeneratingModifications>
-            <instruction>**Understand the User's Instructions**: Carefully read the user's request to identify the required changes.</instruction>
-            <instruction>**Follow the jsonStructure**: See the section jsonStructure for a detailed overview of how the JSON file should be structured.</instruction>
-            <instruction>**Use the examples**: Use the examples to understand what kind of user queries should lead to certain results, use this for your creative process.</instruction>
-            <instruction>**Add a createDescription attribute to each list**: The createDescription will be used by another chatbot that will create the list JSON structure, so be as detailed as possible about how the list should look.</instruction>
-            <instruction>**Only output JSON and nothing else**: No leading text and no explanations afterwards. Start with "config": {}.</instruction>
-        </instructionsForGeneratingModifications>
-        <importantNotes>
-            <importantNote>**Repeat members in list instructions**: When the user mentions a specific set of KPIs or other members in the report creation instructions, make sure to repeat those instructions in the list creation instructions. This way, the list creation chatbot knows what to add.</importantNote>
-            <importantNote>**Validation and Error Prevention**: Verify that the JSON syntax is correct to prevent errors.</importantNote>
-            <importantNote>**Recognize Synonyms and Handle Ambiguity**: Be aware that users may use different words to express the same intent. Treat these terms equivalently when interpreting instructions. If the user's instructions are ambiguous, use context from the JSON configuration and overall structure to infer their intent and choose the most logical output JSON.</importantNote>
-        </importantNotes>
-        <jsonStructure>
-            <config>
-                Component-specific configuration settings.
-                <lists>
-                    In this configuration, lists used by components are defined within the `config.lists` array as objects. Each list object must contain:
-                    <listReference>
-                        The reference name used within the component to refer to the list (e.g., "rowsList", "columnsList").
-                    </listReference>
-                    <list>
-                        The name of the actual list defined elsewhere in the configuration that this component should use.
-                    </list>
-                </lists>
-                <KPI>
-                    <description>
-                        Defines the KPI by specifying dimension members.
-                        This dictates which data the component retrieves and overrides the selected POV.
-                        This setting is valid for all numeric data retrieving components like tables, charts, tiles, etc.
-                    </description>
-                    <exampleConfiguration>
-                        <code>
-                            "KPI": {
-                                "Account": "Income",
-                                "Entity": "HQ"
-                            }
-                        </code>
-                    </exampleConfiguration>
-                </KPI>
-                <componentConfigurations>
-                    <ReportTable>
-                        <exampleConfiguration>
-                            <code>
-                                "config": {
-                                    "firstColumnWidth": 150,
-                                    "lists": [
-                                        {
-                                            "listReference": "rowsList",
-                                            "list": "rowDefinitions",
-                                            "createDescription": "A list defining the rows of a table, including all necessary dimensions and drill-down capabilities."
-                                        },
-                                        {
-                                            "listReference": "columnsList",
-                                            "list": "columnDefinitions",
-                                            "createDescription": "A list defining the columns of a table, including metrics such as Actuals, Budget, and Variance."
-                                        }
-                                    ]
-                                }
-                            </code>
-                        </exampleConfiguration>
-                        <attributes>
-                            <lists>
-                                The `lists` array must include:
-                                <listReference>
-                                    <rowsList>
-                                        A list defining the rows of a table.
-                                    </rowsList>
-                                    <columnsList>
-                                        A list defining the columns of a table.
-                                    </columnsList>
-                                </listReference>
-                            </lists>
-                            <firstColumnWidth>
-                                Sets the width in pixels of the header column.
-                            </firstColumnWidth>
-                            <mergeColumnHeaders>
-                                When this value is set to true, the UI will combine similarly named column headers into a single cell. This is particularly useful when using multiple dimensions in the columns. For example, to create a block for each Year repeating multiple columns like Actuals, Budget, and Variance. In this scenario, the Year would show as a merged cell. The order of the dimensions in a list defines the order of merging; in this example, it's required to have Year first and then Category.
-                            </mergeColumnHeaders>
-                            <selectRow>
-                                When this value is set to false, the table rows will no longer be selectable.
-                            </selectRow>
-                        </attributes>
-                    </ReportTable>
-                </componentConfigurations>
-            </config>
-        </jsonStructure>
-    </guidelines>
-    <examples>
-        <maintable>
-            <userInstruction>A table showing the profit and loss statement on the rows and comparing actuals to budget with a variance bar on the columns. The rows should be selectable.</userInstruction>
-            <output>
-                <![CDATA[
+  <overview>
+    Your task is to output a JSON config for a financial report table component in JSON format based on the user's instructions.
+  </overview>
+  <guidelines>
+    <instructionsForGeneratingModifications>
+      <instruction>**Understand the User's Instructions**: Carefully read the user's request to identify the required changes.</instruction>
+      <instruction>**Follow the jsonStructure**: See the section jsonStructure for a detailed overview of how the JSON file should be structured.</instruction>
+      <instruction>**Use the examples**: Use the examples to understand what kind of user queries should lead to certain results, use this for your creative process.</instruction>
+      <instruction>**Add a createDescription attribute to each list**: The createDescription will be used by another chatbot that will create the list JSON structure, so be as detailed as possible about how the list should look.</instruction>
+      <instruction>**Only output JSON and nothing else**: No leading text and no explanations afterwards. Start with "config": {}.</instruction>
+    </instructionsForGeneratingModifications>
+    <importantNotes>
+      <importantNote>**Repeat members in list instructions**: When the user mentions a specific set of KPIs or other members in the report creation instructions, make sure to repeat those instructions in the list creation instructions. This way, the list creation chatbot knows what to add.</importantNote>
+      <importantNote>**Validation and Error Prevention**: Verify that the JSON syntax is correct to prevent errors.</importantNote>
+      <importantNote>**Recognize Synonyms and Handle Ambiguity**: Be aware that users may use different words to express the same intent. Treat these terms equivalently when interpreting instructions. If the user's instructions are ambiguous, use context from the JSON configuration and overall structure to infer their intent and choose the most logical output JSON.</importantNote>
+      <importantNote>**Do not repeat dimension members in both lists**: When the instructions contain for example account names and the rows list is likely to be accounts, then do not repeat those accounts in the column list definition. We can only add a dimension  to one of the lists, not to both lists.</importantNote>
+      <importantNote>**Keep financial statements on the rows**: When a user asks for a financial statement report like a P&L or balance sheet it is safe to asume that the financial statement should be placed on the rows and not on the columns.</importantNote>
+    </importantNotes>
+    <jsonStructure>
+      <config>
+        Component-specific configuration settings.
+        <lists>
+          In this configuration, lists used by components are defined within the `config.lists` array as objects. Each list object must contain:
+          <listReference>
+            The reference name used within the component to refer to the list (e.g., "rowsList", "columnsList").
+          </listReference>
+          <list>
+            The name of the actual list defined elsewhere in the configuration that this component should use.
+          </list>
+        </lists>
+        <KPI>
+          <description>
+            Defines the KPI by specifying dimension members.
+            This dictates which data the component retrieves and overrides the selected POV.
+            This setting is valid for all numeric data retrieving components like tables, charts, tiles, etc.
+          </description>
+          <exampleConfiguration>
+            <code>
+              "KPI": {
+              "Account": "Income",
+              "Entity": "HQ"
+              }
+            </code>
+          </exampleConfiguration>
+        </KPI>
+        <componentConfigurations>
+          <ReportTable>
+            <exampleConfiguration>
+              <code>
                 "config": {
-                    "selectRow": true,
-                    "firstColumnWidth": 200,
-                    "lists": [
-                        {
-                            "listReference": "rowsList",
-                            "list": "ProfitAndLossAccounts",
-                            "createDescription": "A formatted profit and loss statement to be used on table rows, including drill-downs where applicable."
-                        },
-                        {
-                            "listReference": "columnsList",
-                            "list": "ActualsBudgetVariance%VarianceBar",
-                            "createDescription": "A list with Actuals, Budget, and a Variance bar to be used on table columns."
-                        }
-                    ]
-                }           
-                ]]>
-            </output>
-        </maintable>
-        <tablePandLWithSpecificAccounts>            
-            <userInstruction>A table showing the profit and loss statement including revenue, cost of goods sold, and net income on the rows and all months of the current year on the columns. The rows should be selectable.</userInstruction>
-            <output>
-                <![CDATA[
-                "config": {
-                    "selectRow": true,
-                    "firstColumnWidth": 200,
-                    "lists": [
-                        {
-                            "listReference": "rowsList",
-                            "list": "ProfitAndLossAccounts",
-                            "createDescription": "A formatted profit and loss statement to be used on table rows with at least the accounts Revenue, Cost of Goods Sold, and Net Income. Include drill-downs where applicable."
-                        },
-                        {
-                            "listReference": "columnsList",
-                            "list": "AllMonths",
-                            "createDescription": "A list with all months"
-                        }
-                    ]
-                }           
-                ]]>
-            </output>
+                "firstColumnWidth": 150,
+                "lists": [
+                {
+                "listReference": "rowsList",
+                "list": "rowDefinitions",
+                "createDescription": "A list defining the rows of a table, including all necessary dimensions and drill-down capabilities."
+                },
+                {
+                "listReference": "columnsList",
+                "list": "columnDefinitions",
+                "createDescription": "A list defining the columns of a table, including metrics such as Actuals, Budget, and Variance."
+                }
+                ]
+                }
+              </code>
+            </exampleConfiguration>
+            <attributes>
+              <lists>
+                The `lists` array must include:
+                <listReference>
+                  <rowsList>
+                    A list defining the rows of a table.
+                  </rowsList>
+                  <columnsList>
+                    A list defining the columns of a table.
+                  </columnsList>
+                </listReference>
+              </lists>
+              <firstColumnWidth>
+                Sets the width in pixels of the header column.
+              </firstColumnWidth>
+              <mergeColumnHeaders>
+                When this value is set to true, the UI will combine similarly named column headers into a single cell. This is particularly useful when using multiple dimensions in the columns. For example, to create a block for each Year repeating multiple columns like Actuals, Budget, and Variance. In this scenario, the Year would show as a merged cell. The order of the dimensions in a list defines the order of merging; in this example, it's required to have Year first and then Category.
+              </mergeColumnHeaders>
+              <selectRow>
+                When this value is set to false, the table rows will no longer be selectable.
+              </selectRow>
+            </attributes>
+          </ReportTable>
+        </componentConfigurations>
+      </config>
+    </jsonStructure>
+  </guidelines>
+  <examples>
+    <maintable>
+      <userInstruction>A table showing the profit and loss statement on the rows and comparing actuals to budget with a variance bar on the columns. The rows should be selectable.</userInstruction>
+      <output>
+        <![CDATA[
+          "config": {
+          "selectRow": true,
+          "firstColumnWidth": 200,
+          "lists": [
+          {
+          "listReference": "rowsList",
+          "list": "ProfitAndLossAccounts",
+          "createDescription": "A formatted profit and loss statement to be used on table rows, including drill-downs where applicable."
+          },
+          {
+          "listReference": "columnsList",
+          "list": "ActualsBudgetVariance%VarianceBar",
+          "createDescription": "A list with Actuals, Budget, and a Variance bar to be used on table columns."
+          }
+          ]
+          }
+          ]]>
+        </output>
+      </maintable>
+      <tablePandLWithSpecificAccounts>
+        <userInstruction>A table showing the profit and loss statement including revenue, cost of goods sold, and net income on the rows and all months of the current year on the columns. The rows should be selectable.</userInstruction>
+        <output>
+          <![CDATA[
+            "config": {
+            "selectRow": true,
+            "firstColumnWidth": 200,
+            "lists": [
+            {
+            "listReference": "rowsList",
+            "list": "ProfitAndLossAccounts",
+            "createDescription": "A formatted profit and loss statement to be used on table rows with at least the accounts Revenue, Cost of Goods Sold, and Net Income. Include drill-downs where applicable."
+            },
+            {
+            "listReference": "columnsList",
+            "list": "AllMonths",
+            "createDescription": "A list with all months"
+            }
+            ]
+            }
+            ]]>
+          </output>
         </tablePandLWithSpecificAccounts>
         <drilldowntable>
-            <userInstruction>A table breaking down the current selected line into 4 different dimensions (Entity, Cost Center, Product, and Region) using a list selector. On the columns actuals, budget, and a variance column.</userInstruction>
-            <output>
-                <![CDATA[
-                "config": {
-                    "firstColumnWidth": 175,
-                    "selectRow": false,
-                    "listSelector": {
-                        "enabled": true,
-                        "listReference": "rowsList",
-                        "defaultList": "entity",
-                        "availableLists": [
-                            {
-                                "label": "Entity",
-                                "list": "entity",
-                                "createDescription": "A list drilling down from the top entity into all descendants to be used as a selector."
-                            },
-                            {
-                                "label": "Cost Center",
-                                "list": "costCenters",
-                                "createDescription": "A list drilling down from the top cost center into all descendants to be used as a selector."
-                            },
-                            {
-                                "label": "Product",
-                                "list": "products",
-                                "createDescription": "A list drilling down from the top product into all descendants to be used as a selector."
-                            },
-                            {
-                                "label": "Region",
-                                "list": "regions",
-                                "createDescription": "A list drilling down from the top region into all descendants to be used as a selector."
-                            }
-                        ]
-                    },
-                    "lists": [
-                        {
-                            "listReference": "columnsList",
-                            "list": "ActualsBudgetVarianceBar",
-                            "createDescription": "A list with Actuals, Budget, and a Variance bar to be used on table columns."
-                        }
-                    ]
-                }            
-                ]]>
+          <userInstruction>A table breaking down the current selected line into 4 different dimensions (Entity, Cost Center, Product, and Region) using a list selector. On the columns actuals, budget, and a variance column.</userInstruction>
+          <output>
+            <![CDATA[
+              "config": {
+              "firstColumnWidth": 175,
+              "selectRow": false,
+              "listSelector": {
+              "enabled": true,
+              "listReference": "rowsList",
+              "defaultList": "entity",
+              "availableLists": [
+              {
+              "label": "Entity",
+              "list": "entity",
+              "createDescription": "A list drilling down from the top entity into all descendants to be used as a selector."
+              },
+              {
+              "label": "Cost Center",
+              "list": "costCenters",
+              "createDescription": "A list drilling down from the top cost center into all descendants to be used as a selector."
+              },
+              {
+              "label": "Product",
+              "list": "products",
+              "createDescription": "A list drilling down from the top product into all descendants to be used as a selector."
+              },
+              {
+              "label": "Region",
+              "list": "regions",
+              "createDescription": "A list drilling down from the top region into all descendants to be used as a selector."
+              }
+              ]
+              },
+              "lists": [
+              {
+              "listReference": "columnsList",
+              "list": "ActualsBudgetVarianceBar",
+              "createDescription": "A list with Actuals, Budget, and a Variance bar to be used on table columns."
+              }
+              ]
+              }
+              ]]>
             </output>
-        </drilldowntable>
-        <ChannelBVA>
+          </drilldowntable>
+          <ChannelBVA>
             <userInstruction>A table showing net sales on the columns with the main channels on the rows and descendent drilldowns, including Actual, Budget, Variance, and a Variance Bar. The rows should be selectable.</userInstruction>
             <output>
-                <![CDATA[
+              <![CDATA[
                 "config": {
-                    "selectRow": true,
-                    "firstColumnWidth": 150,
-                    "lists": [
-                        {
-                            "listReference": "rowsList",
-                            "list": "MainChannels",
-                            "createDescription": "A list with the main channels to be used on the table rows, including descendent drilldowns. Add a total row at the end."
-                        },
-                        {
-                            "listReference": "columnsList",
-                            "list": "ActualBudgetVariance%VarianceBar",
-                            "createDescription": "A list with Actuals, Budget, Variance, and a Variance Bar to be used on table columns."
-                        }
-                    ]
-                    "kpi": {
-                        "Account": "Net Sales"
-                    }
-                }           
+                "selectRow": true,
+                "firstColumnWidth": 150,
+                "lists": [
+                {
+                "listReference": "rowsList",
+                "list": "MainChannels",
+                "createDescription": "A list with the main channels to be used on the table rows, including descendent drilldowns. Add a total row at the end."
+                },
+                {
+                "listReference": "columnsList",
+                "list": "ActualBudgetVariance%VarianceBar",
+                "createDescription": "A list with Actuals, Budget, Variance, and a Variance Bar to be used on table columns."
+                }
+                ]
+                "kpi": {
+                "Account": "Net Sales"
+                }
+                }
                 ]]>
-            </output>
-        </ChannelBVA>
-    </examples>
-</task>
+              </output>
+            </ChannelBVA>
+          </examples>
+        </task>
