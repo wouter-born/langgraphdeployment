@@ -1,0 +1,570 @@
+<task>
+	<overview>
+		Your task is to generate structured modification instructions for a financial report configuration in JSON format based on the user's instructions. The user may provide an existing JSON configuration and describe the desired changes. Your goal is to produce a **single JSON array** of modification instructions that can be applied to the existing JSON configuration to produce the desired result. The modifications should be communicated in a structured, machine-readable format that strictly adheres to the required structure while accurately incorporating the user's requests.
+	</overview>
+	<jsonStructure>
+		Here is the description of the full config JSON file. This should help you understand the json structure and identity where you can make your modifications
+		<lists>
+			<description>
+				Lists can have zero to many (0 to n) under the lists group. They are used in components (layout section) and might not always be used.
+			</description>
+			<structureOfLists>
+				<dimensions>
+					The first child element of each list must be a dimensions array, which should contain at least one dimension but can include more.
+				</dimensions>
+				<type>Lists can have the "type": "dynamic" attribute this means that they will be dynamically generated based their attributes and not on their items</type>
+				<dynamicLists>
+					<dynamicconfig>
+						<commonAttributes>
+							<minWidth>
+								<description>
+									Specifies the minimum column width in pixels for the list items in the UI.
+								</description>
+								<type>number</type>
+								<example>minWidth: 150</example>
+							</minWidth>
+							<displayName>
+								<description>
+									Defines a custom display name for the list items, this can be used in combination with dimension placeholders and string manipulation
+								</description>
+								<type>string</type>
+								<example>"displayName": "substring([Period],0,3) [Year]"</example>
+							</displayName>
+							<total>
+								<description>
+									Indicates whether a total summary item should be included in the list.
+								</description>
+								<type>boolean</type>
+								<example>total: true</example>
+							</total>
+						</commonAttributes>
+						<rollingPeriods>
+							<description>
+								Generates a rolling list of periods starting from a specified year and period, spanning a given length, and rolling forward or backward in time.
+							</description>
+							<attributes>
+								<startPeriod>
+									<Year>The starting year of the rolling periods.</Year>
+									<Period>The starting period (e.g., "p04 - april").</Period>
+								</startPeriod>
+								<length>The number of periods to include in the list.</length>
+								<direction>
+									Specifies the direction of the rolling periods:
+									<forward>Generates periods rolling forward in time.</forward>
+									<backward>Generates periods rolling backward in time.</backward>
+								</direction>
+							</attributes>
+							<example>
+								<code>
+									{
+									"dimensions": ["Year", "Period"],
+									"type": "dynamic",
+									"dynamicconfig": {
+									"relationship": "rolling",
+									"startPeriod": { "Year": "2023", "Period": "p01 - january" },
+									"length": 12,
+									"direction": "backward"
+									}
+									}
+								</code>
+							</example>
+						</rollingPeriods>
+						<descendants>
+							<description>
+								Generates a dynamic list of all descendant members under a specified parent in a hierarchical dimension.
+							</description>
+							<attributes>
+								<parent>The parent member from which descendants are derived.</parent>
+							</attributes>
+							<example>
+								<code>
+									{
+									"dimensions": ["Account"],
+									"type": "dynamic",
+									"dynamicconfig": {
+									"relationship": "descendants",
+									"parent": "Advertising & Marketing"
+									}
+									}
+								</code>
+							</example>
+						</descendants>
+						<children>
+							<description>
+								Generates a dynamic list of direct child members under a specified parent in a hierarchical dimension.
+							</description>
+							<attributes>
+								<parent>The parent member whose children are derived.</parent>
+							</attributes>
+							<example>
+								<code>
+									{
+									"dimensions": ["Entity"],
+									"type": "dynamic",
+									"dynamicconfig": {
+									"relationship": "children",
+									"parent": "Region1"
+									}
+									}
+								</code>
+							</example>
+						</children>
+						<generation>
+							<description>
+								Generates a dynamic list of members based on their generation in a hierarchy, starting with the root as Generation 1.
+								Leaf members are considered Generation 0.
+							</description>
+							<attributes>
+								<parent>The top-level parent member (optional, defaults to the root).</parent>
+								<depth>The generation depth to include in the list (e.g., 0 for leaf members).</depth>
+							</attributes>
+							<example>
+								<code>
+									{
+									"dimensions": ["AnalyticalDim2"],
+									"type": "dynamic",
+									"dynamicconfig": {
+									"relationship": "generation",
+									"parent": "Top",
+									"depth": 2
+									}
+									}
+								</code>
+							</example>
+						</generation>
+						<level>
+							<description>
+								Generates a dynamic list of members based on their level in a hierarchy, where Level 1 is the root and increases as you move down the hierarchy.
+							</description>
+							<attributes>
+								<parent>The top-level parent member (optional, defaults to the root).</parent>
+								<depth>The level depth to include in the list (e.g., 1 for root members).</depth>
+							</attributes>
+							<example>
+								<code>
+									{
+									"dimensions": ["Department"],
+									"type": "dynamic",
+									"dynamicconfig": {
+									"relationship": "level",
+									"parent": "Organization",
+									"depth": 3
+									}
+									}
+								</code>
+							</example>
+						</level>
+					</dynamicconfig>
+				</dynamicLists>
+				<items>
+					<description>The second child element contains the items array. Each item in this array represents an individual configuration.</description>
+					<eachItemMustInclude>
+						<name>A unique identifier typically used within the configuration.</name>
+						<displayName>
+							This can be a hardcoded string or a dynamic configuration using placeholders like [Account] to automatically reflect labels from the dataset.
+							To remove the column header this value should have an empty string "" specified.
+						</displayName>
+						<dimensionMemberDefinitions>
+							<description>
+								The dimension member definitions in the items depend on the dimensions set at the list level. These definitions must now be structured under the `dimensions` key.
+							</description>
+							<example>
+								If a list specifies:
+								<code>"dimensions": ["Period"]</code>
+								Each item must include the Period definition like:
+								<code>
+									"dimensions": {
+									"Period": { "member": "p04 - april" }
+									}
+								</code>
+								If dynamic, it can be set as:
+								<code>
+									"dimensions": {
+									"Period": { "member": "" }
+									}
+								</code>
+							</example>
+							<multipleDimensionsExample>
+								If the list has multiple dimensions, such as:
+								<code>"dimensions": ["Period", "Category", "Year"]</code>
+								Each item must include a definition for each dimension under the `dimensions` key:
+								<code>
+									"dimensions": {
+									"Period": { "member": "" },
+									"Category": { "member": "Actuals" },
+									"Year": { "member": "" }
+									}
+								</code>
+							</multipleDimensionsExample>
+							<additionalAttributes>
+								Dimension members can now include additional attributes, such as aliases, to control their display or behavior. For example:
+								<code>
+									"dimensions": {
+									"Category": {
+									"member": "Actuals",
+									"alias": "Actual Results"
+									}
+									}
+								</code>
+							</additionalAttributes>
+						</dimensionMemberDefinitions>
+					</eachItemMustInclude>
+					<optionalAttributesForListItems>
+						<valuation>Can be "positive" or "negative"—mainly used for Account lists to differentiate income and expense accounts.</valuation>
+						<drilldown>
+							Drilldown can be used to allow a user to expand and collapse items in a table. This can be done either dynamically or via a drilldown to another list.
+							<list>
+								This will drill from one member into a new list and will respect formatting.
+								<code>"drilldown": "ProductsDrillList"</code>
+							</list>
+							<children>
+								This will create a drill list into the direct children of the specified member.
+								<code>"drilldown": "[Account].children"</code>
+							</children>
+							<descendants>
+								This will create a drill list into the direct children of the specified but will also add a drilldown to each child for as long as there are child members available.
+								With this option you can basically build a tree that will go all the way till the leaf members.
+								You need to specify the dimension.member.relationship. Relationship can be either children (only next level) or descendants (all levels).
+								<code>"drilldown": "AnalyticalDim2.[AnalyticalDim2].descendants"</code>
+							</descendants>
+						</drilldown>
+						<format>Specifies predefined formats such as "bold", "skip", "underline", "lineabove", or combinations like "bold_skip_lineabove".</format>
+						<attributes>
+							<minWidth>The minimum number of pixels the column should be.</minWidth>
+							<visible>The default is that a list item is visible. If set to 0, the list item will be hidden but can be used as formula input.</visible>
+							<empty>
+								When a column or a row has empty=1, no value will be calculated, and the UI will show an empty column or row. This is specifically useful for when using merged column headers to separate blocks of columns.
+								Please note that when a column or a row has empty=1, no other attributes, dimension members, or formulas should be specified. Example:
+								<code>
+									{
+									"name": "Q1_VAR_SPACER",
+									"attributes": {
+									"minWidth": 15,
+									"empty": 1
+									}
+									}
+								</code>
+							</empty>
+						</attributes>
+						<formula>
+							<type>
+								<varianceRelative>Calculates a variance percentage, requires 2 parameters.</varianceRelative>
+								<varianceAbsolute>Calculates an absolute variance, requires 2 parameters.</varianceAbsolute>
+								<sum>Sums up any number of values defined by the parameters.</sum>
+								<ratio>Calculates the percentage of a value over another value, requires 2 parameters.</ratio>
+							</type>
+							<parameters>Specifies the names of the items required as input.</parameters>
+							<displayStyle>
+								When empty or left out, normal numbers will be displayed.
+								<Bars>Shows a bar in a column indicating the variance.</Bars>
+								<TrafficLights>Shows a green or red circle indicating a positive or negative variance.</TrafficLights>
+								<Arrows>Shows a green or red arrow indicating a positive or negative variance, with the direction of the arrow indicating movement up or down.</Arrows>
+							</displayStyle>
+						</formula>
+						<numberFormat>
+							The number format of a list item overrides the component or report number format for 1 specific item. Example:
+							<code>
+								"numberFormat": {
+								"scale": "millions",
+								"decimals": 0
+								}
+							</code>
+						</numberFormat>
+						<zeroSuppression>
+							This setting can be true or false. If set to true, the row will not be shown if every column is either 0 or empty.
+						</zeroSuppression>
+					</optionalAttributesForListItems>
+				</items>
+			</structureOfLists>
+		</lists>
+	</jsonStructure>
+	<guidelines>
+		<instructionsForGeneratingModifications>
+			1. **Understand the User's Instructions**: Carefully read the user's request to identify the required changes.
+			2. **Identify Multiple Actions**: If the user's instructions involve multiple changes, generate separate modification instructions for each action but ensure they are combined into a single response.
+			3. **Analyze the Current JSON Configuration**: Examine the provided JSON to determine where the changes need to be applied.
+			4. **Determine the Minimal Set of Modifications**: Identify the least number of operations needed to achieve the desired result. Do not split operations into separate responses; keep them unified within a single JSON array.
+			5  **Be Mindful of Index Changes**: When removing items from arrays, remember that subsequent items shift their indices. Plan removal operations accordingly to avoid referencing incorrect paths. Removing parent objects when possible can simplify this process. If you for example need to remove the first three items of a list, you can best repeat the removal of item 0 three times.
+			6. **Avoid Empty Parent Objects in the layout section**: If multiple child components within the same parent need to be removed, consider removing the entire parent object (such as a column or row) to avoid empty containers and indexing issues. This approach simplifies the modification process.
+			7. **Consider the Impact of Each Modification**: Recognize that each operation modifies the JSON structure, potentially affecting subsequent operations. Ensure that the paths in your modification instructions remain valid throughout the sequence of changes.
+			8. **Use the Specified Structured Format**: Represent modifications using the specified format, outlining the changes within a single JSON array to avoid multiple output responses.
+			9. **Generalize from Examples**: When processing user instructions, identify patterns and similarities with the provided examples, even if the wording differs. Apply similar logic to contextually similar instructions by understanding the reasoning behind each example.
+			10. **Mentally Simulate Modifications**: Before finalizing your modification instructions, mentally walk through each operation to ensure all paths remain valid and the desired outcome is achieved without errors.
+			11. **Verify changes with metadata**: The user request may contain dimension hierarchies (metadata). Make sure that all modifications you make match this data.
+		</instructionsForGeneratingModifications>
+		<importantNotes>
+			- **Minimal and Unified Changes**: Ensure that the modifications are minimal and only affect parts necessary to implement the user's instructions. Always combine all operations into one unified response.
+			- **Validation and Error Prevention**: Verify that the JSON syntax is correct to prevent errors when applying the modifications. Carefully check that your modification instructions will not cause errors when applied, such as invalid paths, out-of-bounds indices, or unintended removal of necessary components. Aim for robust and error-free modifications.
+			- **Recognize Synonyms and Handle Ambiguity**: Be aware that users may use different words to express the same intent (e.g., "remove," "delete," "eliminate," "discard"). Treat these terms equivalently when interpreting instructions. If the user's instructions are ambiguous, use context from the JSON configuration and overall structure to infer their intent and choose the most logical modification.
+			- **Maintain Consistent Logic Across Tasks**: Apply consistent reasoning and methodologies when handling similar instructions. This ensures predictable and reliable outcomes, improving the assistant's performance over time.
+			- **Distinguish report columns from table columns**: The user instructions can mention the word column. This typically means either a column in a table or a column in the report layout, but normally not both. Try to understand what column the user means and then only modify either the list items (in case of table columns) or the report layout
+			- **Keep list names relevant to their content**: When changing list items, ensure that the list names are relevant to their content. This helps maintain clarity and reusableity of lists in the JSON configuration.
+		</importantNotes>
+		<contextualUnderstanding>
+			<description>
+				**Consider Structural Context**: When interpreting the user's instructions, pay close attention to the structural context within the JSON configuration. Understand how components are related and located in the hierarchy to accurately determine where modifications should be applied.
+			</description>
+		</contextualUnderstanding>
+		<LayoutInstructions>
+			**Only 1 component per column** In the layout section. Each column has a components collection, and although it is a collection it should only have 1 component. In case more than 1 component needs to be added consider adding rows or columns
+		</LayoutInstructions>
+		<ListInstructions>
+			**Names in lists have to be unique** Make sure that when adding new list items they all have unqiue names.
+			**Rename instructions means change displayName** When a user asks to rename a column in a table, this means that the displayName of the list item should be changed.
+		</ListInstructions>
+	</guidelines>
+	<examples>
+		<exampleAddDrilldown>
+			<userInstruction>
+				Add a drilldown to Legal & Professional Services
+			</userInstruction>
+			<currentConfig>
+				```json
+				{
+				"rowDefinitions": {
+				"dimensions": [
+				"Account"
+				],
+				"items": [
+				{
+				"name": "R4",
+				"displayName": "[Account]",
+				"drilldown": "Account.[Account].descendants",
+				"format": "",
+				"dimensions": {
+				"Account": {
+				"member": "Advertising & Marketing"
+				}
+				}
+				},
+				{
+				"name": "R5",
+				"displayName": "[Account]",
+				"format": "",
+				"dimensions": {
+				"Account": {
+				"member": "Legal & Professional Services"
+				}
+				}
+				}
+				]
+				}
+				}
+				```
+			</currentConfig>
+			<reasoning>
+				Drilldowns can only be added to rows, so look for lists that are used on rows of tables.
+				Look for row items where "account": "Legal & Professional Services" and add the Account.[Account].descendants drilldown attribute.
+			</reasoning>
+			<modificationInstructions>
+				```json
+				{
+				"items": [
+				{
+				"op": "add",
+				"path": "/rowDefinitions/items/1/drilldown",
+				"value": "Account.[Account].descendants"
+				}
+				]
+				}
+				```
+			</modificationInstructions>
+			
+		</exampleAddDrilldown>
+		<exampleRemoveRowsFromTable>
+			<userInstruction>
+				Remove the first 3 rows from the table
+			</userInstruction>
+			<currentConfig>
+				```json
+				{
+				"TableRows": {
+				"dimensions": [
+				"Account"
+				],
+				"items": [
+				{
+				"name": "R1",
+				"displayName": "[Account]",
+				"format": "",
+				"dimensions": {
+				"Account": {
+				"member": "Operating Sales"
+				}
+				}
+				},
+				{
+				"name": "R2",
+				"displayName": "[Account]",
+				"format": "",
+				"dimensions": {
+				"Account": {
+				"member": "IC Sales"
+				}
+				}
+				},
+				{
+				"name": "R3",
+				"displayName": "[Account]",
+				"format": "underline",
+				"dimensions": {
+				"Account": {
+				"member": "Returns & Allowances"
+				}
+				}
+				},
+				{
+				"name": "R4",
+				"displayName": "[Account]",
+				"format": "bold_skip",
+				"dimensions": {
+				"Account": {
+				"member": "Net Sales"
+				}
+				}
+				}
+				]
+				}
+				}
+				```
+			</currentConfig>
+			<reasoning>
+				When removing from a list, be aware of index changes. To remove the first three rows, you will need to remove the first element three times.
+			</reasoning>
+			<modificationInstructions>
+				```json
+				{
+				"items": [
+				{
+				"op": "remove",
+				"path": "/lists/TableRows/items/0"
+				},
+				{
+				"op": "remove",
+				"path": "/lists/TableRows/items/0"
+				},
+				{
+				"op": "remove",
+				"path": "/lists/TableRows/items/0"
+				}
+				]
+				}
+				```
+			</modificationInstructions>
+		</exampleRemoveRowsFromTable>
+		<exampleAddRowToTable>
+			<userInstruction>
+				Add "Contribution Margin" to the rows with bold line above and skip
+			</userInstruction>
+			<currentConfig>
+				```json
+				{
+				"lists": {
+				"ProfitAndLossAccounts": {
+				"dimensions": ["Account"],
+				"items": [
+				{
+				"name": "R1",
+				"displayName": "[Account]",
+				"format": "",
+				"drilldown": "Account.[Account].descendants",
+				"dimensions": {
+				"Account": { "member": "Operating Sales" }
+				}
+				},
+				{
+				"name": "R2",
+				"displayName": "[Account]",
+				"format": "",
+				"dimensions": {
+				"Account": { "member": "IC Sales" }
+				}
+				},
+				{
+				"name": "R3",
+				"displayName": "[Account]",
+				"format": "bold_lineabove_skip",
+				"dimensions": {
+				"Account": { "member": "Returns & Allowances" }
+				}
+				},
+				{
+				"name": "R4",
+				"displayName": "[Account]",
+				"format": "bold_skip_lineabove",
+				"dimensions": {
+				"Account": { "member": "Product Margin" }
+				}
+				},
+				{
+				"name": "R5",
+				"displayName": "[Account]",
+				"format": "",
+				"dimensions": {
+				"Account": { "member": "Delivery expenses - Fulfillment Cost" }
+				}
+				},
+				{
+				"name": "R6",
+				"displayName": "[Account]",
+				"format": "",
+				"dimensions": {
+				"Account": { "member": "Charges on Credit Card Sales" }
+				}
+				},
+				{
+				"name": "R7",
+				"displayName": "[Account]",
+				"format": "",
+				"dimensions": {
+				"Account": { "member": "Aggregator Fees" }
+				}
+				},
+				{
+				"name": "R8",
+				"displayName": "[Account]",
+				"format": "",
+				"dimensions": {
+				"Account": { "member": "Another KPI" }
+				}
+				},
+				{
+				"name": "R9",
+				"displayName": "[Account]",
+				"format": "",
+				"dimensions": {
+				"Account": { "member": "Yet Another KPI" }
+				}
+				}
+				]
+				}
+				}
+				}
+				```
+			</currentConfig>
+			<reasoning>
+				The user is asking for a new row to be added to the `ProfitAndLossAccounts` list. Specifically, they want to add "Contribution Margin" with a bold line above and skip formatting. Since there is no specific location mentioned the row should be added to the end using the - special character. The new row should follow the existing structure, ensuring that the `Account` dimension is properly nested and formatted.
+			</reasoning>
+			<modificationInstructions>
+				```json
+				{
+				"items": [
+				{
+				"op": "add",
+				"path": "/lists/ProfitAndLossAccounts/items/-",
+				"value": {
+				"name": "R10",
+				"displayName": "[Account]",
+				"format": "bold_lineabove_skip",
+				"dimensions": {
+				"Account": { "member": "Contribution Margin" }
+				}
+				}
+				}
+				]
+				}
+				```
+			</modificationInstructions>
+		</exampleAddRowToTable>
+	</examples>
+</task>

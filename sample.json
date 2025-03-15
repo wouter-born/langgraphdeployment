@@ -4,135 +4,150 @@
       "Top": null,
       "Name": "Entity",
       "Alias": "Entity",
-      "InUse": "True",
-      "Order": "0",
+      "InUse": true,
+      "Order": 0,
       "Default": "The Petshop",
-      "Visible": "True"
+      "Visible": true
     },
     {
       "Top": null,
       "Name": "Category",
       "Alias": "Category",
-      "InUse": "True",
-      "Order": "2",
+      "InUse": true,
+      "Order": 2,
       "Default": "Actual",
-      "Visible": "False"
+      "Visible": false
     },
     {
       "Top": null,
       "Name": "Year",
       "Alias": "Year",
-      "InUse": "True",
-      "Order": "3",
+      "InUse": true,
+      "Order": 3,
       "Default": "2024",
-      "Visible": "True"
+      "Visible": true
     },
     {
       "Top": null,
       "Name": "Period",
       "Alias": "Period",
-      "InUse": "True",
-      "Order": "4",
+      "InUse": true,
+      "Order": 4,
       "Default": "Dec",
-      "Visible": "True"
+      "Visible": true
     },
     {
       "Top": null,
       "Name": "View",
       "Alias": "View",
-      "InUse": "True",
-      "Order": "5",
-      "Default": "periodic",
-      "Visible": "True"
+      "InUse": true,
+      "Order": 5,
+      "Default": "Periodic",
+      "Visible": true
     },
     {
       "Top": null,
       "Name": "Account",
       "Alias": "Account",
-      "InUse": "True",
-      "Order": "6",
+      "InUse": true,
+      "Order": 6,
       "Default": "Gross Sales",
-      "Visible": "False"
+      "Visible": false
     },
     {
       "Top": null,
       "Name": "AnalyticalDim1",
       "Alias": "Cost Center",
-      "InUse": "True",
-      "Order": "7",
+      "InUse": true,
+      "Order": 7,
       "Default": "Top",
-      "Visible": "False"
+      "Visible": false
     },
     {
       "Top": null,
       "Name": "AnalyticalDim2",
       "Alias": "Channel",
-      "InUse": "True",
-      "Order": "8",
+      "InUse": true,
+      "Order": 8,
       "Default": "Top",
-      "Visible": "False"
+      "Visible": false
     },
     {
       "Top": null,
       "Name": "AnalyticalDim3",
       "Alias": "Location",
-      "InUse": "True",
-      "Order": "9",
+      "InUse": true,
+      "Order": 9,
       "Default": "Top",
-      "Visible": "False"
+      "Visible": false
     },
     {
       "Top": null,
       "Name": "AnalyticalDim4",
       "Alias": "Normilization",
-      "InUse": "True",
-      "Order": "11",
+      "InUse": true,
+      "Order": 11,
       "Default": "Top",
-      "Visible": "False"
+      "Visible": false
     },
     {
       "Top": null,
       "Name": "AnalyticalDim5",
       "Alias": "AnalyticalDim5",
-      "InUse": "False",
-      "Order": "12",
+      "InUse": false,
+      "Order": 12,
       "Default": "AnalyticalDim5_total",
-      "Visible": "False"
+      "Visible": false
     },
     {
       "Top": null,
       "Name": "AnalyticalDim6",
       "Alias": "AnalyticalDim6",
-      "InUse": "False",
-      "Order": "13",
+      "InUse": false,
+      "Order": 13,
       "Default": "AnalyticalDim6_total",
-      "Visible": "False"
+      "Visible": false
     },
     {
       "Top": null,
       "Name": "AnalyticalDim7",
       "Alias": "AnalyticalDim7",
-      "InUse": "False",
-      "Order": "14",
+      "InUse": false,
+      "Order": 14,
       "Default": "AnalyticalDim7_total",
-      "Visible": "False"
+      "Visible": false
     },
     {
       "Top": null,
       "Name": "AnalyticalDim8",
       "Alias": "AnalyticalDim8",
-      "InUse": "False",
-      "Order": "15",
+      "InUse": false,
+      "Order": 15,
       "Default": "AnalyticalDim8_total",
-      "Visible": "False"
+      "Visible": false
     }
   ],
-  "ReportQuery": "Create a Profit and loss report",
+  "ReportQuery": "A main table showing a profit and loss on the rows and actual, budget, variance, and a variance bar on the columns. Next to the main table, a bar chart displays a 12-month history for the selected row. Below the bar chart, a nested row component contains a table with channels on the rows and actual, budget, variance, and a small variance bar on the columns. The drilldown table will only display when a row is selected in the main table.",
   "ExistingLists": [
     {
-      "ListName": "12Months",
+      "ListName": "12months",
       "ListContents": "{\r\n      \"type\": \"dynamic\",\r\n      \"dimensions\": [\r\n        \"Year\",\r\n        \"Period\"\r\n      ],\r\n      \"dynamicconfig\": {\r\n        \"length\": 12,\r\n        \"direction\": \"backward\",\r\n        \"startPeriod\": {\r\n          \"Year\": \"\",\r\n          \"Period\": \"\"\r\n        },\r\n        \"relationship\": \"rolling\"\r\n      }\r\n    }",
-      "CreateDescription": "A list of the last 12 months to be used on the x-axis of the chart."
+      "CreateDescription": "A list with the last 12 months to be used on the x-axis of the chart."
+    },
+    {
+      "ListName": "12months",
+      "ListContents": "{\r\n      \"type\": \"dynamic\",\r\n      \"dimensions\": [\r\n        \"Year\",\r\n        \"Period\"\r\n      ],\r\n      \"dynamicconfig\": {\r\n        \"length\": 12,\r\n        \"direction\": \"backward\",\r\n        \"startPeriod\": {\r\n          \"Year\": \"\",\r\n          \"Period\": \"\"\r\n        },\r\n        \"relationship\": \"rolling\"\r\n      }\r\n    }",
+      "CreateDescription": "A list with the past 12 months to be used on the x-axis of the chart."
+    },
+    {
+      "ListName": "2024Months",
+      "ListContents": "{\r\n      \"dimensions\": [\r\n        \"Period\"\r\n      ],\r\n      \"items\": [\r\n        {\r\n          \"name\": \"M1\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Jan\"\r\n            }\r\n          },\r\n          \"displayName\": \"Jan\"\r\n        },\r\n        {\r\n          \"name\": \"M2\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Feb\"\r\n            }\r\n          },\r\n          \"displayName\": \"Feb\"\r\n        },\r\n        {\r\n          \"name\": \"M3\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Mar\"\r\n            }\r\n          },\r\n          \"displayName\": \"Mar\"\r\n        },\r\n        {\r\n          \"name\": \"M4\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Apr\"\r\n            }\r\n          },\r\n          \"displayName\": \"Apr\"\r\n        },\r\n        {\r\n          \"name\": \"M5\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"May\"\r\n            }\r\n          },\r\n          \"displayName\": \"May\"\r\n        },\r\n        {\r\n          \"name\": \"M6\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Jun\"\r\n            }\r\n          },\r\n          \"displayName\": \"Jun\"\r\n        },\r\n        {\r\n          \"name\": \"M7\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Jul\"\r\n            }\r\n          },\r\n          \"displayName\": \"Jul\"\r\n        },\r\n        {\r\n          \"name\": \"M8\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Aug\"\r\n            }\r\n          },\r\n          \"displayName\": \"Aug\"\r\n        },\r\n        {\r\n          \"name\": \"M9\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Sep\"\r\n            }\r\n          },\r\n          \"displayName\": \"Sep\"\r\n        },\r\n        {\r\n          \"name\": \"M10\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Oct\"\r\n            }\r\n          },\r\n          \"displayName\": \"Oct\"\r\n        },\r\n        {\r\n          \"name\": \"M11\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Nov\"\r\n            }\r\n          },\r\n          \"displayName\": \"Nov\"\r\n        },\r\n        {\r\n          \"name\": \"M12\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Dec\"\r\n            }\r\n          },\r\n          \"displayName\": \"Dec\"\r\n        }\r\n      ]\r\n    }",
+      "CreateDescription": "A list of all 12 months in the year 2024 to be used on the x-axis of the chart."
+    },
+    {
+      "ListName": "2024Months",
+      "ListContents": "{\r\n      \"dimensions\": [\r\n        \"Period\"\r\n      ],\r\n      \"items\": [\r\n        {\r\n          \"name\": \"M1\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Jan\"\r\n            }\r\n          },\r\n          \"displayName\": \"Jan\"\r\n        },\r\n        {\r\n          \"name\": \"M2\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Feb\"\r\n            }\r\n          },\r\n          \"displayName\": \"Feb\"\r\n        },\r\n        {\r\n          \"name\": \"M3\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Mar\"\r\n            }\r\n          },\r\n          \"displayName\": \"Mar\"\r\n        },\r\n        {\r\n          \"name\": \"M4\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Apr\"\r\n            }\r\n          },\r\n          \"displayName\": \"Apr\"\r\n        },\r\n        {\r\n          \"name\": \"M5\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"May\"\r\n            }\r\n          },\r\n          \"displayName\": \"May\"\r\n        },\r\n        {\r\n          \"name\": \"M6\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Jun\"\r\n            }\r\n          },\r\n          \"displayName\": \"Jun\"\r\n        },\r\n        {\r\n          \"name\": \"M7\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Jul\"\r\n            }\r\n          },\r\n          \"displayName\": \"Jul\"\r\n        },\r\n        {\r\n          \"name\": \"M8\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Aug\"\r\n            }\r\n          },\r\n          \"displayName\": \"Aug\"\r\n        },\r\n        {\r\n          \"name\": \"M9\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Sep\"\r\n            }\r\n          },\r\n          \"displayName\": \"Sep\"\r\n        },\r\n        {\r\n          \"name\": \"M10\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Oct\"\r\n            }\r\n          },\r\n          \"displayName\": \"Oct\"\r\n        },\r\n        {\r\n          \"name\": \"M11\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Nov\"\r\n            }\r\n          },\r\n          \"displayName\": \"Nov\"\r\n        },\r\n        {\r\n          \"name\": \"M12\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Dec\"\r\n            }\r\n          },\r\n          \"displayName\": \"Dec\"\r\n        }\r\n      ]\r\n    }",
+      "CreateDescription": "A list with the 12 months of 2024 and an additional total column at the end to be used on table columns, including Actual data."
     },
     {
       "ListName": "ActualAndForecastJun",
@@ -140,9 +155,24 @@
       "CreateDescription": "Create a list including two series: one for Actuals and one for 'Forecast Jun'"
     },
     {
-      "ListName": "ActualBudgetVariance",
-      "ListContents": "{\r\n      \"items\": [\r\n        {\r\n          \"name\": \"Actual\",\r\n          \"attributes\": {\r\n            \"minWidth\": 75\r\n          },\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Actual\"\r\n            }\r\n          },\r\n          \"displayName\": \"Actual\"\r\n        },\r\n        {\r\n          \"name\": \"Budget\",\r\n          \"attributes\": {\r\n            \"minWidth\": 75\r\n          },\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Budget\"\r\n            }\r\n          },\r\n          \"displayName\": \"Budget\"\r\n        },\r\n        {\r\n          \"name\": \"Variance\",\r\n          \"formula\": {\r\n            \"type\": \"varianceAbsolute\",\r\n            \"parameters\": [\r\n              \"Actual\",\r\n              \"Budget\"\r\n            ]\r\n          },\r\n          \"attributes\": {\r\n            \"minWidth\": 75\r\n          },\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"\"\r\n            }\r\n          },\r\n          \"displayName\": \"Variance\"\r\n        }\r\n      ],\r\n      \"dimensions\": [\r\n        \"Category\",\r\n        \"Category\"\r\n      ]\r\n    }",
-      "CreateDescription": "A list with Actual, Budget, and Variance columns to be used on table columns, providing a comparison between actual and budgeted financials."
+      "ListName": "ActualBudget",
+      "ListContents": "{\r\n      \"dimensions\": [\r\n        \"Category\"\r\n      ],\r\n      \"items\": [\r\n        {\r\n          \"name\": \"Actual\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Actual\"\r\n            }\r\n          },\r\n          \"displayName\": \"Actual\"\r\n        },\r\n        {\r\n          \"name\": \"Budget\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Budget\"\r\n            }\r\n          },\r\n          \"displayName\": \"Budget\"\r\n        }\r\n      ]\r\n    }",
+      "CreateDescription": "A list with Actual and Budget to be displayed on the y-axis of the horizontal waterfall chart."
+    },
+    {
+      "ListName": "ActualBudget",
+      "ListContents": "{\r\n      \"dimensions\": [\r\n        \"Category\"\r\n      ],\r\n      \"items\": [\r\n        {\r\n          \"name\": \"Actual\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Actual\"\r\n            }\r\n          },\r\n          \"displayName\": \"Actual\"\r\n        },\r\n        {\r\n          \"name\": \"Budget\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Budget\"\r\n            }\r\n          },\r\n          \"displayName\": \"Budget\"\r\n        }\r\n      ]\r\n    }",
+      "CreateDescription": "A list with Actual and Budget to be used on the y-axis of the chart."
+    },
+    {
+      "ListName": "ActualBudgetVariance%VarianceBar",
+      "ListContents": "{\r\n      \"dimensions\": [\r\n        \"Category\"\r\n      ],\r\n      \"items\": [\r\n        {\r\n          \"name\": \"Actual\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Actual\"\r\n            }\r\n          },\r\n          \"displayName\": \"Actual\",\r\n          \"attributes\": {\r\n            \"minWidth\": 75\r\n          }\r\n        },\r\n        {\r\n          \"name\": \"Budget\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Budget\"\r\n            }\r\n          },\r\n          \"displayName\": \"Budget\",\r\n          \"attributes\": {\r\n            \"minWidth\": 75\r\n          }\r\n        },\r\n        {\r\n          \"name\": \"Variance\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"\"\r\n            }\r\n          },\r\n          \"displayName\": \"Variance\",\r\n          \"formula\": {\r\n            \"type\": \"varianceAbsolute\",\r\n            \"parameters\": [\r\n              \"Actual\",\r\n              \"Budget\"\r\n            ]\r\n          },\r\n          \"attributes\": {\r\n            \"minWidth\": 75\r\n          }\r\n        },\r\n        {\r\n          \"name\": \"VarianceBar\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"\"\r\n            }\r\n          },\r\n          \"displayName\": \"\",\r\n          \"formula\": {\r\n            \"type\": \"varianceRelative\",\r\n            \"parameters\": [\r\n              \"Actual\",\r\n              \"Budget\"\r\n            ],\r\n            \"displayStyle\": \"Bars\"\r\n          },\r\n          \"attributes\": {\r\n            \"minWidth\": 150\r\n          }\r\n        }\r\n      ]\r\n    }",
+      "CreateDescription": "A list with Actuals, Budget, Variance, and a Variance bar to be used on table columns."
+    },
+    {
+      "ListName": "ActualBudgetVarianceVarianceBar",
+      "ListContents": "{\r\n      \"dimensions\": [\r\n        \"Category\"\r\n      ],\r\n      \"items\": [\r\n        {\r\n          \"name\": \"Actual\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Actual\"\r\n            }\r\n          },\r\n          \"displayName\": \"Actual\",\r\n          \"attributes\": {\r\n            \"minWidth\": 75\r\n          }\r\n        },\r\n        {\r\n          \"name\": \"Budget\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Budget\"\r\n            }\r\n          },\r\n          \"displayName\": \"Budget\",\r\n          \"attributes\": {\r\n            \"minWidth\": 75\r\n          }\r\n        },\r\n        {\r\n          \"name\": \"Variance\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"\"\r\n            }\r\n          },\r\n          \"displayName\": \"Variance\",\r\n          \"formula\": {\r\n            \"type\": \"varianceAbsolute\",\r\n            \"parameters\": [\r\n              \"Actual\",\r\n              \"Budget\"\r\n            ]\r\n          },\r\n          \"attributes\": {\r\n            \"minWidth\": 75\r\n          }\r\n        },\r\n        {\r\n          \"name\": \"VarianceBar\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"\"\r\n            }\r\n          },\r\n          \"displayName\": \"\",\r\n          \"formula\": {\r\n            \"type\": \"varianceRelative\",\r\n            \"parameters\": [\r\n              \"Actual\",\r\n              \"Budget\"\r\n            ],\r\n            \"displayStyle\": \"Bars\"\r\n          },\r\n          \"attributes\": {\r\n            \"minWidth\": 150\r\n          }\r\n        }\r\n      ]\r\n    }",
+      "CreateDescription": "A list with Actuals, Budget, Variance, and a Variance bar to be used on table columns."
     },
     {
       "ListName": "ActualBudgetVarianceYTDandPeriodic",
@@ -175,19 +205,24 @@
       "CreateDescription": null
     },
     {
+      "ListName": "ActualForecastVariance%VarianceBar",
+      "ListContents": "{\r\n      \"items\": [\r\n        {\r\n          \"name\": \"Actual\",\r\n          \"attributes\": {\r\n            \"minWidth\": 75\r\n          },\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Actual\"\r\n            }\r\n          },\r\n          \"displayName\": \"Actual\"\r\n        },\r\n        {\r\n          \"name\": \"Forecast\",\r\n          \"attributes\": {\r\n            \"minWidth\": 75\r\n          },\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"alias\": \"Forecast\",\r\n              \"member\": \"Forecast Jun\"\r\n            }\r\n          },\r\n          \"displayName\": \"Forecast\"\r\n        },\r\n        {\r\n          \"name\": \"Variance\",\r\n          \"formula\": {\r\n            \"type\": \"varianceAbsolute\",\r\n            \"parameters\": [\r\n              \"Actual\",\r\n              \"Forecast\"\r\n            ]\r\n          },\r\n          \"attributes\": {\r\n            \"minWidth\": 75\r\n          },\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Δ\"\r\n            }\r\n          },\r\n          \"displayName\": \"Δ\"\r\n        },\r\n        {\r\n          \"name\": \"Variance%\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"%Δ\"\r\n            }\r\n          }\r\n        },\r\n        {\r\n          \"name\": \"Bar\",\r\n          \"formula\": {\r\n            \"type\": \"varianceRelative\",\r\n            \"parameters\": [\r\n              \"Actual\",\r\n              \"Forecast\"\r\n            ],\r\n            \"displayStyle\": \"Bars\"\r\n          },\r\n          \"attributes\": {\r\n            \"minWidth\": 150\r\n          },\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \" \"\r\n            }\r\n          },\r\n          \"displayName\": \" \"\r\n        }\r\n      ],\r\n      \"dimensions\": [\r\n        \"Category\"\r\n      ]\r\n    }",
+      "CreateDescription": "A list with Actuals, Forecast, Variance, and a Variance bar to be used on table columns."
+    },
+    {
+      "ListName": "ActualForecastVariance%VarianceBar",
+      "ListContents": "{\"dimensions\":[\"Category\"],\"items\":[{\"name\":\"Actual\",\"dimensions\":{\"Category\":{\"member\":\"Actual\"}},\"displayName\":\"Actual\",\"attributes\":{\"minWidth\":75}},{\"name\":\"Forecast\",\"dimensions\":{\"Category\":{\"member\":\"Forecast Jun\",\"alias\":\"Forecast\"}},\"displayName\":\"Forecast\",\"attributes\":{\"minWidth\":75}},{\"name\":\"Variance\",\"dimensions\":{\"Category\":{\"member\":\"Δ\"}},\"displayName\":\"Δ\",\"formula\":{\"type\":\"varianceAbsolute\",\"parameters\":[\"Actual\",\"Forecast\"]},\"attributes\":{\"minWidth\":75}},{\"name\":\"Variance%\",\"dimensions\":{\"Category\":{\"member\":\"%Δ\"}}},{\"name\":\"Bar\",\"dimensions\":{\"Category\":{\"member\":\" \"}},\"displayName\":\" \",\"formula\":{\"type\":\"varianceRelative\",\"parameters\":[\"Actual\",\"Forecast\"],\"displayStyle\":\"Bars\"},\"attributes\":{\"minWidth\":150}}]}",
+      "CreateDescription": "A list with Actuals, Forecast, Variance, and a Variance bar to be used on table columns."
+    },
+    {
       "ListName": "ActualsBudgetVariance%VarianceBar",
-      "ListContents": "{\"dimensions\":[\"Period\",\"Category\",\"Year\"],\"items\":[{\"name\":\"P1\",\"displayName\":\"Actual\",\"dimensions\":{\"Period\":{\"member\":\"\",\"alias\":\"\"},\"Category\":{\"member\":\"Actual\",\"alias\":\"Actual\"},\"Year\":{\"member\":\"\",\"alias\":\"\"}},\"attributes\":{\"minWidth\":100},\"formula\":null},{\"name\":\"P2\",\"displayName\":\"Forecast\",\"dimensions\":{\"Period\":{\"member\":\"\",\"alias\":\"\"},\"Category\":{\"member\":\"Forecast Jun\",\"alias\":\"Forecast\"},\"Year\":{\"member\":\"\",\"alias\":\"\"}},\"attributes\":{\"minWidth\":100},\"formula\":null},{\"name\":\"P3\",\"displayName\":\"Var\",\"dimensions\":{},\"attributes\":{\"minWidth\":100},\"formula\":{\"type\":\"varianceAbsolute\",\"parameters\":[\"P1\",\"P2\"],\"displayStyle\":\"\"}},{\"name\":\"P4\",\"displayName\":\"\",\"dimensions\":{},\"attributes\":{\"minWidth\":100},\"formula\":{\"type\":\"varianceRelative\",\"parameters\":[\"P1\",\"P2\"],\"displayStyle\":\"Bars\"},\"numberFormat\":{\"scale\":\"unchanged\",\"decimals\":0}}]}",
+      "ListContents": "{\r\n      \"items\": [\r\n        {\r\n          \"name\": \"P1\",\r\n          \"formula\": null,\r\n          \"attributes\": {\r\n            \"minWidth\": 100\r\n          },\r\n          \"dimensions\": {\r\n            \"Year\": {\r\n              \"alias\": \"\",\r\n              \"member\": \"\"\r\n            },\r\n            \"Period\": {\r\n              \"alias\": \"\",\r\n              \"member\": \"\"\r\n            },\r\n            \"Category\": {\r\n              \"alias\": \"Actual\",\r\n              \"member\": \"Actual\"\r\n            }\r\n          },\r\n          \"displayName\": \"Actual\"\r\n        },\r\n        {\r\n          \"name\": \"P2\",\r\n          \"formula\": null,\r\n          \"attributes\": {\r\n            \"minWidth\": 100\r\n          },\r\n          \"dimensions\": {\r\n            \"Year\": {\r\n              \"alias\": \"\",\r\n              \"member\": \"\"\r\n            },\r\n            \"Period\": {\r\n              \"alias\": \"\",\r\n              \"member\": \"\"\r\n            },\r\n            \"Category\": {\r\n              \"alias\": \"Forecast\",\r\n              \"member\": \"Forecast Jun\"\r\n            }\r\n          },\r\n          \"displayName\": \"Forecast\"\r\n        },\r\n        {\r\n          \"name\": \"P3\",\r\n          \"formula\": {\r\n            \"type\": \"varianceAbsolute\",\r\n            \"parameters\": [\r\n              \"P1\",\r\n              \"P2\"\r\n            ],\r\n            \"displayStyle\": \"\"\r\n          },\r\n          \"attributes\": {\r\n            \"minWidth\": 100\r\n          },\r\n          \"dimensions\": {},\r\n          \"displayName\": \"Var\"\r\n        },\r\n        {\r\n          \"name\": \"P4\",\r\n          \"formula\": {\r\n            \"type\": \"varianceRelative\",\r\n            \"parameters\": [\r\n              \"P1\",\r\n              \"P2\"\r\n            ],\r\n            \"displayStyle\": \"Bars\"\r\n          },\r\n          \"attributes\": {\r\n            \"minWidth\": 100\r\n          },\r\n          \"dimensions\": {},\r\n          \"displayName\": \"\",\r\n          \"numberFormat\": {\r\n            \"scale\": \"unchanged\",\r\n            \"decimals\": 0\r\n          }\r\n        }\r\n      ],\r\n      \"dimensions\": [\r\n        \"Period\",\r\n        \"Category\",\r\n        \"Year\"\r\n      ]\r\n    }",
       "CreateDescription": null
     },
     {
       "ListName": "ActualsBudgetVariance%VarianceBar",
       "ListContents": "{\"dimensions\":[\"Period\",\"Category\",\"Year\"],\"items\":[{\"name\":\"P1\",\"displayName\":\"Actual\",\"dimensions\":{\"Period\":{\"member\":\"\",\"alias\":\"\"},\"Category\":{\"member\":\"Actual\",\"alias\":\"Actual\"},\"Year\":{\"member\":\"\",\"alias\":\"\"}},\"attributes\":{\"minWidth\":100},\"formula\":null},{\"name\":\"P2\",\"displayName\":\"Forecast\",\"dimensions\":{\"Period\":{\"member\":\"\",\"alias\":\"\"},\"Category\":{\"member\":\"Forecast Jun\",\"alias\":\"Forecast\"},\"Year\":{\"member\":\"\",\"alias\":\"\"}},\"attributes\":{\"minWidth\":100},\"formula\":null},{\"name\":\"P3\",\"displayName\":\"Var\",\"dimensions\":{},\"attributes\":{\"minWidth\":100},\"formula\":{\"type\":\"varianceAbsolute\",\"parameters\":[\"P1\",\"P2\"],\"displayStyle\":\"\"}},{\"name\":\"P4\",\"displayName\":\"\",\"dimensions\":{},\"attributes\":{\"minWidth\":100},\"formula\":{\"type\":\"varianceRelative\",\"parameters\":[\"P1\",\"P2\"],\"displayStyle\":\"Bars\"}}]}",
       "CreateDescription": null
-    },
-    {
-      "ListName": "ActualsBudgetVariance%VarianceBar",
-      "ListContents": "{\"items\":[{\"name\":\"Actual\",\"attributes\":{\"minWidth\":75},\"dimensions\":{\"Category\":{\"member\":\"Actual\"}},\"displayName\":\"Actual\"},{\"name\":\"Budget\",\"attributes\":{\"minWidth\":75},\"dimensions\":{\"Category\":{\"member\":\"Budget\"}},\"displayName\":\"Budget\"},{\"name\":\"Variance\",\"formula\":{\"type\":\"varianceAbsolute\",\"parameters\":[\"Actual\",\"Budget\"],\"displayStyle\":\"Bars\"},\"attributes\":{\"minWidth\":150},\"dimensions\":{\"Category\":{\"member\":\"\"}},\"displayName\":\"\"}],\"dimensions\":[\"Category\"]}",
-      "CreateDescription": "A list with Actuals, Budget, and a Variance bar to be used on table columns."
     },
     {
       "ListName": "ActualsForecast",
@@ -200,6 +235,16 @@
       "CreateDescription": "Create a list showing Forecast Jun to Actual metrics for waterfall chart."
     },
     {
+      "ListName": "AllMonths",
+      "ListContents": "{\r\n      \"dimensions\": [\r\n        \"Period\"\r\n      ],\r\n      \"items\": [\r\n        {\r\n          \"name\": \"Jan\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Jan\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Period]\"\r\n        },\r\n        {\r\n          \"name\": \"Feb\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Feb\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Period]\"\r\n        },\r\n        {\r\n          \"name\": \"Mar\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Mar\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Period]\"\r\n        },\r\n        {\r\n          \"name\": \"Apr\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Apr\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Period]\"\r\n        },\r\n        {\r\n          \"name\": \"May\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"May\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Period]\"\r\n        },\r\n        {\r\n          \"name\": \"Jun\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Jun\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Period]\"\r\n        },\r\n        {\r\n          \"name\": \"Jul\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Jul\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Period]\"\r\n        },\r\n        {\r\n          \"name\": \"Aug\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Aug\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Period]\"\r\n        },\r\n        {\r\n          \"name\": \"Sep\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Sep\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Period]\"\r\n        },\r\n        {\r\n          \"name\": \"Oct\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Oct\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Period]\"\r\n        },\r\n        {\r\n          \"name\": \"Nov\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Nov\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Period]\"\r\n        },\r\n        {\r\n          \"name\": \"Dec\",\r\n          \"dimensions\": {\r\n            \"Period\": {\r\n              \"member\": \"Dec\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Period]\"\r\n        }\r\n      ]\r\n    }",
+      "CreateDescription": "A list with all months of the current year."
+    },
+    {
+      "ListName": "BalanceSheetAccounts",
+      "ListContents": "{\r\n      \"items\": [\r\n        {\r\n          \"name\": \"A1\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Intangible Assets\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A2\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Tangible Assets\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A3\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Deposits\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A5\",\r\n          \"format\": \"bold_lineabove_skip\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Non-Current Assets\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A6\",\r\n          \"format\": \"skip\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"IFRS16 - Assets\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A7\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Inventories\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A8\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Cash\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A9\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Receivables\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A10\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Other Receivables\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A10\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Bank Investments\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A11\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Prepaid Expenses\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A12\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"VAT Receivables\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A13\",\r\n          \"format\": \"bold_skip_lineabove\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Current Assets\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A14\",\r\n          \"format\": \"skip\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Intercompany Receivable\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A15\",\r\n          \"format\": \"skip_bold_backgroundcolor-lightgrey\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Assets\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A16\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Share Capital\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A17\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Shareholder Account\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A18\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Statutory Reserve\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A19\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Retained Earnings\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"A20\",\r\n          \"format\": \"skip_bold_backgroundcolor-lightgrey\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Equity\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        }\r\n      ],\r\n      \"dimensions\": [\r\n        \"Account\"\r\n      ]\r\n    }",
+      "CreateDescription": "A formatted balance sheet statement to be used on table rows, including Assets, Liabilities, and Equity, with drill-downs where applicable."
+    },
+    {
       "ListName": "BarLocations",
       "ListContents": "{\"dimensions\":[\"AnalyticalDim3\",\"Account\"],\"items\":[{\"name\":\"DIP_NetSales\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"DIP\"},\"Account\":{\"member\":\"Net Sales\"}}},{\"name\":\"DIP_EBITDA\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"DIP\"},\"Account\":{\"member\":\"EBITDA\"}}},{\"name\":\"DIP_Margin\",\"displayName\":\"DIP\",\"visible\":true,\"formula\":{\"type\":\"ratio\",\"parameters\":[\"DIP_EBITDA\",\"DIP_NetSales\"]}},{\"name\":\"SZR_NetSales\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"SZR\"},\"Account\":{\"member\":\"Net Sales\"}}},{\"name\":\"SZR_EBITDA\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"SZR\"},\"Account\":{\"member\":\"EBITDA\"}}},{\"name\":\"SZR_Margin\",\"displayName\":\"SZR\",\"visible\":true,\"formula\":{\"type\":\"ratio\",\"parameters\":[\"SZR_EBITDA\",\"SZR_NetSales\"]}},{\"name\":\"FZN_NetSales\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"FZN\"},\"Account\":{\"member\":\"Net Sales\"}}},{\"name\":\"FZN_EBITDA\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"FZN\"},\"Account\":{\"member\":\"EBITDA\"}}},{\"name\":\"FZN_Margin\",\"displayName\":\"FZN\",\"visible\":true,\"formula\":{\"type\":\"ratio\",\"parameters\":[\"FZN_EBITDA\",\"FZN_NetSales\"]}},{\"name\":\"WSL_NetSales\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"WSL\"},\"Account\":{\"member\":\"Net Sales\"}}},{\"name\":\"WSL_EBITDA\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"WSL\"},\"Account\":{\"member\":\"EBITDA\"}}},{\"name\":\"WSL_Margin\",\"displayName\":\"WSL\",\"visible\":true,\"formula\":{\"type\":\"ratio\",\"parameters\":[\"WSL_EBITDA\",\"WSL_NetSales\"]}},{\"name\":\"RAK_NetSales\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"RAK\"},\"Account\":{\"member\":\"Net Sales\"}}},{\"name\":\"RAK_EBITDA\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"RAK\"},\"Account\":{\"member\":\"EBITDA\"}}},{\"name\":\"RAK_Margin\",\"displayName\":\"RAK\",\"visible\":true,\"formula\":{\"type\":\"ratio\",\"parameters\":[\"RAK_EBITDA\",\"RAK_NetSales\"]}},{\"name\":\"REM_NetSales\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"REM\"},\"Account\":{\"member\":\"Net Sales\"}}},{\"name\":\"REM_EBITDA\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"REM\"},\"Account\":{\"member\":\"EBITDA\"}}},{\"name\":\"REM_Margin\",\"displayName\":\"REM\",\"visible\":true,\"formula\":{\"type\":\"ratio\",\"parameters\":[\"REM_EBITDA\",\"REM_NetSales\"]}},{\"name\":\"UMSQ_EBITDA\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"UMSQ\"},\"Account\":{\"member\":\"EBITDA\"}}},{\"name\":\"CREEK_NetSales\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"CREEK\"},\"Account\":{\"member\":\"Net Sales\"}}},{\"name\":\"CREEK_EBITDA\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"CREEK\"},\"Account\":{\"member\":\"EBITDA\"}}},{\"name\":\"CREEK_Margin\",\"displayName\":\"CREEK\",\"visible\":true,\"formula\":{\"type\":\"ratio\",\"parameters\":[\"CREEK_EBITDA\",\"CREEK_NetSales\"]}},{\"name\":\"DSO_NetSales\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"DSO\"},\"Account\":{\"member\":\"Net Sales\"}}},{\"name\":\"DSO_EBITDA\",\"visible\":false,\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"DSO\"},\"Account\":{\"member\":\"EBITDA\"}}},{\"name\":\"DSO_Margin\",\"displayName\":\"DSO\",\"visible\":true,\"formula\":{\"type\":\"ratio\",\"parameters\":[\"DSO_EBITDA\",\"DSO_NetSales\"]}}]}",
       "CreateDescription": "Create a list for store locations as category axis."
@@ -210,9 +255,24 @@
       "CreateDescription": "Create a list showing the columns Budget25, Forecast, Act24, and Act25. Ensure they are clearly formatted for a side-by-side comparison."
     },
     {
+      "ListName": "BudgetActualVariance",
+      "ListContents": "{\r\n      \"items\": [\r\n        {\r\n          \"name\": \"Actual\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Actual\"\r\n            }\r\n          },\r\n          \"displayName\": \"Actual\"\r\n        },\r\n        {\r\n          \"name\": \"Budget\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Budget\"\r\n            }\r\n          },\r\n          \"displayName\": \"Budget\"\r\n        },\r\n        {\r\n          \"name\": \"Variance\",\r\n          \"formula\": {\r\n            \"type\": \"varianceAbsolute\",\r\n            \"parameters\": [\r\n              \"Actual\",\r\n              \"Budget\"\r\n            ]\r\n          },\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"\"\r\n            }\r\n          },\r\n          \"displayName\": \"Variance\"\r\n        }\r\n      ],\r\n      \"dimensions\": [\r\n        \"Category\"\r\n      ]\r\n    }",
+      "CreateDescription": "A list with Budget and Actual to be displayed on the y-axis of the horizontal waterfall chart, showing the variance between the two."
+    },
+    {
+      "ListName": "BudgetActualVariance",
+      "ListContents": "{\r\n      \"items\": [\r\n        {\r\n          \"name\": \"Actual\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Actual\"\r\n            }\r\n          },\r\n          \"displayName\": \"Actual\"\r\n        },\r\n        {\r\n          \"name\": \"Budget\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Budget\"\r\n            }\r\n          },\r\n          \"displayName\": \"Budget\"\r\n        },\r\n        {\r\n          \"name\": \"Variance\",\r\n          \"formula\": {\r\n            \"type\": \"varianceAbsolute\",\r\n            \"parameters\": [\r\n              \"Actual\",\r\n              \"Budget\"\r\n            ]\r\n          },\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"\"\r\n            }\r\n          },\r\n          \"displayName\": \"Variance\"\r\n        }\r\n      ],\r\n      \"dimensions\": [\r\n        \"Category\"\r\n      ]\r\n    }",
+      "CreateDescription": "A list with Budget, Actual, and Variance to be displayed on the y-axis of the horizontal waterfall chart for EBITDA."
+    },
+    {
       "ListName": "ChannelLevel2",
       "ListContents": "{\"dimensions\":[\"AnalyticalDim2\"],\"items\":[{\"name\":\"DirectOnline\",\"displayName\":\"Direct Online\",\"dimensions\":{\"AnalyticalDim2\":{\"member\":\"Direct Online\"}},\"zeroSuppression\":true},{\"name\":\"IndividualOnline\",\"displayName\":\"Ind. Online\",\"dimensions\":{\"AnalyticalDim2\":{\"member\":\"Ind. Online\"}},\"zeroSuppression\":true},{\"name\":\"ShopSales\",\"displayName\":\"Shop Sales\",\"dimensions\":{\"AnalyticalDim2\":{\"member\":\"Shop Sales\"}},\"zeroSuppression\":true},{\"name\":\"ServicesB2B\",\"displayName\":\"B2B\",\"dimensions\":{\"AnalyticalDim2\":{\"member\":\"Services and B2B\"}},\"zeroSuppression\":true},{\"name\":\"ShopGrooming\",\"displayName\":\"Shop Grooming\",\"dimensions\":{\"AnalyticalDim2\":{\"member\":\"Shop Grooming\"}},\"zeroSuppression\":true},{\"name\":\"MobileGrooming\",\"displayName\":\"Mobile Grooming\",\"dimensions\":{\"AnalyticalDim2\":{\"member\":\"Mobile Grooming\"}},\"zeroSuppression\":true},{\"name\":\"PnM\",\"displayName\":\"P&M\",\"dimensions\":{\"AnalyticalDim2\":{\"member\":\"P&M\"}},\"zeroSuppression\":true},{\"name\":\"PetRelocation\",\"displayName\":\"Pet Relocation\",\"dimensions\":{\"AnalyticalDim2\":{\"member\":\"Pet Relocation\"}},\"zeroSuppression\":true},{\"name\":\"TPSCafe\",\"displayName\":\"TPS Cafe\",\"dimensions\":{\"AnalyticalDim2\":{\"member\":\"TPS Cafe\"}},\"zeroSuppression\":true},{\"name\":\"Backoffice\",\"displayName\":\"Backoffice\",\"dimensions\":{\"AnalyticalDim2\":{\"member\":\"Backoffice\"}},\"zeroSuppression\":true}]}",
       "CreateDescription": null
+    },
+    {
+      "ListName": "Channels",
+      "ListContents": "{\r\n      \"type\": \"dynamic\",\r\n      \"dimensions\": [\r\n        \"AnalyticalDim2\"\r\n      ],\r\n      \"dynamicconfig\": {\r\n        \"depth\": 0,\r\n        \"parent\": \"Top\",\r\n        \"relationship\": \"generation\"\r\n      }\r\n    }",
+      "CreateDescription": "A list with all channels to be used as series in the pie chart, each channel will represent a slice of the pie."
     },
     {
       "ListName": "columnDefinitions",
@@ -230,9 +290,14 @@
       "CreateDescription": "Create a list displaying 'Gross Margin' KPIs neatly formatted"
     },
     {
-      "ListName": "CurrentYearMonths",
-      "ListContents": "{\"dimensions\":[\"Period\"],\"type\":\"dynamic\",\"dynamicconfig\":{\"relationship\":\"children\",\"parent\":\"Full Year\"}}",
-      "CreateDescription": "A list of all months in the current year to be used on table columns."
+      "ListName": "EBITDA",
+      "ListContents": "{\r\n      \"items\": [\r\n        {\r\n          \"name\": \"EBITDA\",\r\n          \"attributes\": {\r\n            \"minWidth\": 75\r\n          },\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"EBITDA\"\r\n            }\r\n          },\r\n          \"displayName\": \"EBITDA\"\r\n        }\r\n      ],\r\n      \"dimensions\": [\r\n        \"Account\"\r\n      ]\r\n    }",
+      "CreateDescription": "A list with EBITDA data to be used on the y-axis of the chart."
+    },
+    {
+      "ListName": "EBITDA",
+      "ListContents": "{\r\n      \"dimensions\": [\r\n        \"Account\"\r\n      ],\r\n      \"items\": [\r\n        {\r\n          \"name\": \"EBITDA\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"EBITDA\"\r\n            }\r\n          },\r\n          \"displayName\": \"EBITDA\",\r\n          \"attributes\": {\r\n            \"minWidth\": 75\r\n          }\r\n        }\r\n      ]\r\n    }",
+      "CreateDescription": "A list with EBITDA to be used on the y-axis of the chart, filtered by Entity 'The Petshop'."
     },
     {
       "ListName": "EBITDAWaterfallElements",
@@ -240,23 +305,83 @@
       "CreateDescription": "Create a list of account categories till EBITDA, keeping hierarchical structure."
     },
     {
+      "ListName": "Last12Months",
+      "ListContents": "{\"dimensions\":[\"Year\",\"Period\"],\"type\":\"dynamic\",\"dynamicconfig\":{\"relationship\":\"rolling\",\"startPeriod\":{\"Year\":\"\",\"Period\":\"\"},\"length\":12,\"direction\":\"backward\"}}",
+      "CreateDescription": "A list of the last 12 months to be used on table columns."
+    },
+    {
       "ListName": "LocationRows",
       "ListContents": "{\"dimensions\":[\"AnalyticalDim3\"],\"items\":[{\"name\":\"Loc1\",\"displayName\":\"[AnalyticalDim3]\",\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"DIP\"}}},{\"name\":\"Loc2\",\"displayName\":\"[AnalyticalDim3]\",\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"UMSQ\"}}},{\"name\":\"Loc3\",\"displayName\":\"[AnalyticalDim3]\",\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"WSL\"}}},{\"name\":\"Loc4\",\"displayName\":\"[AnalyticalDim3]\",\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"CREEK\"}}},{\"name\":\"Loc5\",\"displayName\":\"[AnalyticalDim3]\",\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"FZN\"}}},{\"name\":\"Loc6\",\"displayName\":\"[AnalyticalDim3]\",\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"REM\"}}},{\"name\":\"Loc7\",\"displayName\":\"[AnalyticalDim3]\",\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"RAK\"}}},{\"name\":\"Loc8\",\"displayName\":\"[AnalyticalDim3]\",\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"DSO\"}}},{\"name\":\"Loc9\",\"displayName\":\"[AnalyticalDim3]\",\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"HO\"}}},{\"name\":\"Top\",\"displayName\":\"Top\",\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"Top\"}},\"format\":\"bold_lineabove\"}]}",
       "CreateDescription": null
     },
     {
-      "ListName": "LocationsCurrentYearBudgetForecastPriorYear",
-      "ListContents": "{\"dimensions\":[\"AnalyticalDim3\",\"Category\",\"Year\"],\"items\":[{\"name\":\"CY\",\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"\"},\"Category\":{\"member\":\"Actual\"},\"Year\":{\"member\":\"2024\"}},\"displayName\":\"Current Year\",\"attributes\":{\"minWidth\":100}},{\"name\":\"Budget\",\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"\"},\"Category\":{\"member\":\"Budget\"},\"Year\":{\"member\":\"2024\"}},\"displayName\":\"Budget\",\"attributes\":{\"minWidth\":100}},{\"name\":\"Forecast\",\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"\"},\"Category\":{\"member\":\"Forecast Jun\"},\"Year\":{\"member\":\"2024\"}},\"displayName\":\"Forecast\",\"attributes\":{\"minWidth\":100}},{\"name\":\"PY\",\"dimensions\":{\"AnalyticalDim3\":{\"member\":\"\"},\"Category\":{\"member\":\"Actual\"},\"Year\":{\"member\":\"2023\"}},\"displayName\":\"Prior Year\",\"attributes\":{\"minWidth\":100}}]}",
-      "CreateDescription": "A list with locations as the main dimension and columns for current year, budget, forecast, and prior year to be used on table columns."
+      "ListName": "Locations",
+      "ListContents": "{\"type\":\"dynamic\",\"dimensions\":[\"AnalyticalDim3\"],\"dynamicconfig\":{\"parent\":\"Top\",\"relationship\":\"descendants\"}}",
+      "CreateDescription": "A list of all locations to be used on table rows, including drill-downs where applicable."
     },
     {
-      "ListName": "NetIncome",
-      "ListContents": "{\r\n      \"items\": [\r\n        {\r\n          \"name\": \"NetIncome\",\r\n          \"attributes\": {\r\n            \"minWidth\": 100\r\n          },\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Net Profit\"\r\n            }\r\n          },\r\n          \"displayName\": \"Net Income\"\r\n        }\r\n      ],\r\n      \"dimensions\": [\r\n        \"Account\",\r\n        \"Account\"\r\n      ]\r\n    }",
-      "CreateDescription": "A list containing net income to be used on the y-axis of the chart."
+      "ListName": "Locations",
+      "ListContents": "{\"type\":\"dynamic\",\"dimensions\":[\"AnalyticalDim3\"],\"dynamicconfig\":{\"parent\":\"Top\",\"relationship\":\"descendants\"}}",
+      "CreateDescription": "A list of all locations to be used on the x-axis of the chart for comparison."
+    },
+    {
+      "ListName": "locations",
+      "ListContents": "{\"type\":\"dynamic\",\"dimensions\":[\"AnalyticalDim3\"],\"dynamicconfig\":{\"parent\":\"Top\",\"relationship\":\"descendants\"}}",
+      "CreateDescription": "A list of locations including all descendants to be used on table rows with drill-down capabilities."
+    },
+    {
+      "ListName": "MainChannels",
+      "ListContents": "{\r\n      \"type\": \"dynamic\",\r\n      \"dimensions\": [\r\n        \"AnalyticalDim2\"\r\n      ],\r\n      \"dynamicconfig\": {\r\n        \"parent\": \"Top\",\r\n        \"relationship\": \"children\"\r\n      }\r\n    }",
+      "CreateDescription": "A list with main channels to be used as series in the waterfall chart, including all relevant channels for EBITDA analysis."
+    },
+    {
+      "ListName": "MainChannels",
+      "ListContents": "{\r\n      \"type\": \"dynamic\",\r\n      \"dimensions\": [\r\n        \"AnalyticalDim2\"\r\n      ],\r\n      \"dynamicconfig\": {\r\n        \"parent\": \"Top\",\r\n        \"relationship\": \"children\"\r\n      }\r\n    }",
+      "CreateDescription": "A list with main channels to be used as series in the waterfall chart, using zero suppression."
+    },
+    {
+      "ListName": "MainChannels",
+      "ListContents": "{\"type\":\"dynamic\",\"dimensions\":[\"AnalyticalDim2\"],\"dynamicconfig\":{\"parent\":\"Top\",\"relationship\":\"descendants\",\"total\":true}}",
+      "CreateDescription": "A list with the main channels including drill-downs into their descendants."
+    },
+    {
+      "ListName": "MainChannels",
+      "ListContents": "{\r\n      \"type\": \"dynamic\",\r\n      \"dimensions\": [\r\n        \"AnalyticalDim2\"\r\n      ],\r\n      \"dynamicconfig\": {\r\n        \"total\": true,\r\n        \"parent\": \"Top\",\r\n        \"relationship\": \"descendants\"\r\n      }\r\n    }",
+      "CreateDescription": "A list with the main channels to be used on the table rows, including descendent drilldowns. Add a total row at the end."
+    },
+    {
+      "ListName": "MainChannels",
+      "ListContents": "{\r\n      \"type\": \"dynamic\",\r\n      \"dimensions\": [\r\n        \"AnalyticalDim2\"\r\n      ],\r\n      \"dynamicconfig\": {\r\n        \"parent\": \"Top\",\r\n        \"relationship\": \"children\"\r\n      }\r\n    }",
+      "CreateDescription": "A list with the main channels using zero suppression to be used as series in the waterfall chart."
+    },
+    {
+      "ListName": "marketingExpenses",
+      "ListContents": "{\"dimensions\":[\"Account\"],\"items\":[{\"name\":\"M1\",\"dimensions\":{\"Account\":{\"member\":\"Marketing, Promotions & E-Commerce\"}},\"displayName\":\"[Account]\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"M2\",\"dimensions\":{\"Account\":{\"member\":\"Shop Use - Marketing/FAHM\"}},\"displayName\":\"[Account]\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"M3\",\"dimensions\":{\"Account\":{\"member\":\"Advertising and marketing\"}},\"displayName\":\"[Account]\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"M4\",\"dimensions\":{\"Account\":{\"member\":\"Delivery expenses - Fulfillment Cost\"}},\"displayName\":\"[Account]\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"M5\",\"dimensions\":{\"Account\":{\"member\":\"Gasoline and Motor Oil (Fuel)\"}},\"displayName\":\"[Account]\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"M6\",\"dimensions\":{\"Account\":{\"member\":\"Last Mile - Insurance\"}},\"displayName\":\"[Account]\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"M7\",\"dimensions\":{\"Account\":{\"member\":\"Last Mile - Parking Expenses\"}},\"displayName\":\"[Account]\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"M8\",\"dimensions\":{\"Account\":{\"member\":\"Last Mile - RTA Fines\"}},\"displayName\":\"[Account]\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"M9\",\"dimensions\":{\"Account\":{\"member\":\"Last Mile - Salik\"}},\"displayName\":\"[Account]\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"M10\",\"dimensions\":{\"Account\":{\"member\":\"Outsource Delivery Charges\"}},\"displayName\":\"[Account]\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"M11\",\"dimensions\":{\"Account\":{\"member\":\"Vehicle Leasing\"}},\"displayName\":\"[Account]\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"M12\",\"dimensions\":{\"Account\":{\"member\":\"Vehicle Registration Fees\"}},\"displayName\":\"[Account]\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"M13\",\"dimensions\":{\"Account\":{\"member\":\"Vehicle Repairs and Maintenance\"}},\"displayName\":\"[Account]\",\"drilldown\":\"Account.[Account].descendants\"}]}",
+      "CreateDescription": "A list with actual marketing expenses over 12 months to be used on the y-axis of the chart."
+    },
+    {
+      "ListName": "NetSalesActualBudgetVarianceVarianceBar",
+      "ListContents": "{\"items\":[{\"name\":\"Actual\",\"attributes\":{\"minWidth\":75},\"dimensions\":{\"Category\":{\"member\":\"Actual\"}},\"displayName\":\"Actual\"},{\"name\":\"Budget\",\"attributes\":{\"minWidth\":75},\"dimensions\":{\"Category\":{\"member\":\"Budget\"}},\"displayName\":\"Budget\"},{\"name\":\"Variance\",\"formula\":{\"type\":\"varianceAbsolute\",\"parameters\":[\"Actual\",\"Budget\"]},\"attributes\":{\"minWidth\":75},\"dimensions\":{\"Category\":{\"member\":\"Δ\"}},\"displayName\":\"Δ\"},{\"name\":\"Bar\",\"formula\":{\"type\":\"varianceRelative\",\"parameters\":[\"Actual\",\"Budget\"],\"displayStyle\":\"Bars\"},\"attributes\":{\"minWidth\":150},\"dimensions\":{\"Category\":{\"member\":\" \"}},\"displayName\":\" \"}],\"dimensions\":[\"Category\"]}",
+      "CreateDescription": "A list with Net Sales including Actual, Budget, Variance, and a Variance bar to be used on table columns."
+    },
+    {
+      "ListName": "NetSalesGrossMargin",
+      "ListContents": "{\r\n      \"items\": [\r\n        {\r\n          \"name\": \"C1\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Net Sales\"\r\n            }\r\n          },\r\n          \"displayName\": \"Net Sales\"\r\n        },\r\n        {\r\n          \"name\": \"C2\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Gross Margin\"\r\n            }\r\n          },\r\n          \"displayName\": \"Gross Margin\"\r\n        }\r\n      ],\r\n      \"dimensions\": [\r\n        \"Account\"\r\n      ]\r\n    }",
+      "CreateDescription": "A list with Net Sales and Gross Margin to be used on table columns."
     },
     {
       "ListName": "NetSalesProductMargin",
       "ListContents": "{\"dimensions\":[\"Category\",\"Account\"],\"items\":[{\"name\":\"NetSales\",\"displayName\":\"Net Sales\",\"dimensions\":{\"Account\":{\"member\":\"Net Sales\"}},\"attributes\":{\"minWidth\":60}},{\"name\":\"ProductMargin\",\"displayName\":\"PM\",\"dimensions\":{\"Account\":{\"member\":\"Product Margin\",\"alias\":\"PM\"}},\"attributes\":{\"minWidth\":60}},{\"name\":\"PMPercentage\",\"displayName\":\"PM%\",\"formula\":{\"type\":\"ratio\",\"parameters\":[\"ProductMargin\",\"NetSales\"]},\"dimensions\":{\"Account\":{\"member\":\"PM%\"}},\"numberFormat\":{\"scale\":\"unchanged\"},\"attributes\":{\"minWidth\":60}},{\"name\":\"ContributionMargin\",\"displayName\":\"CM\",\"dimensions\":{\"Account\":{\"member\":\"Contribution Margin\",\"alias\":\"CM\"}},\"attributes\":{\"minWidth\":60}},{\"name\":\"CMPercentage\",\"displayName\":\"CM%\",\"formula\":{\"type\":\"ratio\",\"parameters\":[\"ContributionMargin\",\"NetSales\"]},\"dimensions\":{\"Account\":{\"member\":\"CM%\"}},\"numberFormat\":{\"scale\":\"unchanged\"},\"attributes\":{\"minWidth\":60}},{\"name\":\"GrossMargin\",\"displayName\":\"GM\",\"dimensions\":{\"Account\":{\"member\":\"Gross Margin\",\"alias\":\"GM\"}},\"attributes\":{\"minWidth\":60}},{\"name\":\"GrossMarginPercentage\",\"displayName\":\"GM%\",\"formula\":{\"type\":\"ratio\",\"parameters\":[\"GrossMargin\",\"NetSales\"]},\"dimensions\":{\"Account\":{\"member\":\"GM%\"}},\"numberFormat\":{\"scale\":\"unchanged\"},\"attributes\":{\"minWidth\":60}},{\"name\":\"Spacer\",\"displayName\":\"\",\"attributes\":{\"minWidth\":50,\"empty\":1}},{\"name\":\"NetSalesForecast\",\"displayName\":\"Net Sales Forecast\",\"dimensions\":{\"Category\":{\"member\":\"Forecast Jun\"},\"Account\":{\"member\":\"Net Sales\"}},\"attributes\":{\"minWidth\":60}},{\"name\":\"NetSalesVarianceArrow\",\"displayName\":\"Variance\",\"formula\":{\"type\":\"varianceAbsolute\",\"parameters\":[\"NetSales\",\"NetSalesForecast\"],\"displayStyle\":\"Arrows\"},\"dimensions\":{\"Category\":{\"member\":\"Forecast Jun\"},\"Account\":{\"member\":\"\"}},\"attributes\":{\"minWidth\":20}},{\"name\":\"ProductMarginForecast\",\"displayName\":\"PM Forecast\",\"dimensions\":{\"Category\":{\"member\":\"Forecast Jun\"},\"Account\":{\"member\":\"Product Margin\",\"alias\":\"PM\"}},\"attributes\":{\"minWidth\":60}},{\"name\":\"PMPercentageForecast\",\"displayName\":\"PM% Forecast\",\"formula\":{\"type\":\"ratio\",\"parameters\":[\"ProductMarginForecast\",\"NetSalesForecast\"]},\"dimensions\":{\"Category\":{\"member\":\"Forecast Jun\"},\"Account\":{\"member\":\"PM%\"}},\"numberFormat\":{\"scale\":\"unchanged\"},\"attributes\":{\"minWidth\":60}},{\"name\":\"PMVarianceArrow\",\"displayName\":\"Variance\",\"formula\":{\"type\":\"varianceAbsolute\",\"parameters\":[\"ProductMargin\",\"ProductMarginForecast\"],\"displayStyle\":\"Arrows\"},\"dimensions\":{\"Category\":{\"member\":\"Forecast Jun\"},\"Account\":{\"member\":\"\"}},\"attributes\":{\"minWidth\":20}},{\"name\":\"ContributionMarginForecast\",\"displayName\":\"CM Forecast\",\"dimensions\":{\"Category\":{\"member\":\"Forecast Jun\"},\"Account\":{\"member\":\"Contribution Margin\",\"alias\":\"CM\"}},\"attributes\":{\"minWidth\":60}},{\"name\":\"CMPercentageForecast\",\"displayName\":\"CM% Forecast\",\"formula\":{\"type\":\"ratio\",\"parameters\":[\"ContributionMarginForecast\",\"NetSalesForecast\"]},\"dimensions\":{\"Category\":{\"member\":\"Forecast Jun\"},\"Account\":{\"member\":\"CM%\"}},\"numberFormat\":{\"scale\":\"unchanged\"},\"attributes\":{\"minWidth\":60}},{\"name\":\"CMVarianceArrow\",\"displayName\":\"Variance\",\"formula\":{\"type\":\"varianceAbsolute\",\"parameters\":[\"ContributionMargin\",\"ContributionMarginForecast\"],\"displayStyle\":\"Arrows\"},\"dimensions\":{\"Category\":{\"member\":\"Forecast Jun\"},\"Account\":{\"member\":\"\"}},\"attributes\":{\"minWidth\":20}},{\"name\":\"GrossMarginForecast\",\"displayName\":\"GM Forecast\",\"dimensions\":{\"Category\":{\"member\":\"Forecast Jun\"},\"Account\":{\"member\":\"Gross Margin\",\"alias\":\"GM\"}},\"attributes\":{\"minWidth\":60}},{\"name\":\"GrossMarginPercentageForecast\",\"displayName\":\"GM% Forecast\",\"formula\":{\"type\":\"ratio\",\"parameters\":[\"GrossMarginForecast\",\"NetSalesForecast\"]},\"dimensions\":{\"Category\":{\"member\":\"Forecast Jun\"},\"Account\":{\"member\":\"GM%\"}},\"numberFormat\":{\"scale\":\"unchanged\"},\"attributes\":{\"minWidth\":60}},{\"name\":\"GMVarianceArrow\",\"displayName\":\"Variance\",\"formula\":{\"type\":\"varianceAbsolute\",\"parameters\":[\"GrossMargin\",\"GrossMarginForecast\"],\"displayStyle\":\"Arrows\"},\"dimensions\":{\"Category\":{\"member\":\"Forecast Jun\"},\"Account\":{\"member\":\"\"}}}]}",
+      "CreateDescription": null
+    },
+    {
+      "ListName": "Past12MonthsActual",
+      "ListContents": "{\r\n      \"type\": \"dynamic\",\r\n      \"dimensions\": [\r\n        \"Year\",\r\n        \"Period\"\r\n      ],\r\n      \"dynamicconfig\": {\r\n        \"length\": 12,\r\n        \"direction\": \"backward\",\r\n        \"startPeriod\": {\r\n          \"Year\": \"\",\r\n          \"Period\": \"\"\r\n        },\r\n        \"relationship\": \"rolling\"\r\n      }\r\n    }",
+      "CreateDescription": "A list with the past 12 months, displaying Actual data for each month."
+    },
+    {
+      "ListName": "ProfitAndLossAccounts",
+      "ListContents": "{\r\n      \"items\": [\r\n        {\r\n          \"name\": \"R1\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Gross Sales\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R2\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Discounts\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R3\",\r\n          \"format\": \"bold_lineabove_skip\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Net Sales\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R4\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Cost of goods sold\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R5\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Purchase discount\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R6\",\r\n          \"format\": \"bold_skip_lineabove\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Product Margin\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R7\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Delivery expenses - Fulfillment Cost\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R8\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Charges on Credit Card Sales\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R9\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Aggregator Fees\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R10\",\r\n          \"format\": \"bold_lineabove_skip\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Contribution Margin\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R11\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Other cost of goods sold\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R12\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Inventory Adjustment\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R13\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Direct Staff costs salaries and wages\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R14\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Direct Staff costs others\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R15\",\r\n          \"format\": \"bold_skip_lineabove\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Gross Margin\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R16\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Staff Expenses\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R17\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Advertising and marketing\"\r\n            }\r\n          },\r\n          \"displayName\": \"Marketing Expenses\"\r\n        },\r\n        {\r\n          \"name\": \"R18\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Rent & Utilities\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R19\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Other Fixed Exp.\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R20\",\r\n          \"format\": \"bold_skip_lineabove\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"EBITDA\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R21\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Depreciation\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R22\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Extraordinary Expense\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R23\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Foreign exchange gain/loss\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R24\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Interest on term loan\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R25\",\r\n          \"format\": \"bold_lineabove_skip\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Net Profit\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        }\r\n      ],\r\n      \"dimensions\": [\r\n        \"Account\"\r\n      ]\r\n    }",
       "CreateDescription": null
     },
     {
@@ -276,12 +401,17 @@
     },
     {
       "ListName": "ProfitAndLossAccounts",
-      "ListContents": "{\"dimensions\":[\"Account\",\"AnalyticalDim1\"],\"items\":[{\"name\":\"R1\",\"dimensions\":{\"Account\":{\"member\":\"Gross Sales\"},\"AnalyticalDim1\":{\"member\":\"\"}},\"displayName\":\"[Account]\",\"format\":\"\",\"drilldown\":\"AnalyticalDim1.[AnalyticalDim1].descendants\"},{\"name\":\"R2\",\"dimensions\":{\"Account\":{\"member\":\"Discounts\"},\"AnalyticalDim1\":{\"member\":\"\"}},\"displayName\":\"[Account]\",\"format\":\"\",\"drilldown\":\"AnalyticalDim1.[AnalyticalDim1].descendants\"},{\"name\":\"R3\",\"dimensions\":{\"Account\":{\"member\":\"Net Sales\"},\"AnalyticalDim1\":{\"member\":\"\"}},\"displayName\":\"[Account]\",\"format\":\"bold_lineabove_skip\"},{\"name\":\"R4\",\"dimensions\":{\"Account\":{\"member\":\"Cost of Goods Sold (COGS)\"},\"AnalyticalDim1\":{\"member\":\"\"}},\"displayName\":\"[Account]\",\"format\":\"\",\"drilldown\":\"AnalyticalDim1.[AnalyticalDim1].descendants\"},{\"name\":\"R5\",\"dimensions\":{\"Account\":{\"member\":\"Gross Margin\"},\"AnalyticalDim1\":{\"member\":\"\"}},\"displayName\":\"[Account]\",\"format\":\"bold_skip_lineabove\"},{\"name\":\"R6\",\"dimensions\":{\"Account\":{\"member\":\"Operating Expenses\"},\"AnalyticalDim1\":{\"member\":\"\"}},\"displayName\":\"[Account]\",\"format\":\"\",\"drilldown\":\"AnalyticalDim1.[AnalyticalDim1].descendants\"},{\"name\":\"R7\",\"dimensions\":{\"Account\":{\"member\":\"EBITDA\"},\"AnalyticalDim1\":{\"member\":\"\"}},\"displayName\":\"[Account]\",\"format\":\"bold_skip_lineabove\"},{\"name\":\"R8\",\"dimensions\":{\"Account\":{\"member\":\"Depreciation & Amortization\"},\"AnalyticalDim1\":{\"member\":\"\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R9\",\"dimensions\":{\"Account\":{\"member\":\"Extraordinary Expenses\"},\"AnalyticalDim1\":{\"member\":\"\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R10\",\"dimensions\":{\"Account\":{\"member\":\"Net Profit\"},\"AnalyticalDim1\":{\"member\":\"\"}},\"displayName\":\"[Account]\",\"format\":\"bold_skip_lineabove\"}]}",
-      "CreateDescription": "A formatted profit and loss statement to be used on table rows, including drill-downs where applicable, specifically drilling down on expenses by cost centers."
+      "ListContents": "{\r\n      \"dimensions\": [\r\n        \"Account\"\r\n      ],\r\n      \"items\": [\r\n        {\r\n          \"name\": \"R1\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Gross Sales\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\"\r\n        },\r\n        {\r\n          \"name\": \"R2\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Discounts\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\"\r\n        },\r\n        {\r\n          \"name\": \"R3\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Net Sales\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"bold_lineabove_skip\"\r\n        },\r\n        {\r\n          \"name\": \"R4\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Cost of goods sold\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R5\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Purchase discount\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R6\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Product Margin\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"bold_skip_lineabove\"\r\n        },\r\n        {\r\n          \"name\": \"R7\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Delivery expenses - Fulfillment Cost\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R8\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Charges on Credit Card Sales\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\"\r\n        },\r\n        {\r\n          \"name\": \"R9\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Aggregator Fees\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R10\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Contribution Margin\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"bold_lineabove_skip\"\r\n        },\r\n        {\r\n          \"name\": \"R11\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Other cost of goods sold\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R12\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Inventory Adjustment\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R13\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Direct Staff costs salaries and wages\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R14\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Direct Staff costs others\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R15\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Gross Margin\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"bold_skip_lineabove\"\r\n        },\r\n        {\r\n          \"name\": \"R16\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Staff Expenses\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\"\r\n        },\r\n        {\r\n          \"name\": \"R17\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Advertising and marketing\"\r\n            }\r\n          },\r\n          \"displayName\": \"Marketing Expenses\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R18\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Rent & Utilities\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\"\r\n        },\r\n        {\r\n          \"name\": \"R19\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Other Fixed Exp.\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\"\r\n        },\r\n        {\r\n          \"name\": \"R20\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"EBITDA\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"bold_skip_lineabove\"\r\n        },\r\n        {\r\n          \"name\": \"R21\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Depreciation\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R22\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Extraordinary Expense\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R23\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Foreign exchange gain/loss\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R24\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Interest on term loan\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R25\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Net Profit\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"bold_lineabove_skip\"\r\n        }\r\n      ]\r\n    }",
+      "CreateDescription": "A formatted profit and loss statement to be used on table rows, including drill-downs where applicable."
     },
     {
       "ListName": "ProfitAndLossAccounts",
-      "ListContents": "{\"dimensions\":[\"Account\"],\"items\":[{\"name\":\"R1\",\"dimensions\":{\"Account\":{\"member\":\"Gross Sales\"}},\"displayName\":\"[Account]\",\"format\":\"\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"R2\",\"dimensions\":{\"Account\":{\"member\":\"Discounts\"}},\"displayName\":\"[Account]\",\"format\":\"\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"R3\",\"dimensions\":{\"Account\":{\"member\":\"Net Sales\"}},\"displayName\":\"[Account]\",\"format\":\"bold_lineabove_skip\"},{\"name\":\"R4\",\"dimensions\":{\"Account\":{\"member\":\"Cost of goods sold\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R5\",\"dimensions\":{\"Account\":{\"member\":\"Other cost of goods sold\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R6\",\"dimensions\":{\"Account\":{\"member\":\"Direct Staff costs salaries and wages\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R7\",\"dimensions\":{\"Account\":{\"member\":\"Direct Staff costs others\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R8\",\"dimensions\":{\"Account\":{\"member\":\"Gross Margin\"}},\"displayName\":\"[Account]\",\"format\":\"bold_skip_lineabove\"},{\"name\":\"R9\",\"dimensions\":{\"Account\":{\"member\":\"Advertising and marketing\"}},\"displayName\":\"Marketing Expenses\",\"format\":\"\",\"drilldown\":\"AnalyticalDim1.[AnalyticalDim1].descendants\"},{\"name\":\"R10\",\"dimensions\":{\"Account\":{\"member\":\"Rent & Utilities\"}},\"displayName\":\"[Account]\",\"format\":\"\",\"drilldown\":\"AnalyticalDim1.[AnalyticalDim1].descendants\"},{\"name\":\"R11\",\"dimensions\":{\"Account\":{\"member\":\"EBITDA\"}},\"displayName\":\"[Account]\",\"format\":\"bold_skip_lineabove\"},{\"name\":\"R12\",\"dimensions\":{\"Account\":{\"member\":\"Depreciation\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R13\",\"dimensions\":{\"Account\":{\"member\":\"Extraordinary Expense\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R14\",\"dimensions\":{\"Account\":{\"member\":\"Net Profit\"}},\"displayName\":\"[Account]\",\"format\":\"bold_skip_lineabove\"}]}",
+      "ListContents": "{\r\n      \"items\": [\r\n        {\r\n          \"name\": \"R1\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Gross Sales\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R2\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Discounts\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R3\",\r\n          \"format\": \"bold_lineabove_skip\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Net Sales\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R4\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Cost of goods sold\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R5\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Purchase discount\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R6\",\r\n          \"format\": \"bold_skip_lineabove\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Product Margin\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R7\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Delivery expenses - Fulfillment Cost\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R8\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Charges on Credit Card Sales\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R9\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Aggregator Fees\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R10\",\r\n          \"format\": \"bold_lineabove_skip\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Contribution Margin\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R11\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Other cost of goods sold\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R12\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Inventory Adjustment\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R13\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Direct Staff costs salaries and wages\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R14\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Direct Staff costs others\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R15\",\r\n          \"format\": \"bold_skip_lineabove\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Gross Margin\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R16\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Staff Expenses\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R17\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Advertising and marketing\"\r\n            }\r\n          },\r\n          \"displayName\": \"Marketing Expenses\"\r\n        },\r\n        {\r\n          \"name\": \"R18\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Rent & Utilities\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R19\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Other Fixed Exp.\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R20\",\r\n          \"format\": \"bold_skip_lineabove\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"EBITDA\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R21\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Depreciation\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R22\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Extraordinary Expense\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R23\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Foreign exchange gain/loss\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R25\",\r\n          \"format\": \"bold_lineabove_skip\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Net Profit\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        }\r\n      ],\r\n      \"dimensions\": [\r\n        \"Account\"\r\n      ]\r\n    }",
+      "CreateDescription": "A formatted profit and loss statement to be used on table rows, including drill-downs where applicable."
+    },
+    {
+      "ListName": "ProfitAndLossAccounts",
+      "ListContents": "{\"dimensions\":[\"Account\"],\"items\":[{\"name\":\"R1\",\"dimensions\":{\"Account\":{\"member\":\"Gross Sales\"}},\"displayName\":\"[Account]\",\"format\":\"\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"R2\",\"dimensions\":{\"Account\":{\"member\":\"Discounts\"}},\"displayName\":\"[Account]\",\"format\":\"\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"R3\",\"dimensions\":{\"Account\":{\"member\":\"Net Sales\"}},\"displayName\":\"[Account]\",\"format\":\"bold_lineabove_skip\"},{\"name\":\"R4\",\"dimensions\":{\"Account\":{\"member\":\"Cost of goods sold\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R5\",\"dimensions\":{\"Account\":{\"member\":\"Purchase discount\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R6\",\"dimensions\":{\"Account\":{\"member\":\"Product Margin\"}},\"displayName\":\"[Account]\",\"format\":\"bold_skip_lineabove\"},{\"name\":\"R7\",\"dimensions\":{\"Account\":{\"member\":\"Delivery expenses - Fulfillment Cost\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R8\",\"dimensions\":{\"Account\":{\"member\":\"Charges on Credit Card Sales\"}},\"displayName\":\"[Account]\",\"format\":\"\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"R9\",\"dimensions\":{\"Account\":{\"member\":\"Aggregator Fees\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R10\",\"dimensions\":{\"Account\":{\"member\":\"Contribution Margin\"}},\"displayName\":\"[Account]\",\"format\":\"bold_lineabove_skip\"},{\"name\":\"R11\",\"dimensions\":{\"Account\":{\"member\":\"Other cost of goods sold\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R12\",\"dimensions\":{\"Account\":{\"member\":\"Inventory Adjustment\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R13\",\"dimensions\":{\"Account\":{\"member\":\"Direct Staff costs salaries and wages\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R14\",\"dimensions\":{\"Account\":{\"member\":\"Direct Staff costs others\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R15\",\"dimensions\":{\"Account\":{\"member\":\"Gross Margin\"}},\"displayName\":\"[Account]\",\"format\":\"bold_skip_lineabove\"},{\"name\":\"R16\",\"dimensions\":{\"Account\":{\"member\":\"Staff Expenses\"}},\"displayName\":\"[Account]\",\"format\":\"\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"R17\",\"dimensions\":{\"Account\":{\"member\":\"Advertising and marketing\"}},\"displayName\":\"Marketing Expenses\",\"format\":\"\"},{\"name\":\"R18\",\"dimensions\":{\"Account\":{\"member\":\"Rent & Utilities\"}},\"displayName\":\"[Account]\",\"format\":\"\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"R19\",\"dimensions\":{\"Account\":{\"member\":\"Other Fixed Exp.\"}},\"displayName\":\"[Account]\",\"format\":\"\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"R20\",\"dimensions\":{\"Account\":{\"member\":\"EBITDA\"}},\"displayName\":\"[Account]\",\"format\":\"bold_skip_lineabove\"},{\"name\":\"R21\",\"dimensions\":{\"Account\":{\"member\":\"Depreciation\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R22\",\"dimensions\":{\"Account\":{\"member\":\"Extraordinary Expense\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R23\",\"dimensions\":{\"Account\":{\"member\":\"Foreign exchange gain/loss\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R24\",\"dimensions\":{\"Account\":{\"member\":\"Interest on term loan\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"R25\",\"dimensions\":{\"Account\":{\"member\":\"Net Profit\"}},\"displayName\":\"[Account]\",\"format\":\"bold_lineabove_skip\"}]}",
       "CreateDescription": "A formatted profit and loss statement to be used on table rows, including drill-downs where applicable."
     },
     {
@@ -295,14 +425,9 @@
       "CreateDescription": "Create an account list displaying a formatted Profit and Loss statement."
     },
     {
-      "ListName": "ProfitAndLossRows",
-      "ListContents": "{\"dimensions\":[\"Account\"],\"items\":[{\"name\":\"Revenue\",\"dimensions\":{\"Account\":{\"member\":\"Gross Sales\"}},\"displayName\":\"[Account]\",\"format\":\"\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"CostOfGoodsSold\",\"dimensions\":{\"Account\":{\"member\":\"Cost of goods sold\"}},\"displayName\":\"[Account]\",\"format\":\"\"},{\"name\":\"NetIncome\",\"dimensions\":{\"Account\":{\"member\":\"Net Profit\"}},\"displayName\":\"[Account]\",\"format\":\"bold_lineabove_skip\"},{\"name\":\"OperatingExpenses\",\"dimensions\":{\"Account\":{\"member\":\"Operating Expenses\"}},\"displayName\":\"[Account]\",\"format\":\"\",\"drilldown\":\"Account.[Account].descendants\"},{\"name\":\"EBITDA\",\"dimensions\":{\"Account\":{\"member\":\"EBITDA\"}},\"displayName\":\"[Account]\",\"format\":\"bold_skip_lineabove\"}]}",
-      "CreateDescription": "A list including revenue, cost of goods sold, and net income to be used on table rows, allowing for drill-down where applicable."
-    },
-    {
       "ListName": "ProfitAndLossStatement",
-      "ListContents": "{\r\n      \"items\": [\r\n        {\r\n          \"name\": \"R1\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Gross Sales\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R2\",\r\n          \"format\": \"bold_lineabove_skip\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Net Sales\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R3\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Cost of goods sold\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R4\",\r\n          \"format\": \"bold_skip_lineabove\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Gross Margin\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R5\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Advertising and marketing\"\r\n            }\r\n          },\r\n          \"displayName\": \"Marketing Expenses\"\r\n        },\r\n        {\r\n          \"name\": \"R6\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Rent & Utilities\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R7\",\r\n          \"format\": \"bold_skip_lineabove\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"EBITDA\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R8\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Depreciation\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R9\",\r\n          \"format\": \"\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Extraordinary Expense\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        },\r\n        {\r\n          \"name\": \"R10\",\r\n          \"format\": \"bold_skip_lineabove\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Net Profit\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        }\r\n      ],\r\n      \"dimensions\": [\r\n        \"Account\"\r\n      ]\r\n    }",
-      "CreateDescription": "A list containing all profit and loss statement accounts to be used on table rows, including all necessary dimensions and drill-down capabilities."
+      "ListContents": "{\r\n      \"dimensions\": [\r\n        \"Account\"\r\n      ],\r\n      \"items\": [\r\n        {\r\n          \"name\": \"R1\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Gross Sales\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\"\r\n        },\r\n        {\r\n          \"name\": \"R2\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Discounts\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\"\r\n        },\r\n        {\r\n          \"name\": \"R3\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Net Sales\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"bold_lineabove_skip\"\r\n        },\r\n        {\r\n          \"name\": \"R4\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Cost of goods sold\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R5\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Purchase discount\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R6\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Product Margin\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"bold_skip_lineabove\"\r\n        },\r\n        {\r\n          \"name\": \"R7\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Delivery expenses - Fulfillment Cost\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R8\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Charges on Credit Card Sales\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\"\r\n        },\r\n        {\r\n          \"name\": \"R9\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Aggregator Fees\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R10\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Contribution Margin\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"bold_lineabove_skip\"\r\n        },\r\n        {\r\n          \"name\": \"R11\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Other cost of goods sold\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R12\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Inventory Adjustment\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R13\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Direct Staff costs salaries and wages\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R14\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Direct Staff costs others\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R15\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Gross Margin\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"bold_skip_lineabove\"\r\n        },\r\n        {\r\n          \"name\": \"R16\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Staff Expenses\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\"\r\n        },\r\n        {\r\n          \"name\": \"R17\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Advertising and marketing\"\r\n            }\r\n          },\r\n          \"displayName\": \"Marketing Expenses\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R18\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Rent & Utilities\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\"\r\n        },\r\n        {\r\n          \"name\": \"R19\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Other Fixed Exp.\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\",\r\n          \"drilldown\": \"Account.[Account].descendants\"\r\n        },\r\n        {\r\n          \"name\": \"R20\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"EBITDA\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"bold_skip_lineabove\"\r\n        },\r\n        {\r\n          \"name\": \"R21\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Depreciation\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R22\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Extraordinary Expense\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R23\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Foreign exchange gain/loss\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R24\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Interest on term loan\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"\"\r\n        },\r\n        {\r\n          \"name\": \"R25\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"Net Profit\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\",\r\n          \"format\": \"bold_lineabove_skip\"\r\n        }\r\n      ]\r\n    }",
+      "CreateDescription": "A formatted profit and loss statement to be used on table rows, including key line items such as revenue streams, cost of goods sold, operating expenses, and net income. Include drill-downs where applicable."
     },
     {
       "ListName": "Q3Comparison",
@@ -333,6 +458,16 @@
       "ListName": "rowDefinitions",
       "ListContents": "{\r\n      \"dimensions\": [\r\n        \"Account\"\r\n      ],\r\n      \"items\": []\r\n    }",
       "CreateDescription": null
+    },
+    {
+      "ListName": "selectedLineItem",
+      "ListContents": "{\r\n      \"dimensions\": [\r\n        \"Account\"\r\n      ],\r\n      \"items\": [\r\n        {\r\n          \"name\": \"selectedLineItem\",\r\n          \"dimensions\": {\r\n            \"Account\": {\r\n              \"member\": \"\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Account]\"\r\n        }\r\n      ]\r\n    }",
+      "CreateDescription": "A list with the currently selected line item to be used on the y-axis of the chart."
+    },
+    {
+      "ListName": "singlePeriod",
+      "ListContents": "{\r\n      \"items\": [\r\n        {\r\n          \"name\": \"SinglePeriod\",\r\n          \"dimensions\": {\r\n            \"Category\": {\r\n              \"member\": \"Actual\"\r\n            }\r\n          },\r\n          \"displayName\": \"[Category]\"\r\n        }\r\n      ],\r\n      \"dimensions\": [\r\n        \"Category\"\r\n      ]\r\n    }",
+      "CreateDescription": "A list with a single member to be used on the pie chart, as pie charts are one-dimensional."
     },
     {
       "ListName": "ThisYearPreviousYear",
@@ -546,7 +681,7 @@
       "name": "View",
       "alias": "View",
       "order": 5,
-      "default": "periodic",
+      "default": "Periodic",
       "visible": true,
       "dimensionContent": [
         {
@@ -1560,6 +1695,566 @@
           "ID": 1339,
           "Name": "Other Income from Petsville Luxury",
           "ParentID": 1081
+        },
+        {
+          "ID": 1633,
+          "Name": "Assets",
+          "ParentID": null
+        },
+        {
+          "ID": 1634,
+          "Name": "Equity",
+          "ParentID": null
+        },
+        {
+          "ID": 1635,
+          "Name": "Liabilities",
+          "ParentID": null
+        },
+        {
+          "ID": 1636,
+          "Name": "Current Assets",
+          "ParentID": 1633
+        },
+        {
+          "ID": 1637,
+          "Name": "IFRS16 - Assets",
+          "ParentID": 1633
+        },
+        {
+          "ID": 1638,
+          "Name": "Intercompany Receivable",
+          "ParentID": 1633
+        },
+        {
+          "ID": 1639,
+          "Name": "Non-Current Assets",
+          "ParentID": 1633
+        },
+        {
+          "ID": 1640,
+          "Name": "Retained Earnings",
+          "ParentID": 1634
+        },
+        {
+          "ID": 1641,
+          "Name": "Share Capital",
+          "ParentID": 1634
+        },
+        {
+          "ID": 1642,
+          "Name": "Shareholder Account",
+          "ParentID": 1634
+        },
+        {
+          "ID": 1643,
+          "Name": "Statutory Reserve",
+          "ParentID": 1634
+        },
+        {
+          "ID": 1644,
+          "Name": "Current Liabilities",
+          "ParentID": 1635
+        },
+        {
+          "ID": 1645,
+          "Name": "Deferred Tax Liability",
+          "ParentID": 1635
+        },
+        {
+          "ID": 1646,
+          "Name": "IFRS16 - Liabilities",
+          "ParentID": 1635
+        },
+        {
+          "ID": 1647,
+          "Name": "Intercompany Payable",
+          "ParentID": 1635
+        },
+        {
+          "ID": 1648,
+          "Name": "PDC Control",
+          "ParentID": 1635
+        },
+        {
+          "ID": 1649,
+          "Name": "Bank Investments",
+          "ParentID": 1636
+        },
+        {
+          "ID": 1650,
+          "Name": "Cash",
+          "ParentID": 1636
+        },
+        {
+          "ID": 1651,
+          "Name": "IFRS 16 -IAS 17 Prepayment/accrual reversal on long term lease",
+          "ParentID": 1636
+        },
+        {
+          "ID": 1652,
+          "Name": "Inventories",
+          "ParentID": 1636
+        },
+        {
+          "ID": 1653,
+          "Name": "Other Receivables",
+          "ParentID": 1636
+        },
+        {
+          "ID": 1654,
+          "Name": "Prepaid Expenses",
+          "ParentID": 1636
+        },
+        {
+          "ID": 1655,
+          "Name": "Receivables",
+          "ParentID": 1636
+        },
+        {
+          "ID": 1656,
+          "Name": "VAT Receivables",
+          "ParentID": 1636
+        },
+        {
+          "ID": 1657,
+          "Name": "Right of Use - Asset - IFRS16",
+          "ParentID": 1637
+        },
+        {
+          "ID": 1658,
+          "Name": "Intercompany Loan Receivable - LVC",
+          "ParentID": 1638
+        },
+        {
+          "ID": 1659,
+          "Name": "Intercompany Receivable - Aliph",
+          "ParentID": 1638
+        },
+        {
+          "ID": 1660,
+          "Name": "Intercompany Receivable - Café",
+          "ParentID": 1638
+        },
+        {
+          "ID": 1661,
+          "Name": "Intercompany Receivable - Lucky Vet",
+          "ParentID": 1638
+        },
+        {
+          "ID": 1662,
+          "Name": "Intercompany Receivable - Petsville",
+          "ParentID": 1638
+        },
+        {
+          "ID": 1663,
+          "Name": "Intercompany Rec-Petsville Luxury DIP",
+          "ParentID": 1638
+        },
+        {
+          "ID": 1664,
+          "Name": "Deposits",
+          "ParentID": 1639
+        },
+        {
+          "ID": 1665,
+          "Name": "Intangible Assets",
+          "ParentID": 1639
+        },
+        {
+          "ID": 1666,
+          "Name": "Investment in Companies",
+          "ParentID": 1639
+        },
+        {
+          "ID": 1667,
+          "Name": "Tangible Assets",
+          "ParentID": 1639
+        },
+        {
+          "ID": 1668,
+          "Name": "Retained Earnings",
+          "ParentID": 1640
+        },
+        {
+          "ID": 1669,
+          "Name": "Share Capital",
+          "ParentID": 1641
+        },
+        {
+          "ID": 1670,
+          "Name": "Shareholder Account",
+          "ParentID": 1642
+        },
+        {
+          "ID": 1671,
+          "Name": "Statutory Reserve",
+          "ParentID": 1643
+        },
+        {
+          "ID": 1672,
+          "Name": "Accrued Liabilities",
+          "ParentID": 1644
+        },
+        {
+          "ID": 1673,
+          "Name": "Deferred Revenue",
+          "ParentID": 1644
+        },
+        {
+          "ID": 1674,
+          "Name": "IFRS 16  LEASE LIABILITY-Short Term",
+          "ParentID": 1644
+        },
+        {
+          "ID": 1675,
+          "Name": "Other Payables",
+          "ParentID": 1644
+        },
+        {
+          "ID": 1676,
+          "Name": "Payables",
+          "ParentID": 1644
+        },
+        {
+          "ID": 1677,
+          "Name": "Short Term Loan",
+          "ParentID": 1644
+        },
+        {
+          "ID": 1678,
+          "Name": "VAT Payable",
+          "ParentID": 1644
+        },
+        {
+          "ID": 1679,
+          "Name": "Deferred Tax Liability",
+          "ParentID": 1645
+        },
+        {
+          "ID": 1680,
+          "Name": "Lease Liability - IFRS16",
+          "ParentID": 1646
+        },
+        {
+          "ID": 1681,
+          "Name": "Intercompany Payable - Café",
+          "ParentID": 1647
+        },
+        {
+          "ID": 1682,
+          "Name": "PDC Control",
+          "ParentID": 1648
+        },
+        {
+          "ID": 1683,
+          "Name": "Accrued Liabilities - Accrued Bonus",
+          "ParentID": 1672
+        },
+        {
+          "ID": 1684,
+          "Name": "Accrued Liabilities - Accrued Compensation & Benefits",
+          "ParentID": 1672
+        },
+        {
+          "ID": 1685,
+          "Name": "Accrued Liabilities - Accrued Dividends",
+          "ParentID": 1672
+        },
+        {
+          "ID": 1686,
+          "Name": "Accrued Liabilities - Accrued Gratuity",
+          "ParentID": 1672
+        },
+        {
+          "ID": 1687,
+          "Name": "Accrued Liabilities - Accrued Leave Salary",
+          "ParentID": 1672
+        },
+        {
+          "ID": 1688,
+          "Name": "Accrued Liabilities - Accrued Loyalty Liability",
+          "ParentID": 1672
+        },
+        {
+          "ID": 1689,
+          "Name": "Accrued Liabilities - Other Accrued Liabilities",
+          "ParentID": 1672
+        },
+        {
+          "ID": 1690,
+          "Name": "Bank Investments - Fixed Deposit",
+          "ParentID": 1649
+        },
+        {
+          "ID": 1691,
+          "Name": "Cash - Cash at Bank",
+          "ParentID": 1650
+        },
+        {
+          "ID": 1692,
+          "Name": "Cash - Cash in Hand",
+          "ParentID": 1650
+        },
+        {
+          "ID": 1693,
+          "Name": "Cash - Petty Cash",
+          "ParentID": 1650
+        },
+        {
+          "ID": 1694,
+          "Name": "Deferred Revenue - Deferred Revenue",
+          "ParentID": 1673
+        },
+        {
+          "ID": 1695,
+          "Name": "Deferred Tax Liability - Deferred Tax Liability",
+          "ParentID": 1679
+        },
+        {
+          "ID": 1696,
+          "Name": "Deposits - Other Deposits",
+          "ParentID": 1664
+        },
+        {
+          "ID": 1697,
+          "Name": "Deposits - Rent Security Deposits",
+          "ParentID": 1664
+        },
+        {
+          "ID": 1698,
+          "Name": "Deposits - Visa Deposits",
+          "ParentID": 1664
+        },
+        {
+          "ID": 1699,
+          "Name": "IFRS 16  LEASE LIABILITY-Short Term - IFRS 16  LEASE LIABILITY-Short Term",
+          "ParentID": 1674
+        },
+        {
+          "ID": 1700,
+          "Name": "IFRS 16 -IAS 17 Prepayment/accrual reversal on long term lease - IFRS 16 -IAS 17 Prepayment/accrual ",
+          "ParentID": 1651
+        },
+        {
+          "ID": 1701,
+          "Name": "Intangible Assets - Acc. Amortization",
+          "ParentID": 1665
+        },
+        {
+          "ID": 1702,
+          "Name": "Intangible Assets - Acquisition Cost",
+          "ParentID": 1665
+        },
+        {
+          "ID": 1703,
+          "Name": "Intercompany Loan Receivable - LVC - Intercompany Receivable - Lucky Vet",
+          "ParentID": 1658
+        },
+        {
+          "ID": 1704,
+          "Name": "Intercompany Payable - Café - Intercompany Payable - Café",
+          "ParentID": 1681
+        },
+        {
+          "ID": 1705,
+          "Name": "Intercompany Receivable - Aliph - Intercompany Receivable - Aliph",
+          "ParentID": 1659
+        },
+        {
+          "ID": 1706,
+          "Name": "Intercompany Receivable - Café - Intercompany Receivable - Café",
+          "ParentID": 1660
+        },
+        {
+          "ID": 1707,
+          "Name": "Intercompany Receivable - Lucky Vet - Intercompany Receivable - Lucky Vet",
+          "ParentID": 1661
+        },
+        {
+          "ID": 1708,
+          "Name": "Intercompany Receivable - Petsville - Intercompany Receivable - Petsville",
+          "ParentID": 1662
+        },
+        {
+          "ID": 1709,
+          "Name": "Intercompany Rec-Petsville Luxury DIP - Intercompany Rec-Petsville Luxury DIP",
+          "ParentID": 1663
+        },
+        {
+          "ID": 1710,
+          "Name": "Inventories - Inventory - Not for Sale",
+          "ParentID": 1652
+        },
+        {
+          "ID": 1711,
+          "Name": "Inventories - Inventory for Sale",
+          "ParentID": 1652
+        },
+        {
+          "ID": 1712,
+          "Name": "Inventories - Inventory in Transit",
+          "ParentID": 1652
+        },
+        {
+          "ID": 1713,
+          "Name": "Inventories - Inventory Provision",
+          "ParentID": 1652
+        },
+        {
+          "ID": 1714,
+          "Name": "Investment in Companies - Investment in Lucky Vet",
+          "ParentID": 1666
+        },
+        {
+          "ID": 1715,
+          "Name": "Investment in Companies - Investment in Petsville",
+          "ParentID": 1666
+        },
+        {
+          "ID": 1716,
+          "Name": "Lease Liability - IFRS16 - Lease Liability IFRS16",
+          "ParentID": 1680
+        },
+        {
+          "ID": 1717,
+          "Name": "Other Payables - Accrued Interest",
+          "ParentID": 1675
+        },
+        {
+          "ID": 1718,
+          "Name": "Other Payables - Credit Card Payables",
+          "ParentID": 1675
+        },
+        {
+          "ID": 1719,
+          "Name": "Other Payables - Store Credit",
+          "ParentID": 1675
+        },
+        {
+          "ID": 1720,
+          "Name": "Other Receivables - Advances to Employees",
+          "ParentID": 1653
+        },
+        {
+          "ID": 1721,
+          "Name": "Other Receivables - Other Receivables",
+          "ParentID": 1653
+        },
+        {
+          "ID": 1722,
+          "Name": "Payables - Non Trade Payables",
+          "ParentID": 1676
+        },
+        {
+          "ID": 1723,
+          "Name": "Payables - Trade Payables",
+          "ParentID": 1676
+        },
+        {
+          "ID": 1724,
+          "Name": "PDC Control - PDC Control",
+          "ParentID": 1682
+        },
+        {
+          "ID": 1725,
+          "Name": "Prepaid Expenses - Prepaid Employee Costs",
+          "ParentID": 1654
+        },
+        {
+          "ID": 1726,
+          "Name": "Prepaid Expenses - Prepaid Employee Costs-Life Insurance",
+          "ParentID": 1654
+        },
+        {
+          "ID": 1727,
+          "Name": "Prepaid Expenses - Prepaid Marketing & Others",
+          "ParentID": 1654
+        },
+        {
+          "ID": 1728,
+          "Name": "Prepaid Expenses - Prepaid Others",
+          "ParentID": 1654
+        },
+        {
+          "ID": 1729,
+          "Name": "Prepaid Expenses - Prepaid Registration & Sponsorship",
+          "ParentID": 1654
+        },
+        {
+          "ID": 1730,
+          "Name": "Prepaid Expenses - Prepaid Rent",
+          "ParentID": 1654
+        },
+        {
+          "ID": 1731,
+          "Name": "Receivables - Trade Receivables",
+          "ParentID": 1655
+        },
+        {
+          "ID": 1732,
+          "Name": "Receivables - Trade Receivables - Credit Card",
+          "ParentID": 1655
+        },
+        {
+          "ID": 1733,
+          "Name": "Retained Earnings - Retained Earnings",
+          "ParentID": 1668
+        },
+        {
+          "ID": 1734,
+          "Name": "Right of Use - Asset - IFRS16 - Acc. Depreciation ROU",
+          "ParentID": 1657
+        },
+        {
+          "ID": 1735,
+          "Name": "Right of Use - Asset - IFRS16 - Right of Use - Asset",
+          "ParentID": 1657
+        },
+        {
+          "ID": 1736,
+          "Name": "Share Capital - Share Capital",
+          "ParentID": 1669
+        },
+        {
+          "ID": 1737,
+          "Name": "Shareholder Account - Shareholder Withdrawings",
+          "ParentID": 1670
+        },
+        {
+          "ID": 1738,
+          "Name": "Short Term Loan - Other Borrowings",
+          "ParentID": 1677
+        },
+        {
+          "ID": 1739,
+          "Name": "Short Term Loan - Short Term Loan Payables",
+          "ParentID": 1677
+        },
+        {
+          "ID": 1740,
+          "Name": "Statutory Reserve - Statutory Reserve",
+          "ParentID": 1671
+        },
+        {
+          "ID": 1741,
+          "Name": "Tangible Assets - Acc. Depreciation",
+          "ParentID": 1667
+        },
+        {
+          "ID": 1742,
+          "Name": "Tangible Assets - Acquisition Cost",
+          "ParentID": 1667
+        },
+        {
+          "ID": 1743,
+          "Name": "VAT Payable - VAT Payable",
+          "ParentID": 1678
+        },
+        {
+          "ID": 1744,
+          "Name": "VAT Receivables - VAT Receivables",
+          "ParentID": 1656
         }
       ]
     },
